@@ -9,16 +9,16 @@ with open(os.path.join(dir_repo, "requirements.txt"), "r") as f:
 with open(os.path.join(dir_repo, "README.md"), encoding="utf-8") as f:
     readme = f.read()
 # read the version name
-with open("deja-vu/_version.py") as f:
+with open("test-of-time/_version.py") as f:
     exec(f.read())
 
 setuptools.setup(
-    name="deja-vu",
+    name="test-of-time",
     version=__version__,
-    description="Evaluate forecasting models using backtesting on 'deja-vu' data",
+    description="Evaluate forecasting models using backtesting",
     author="Oskar Triebe",
     author_email="trieb@stanford.edu",
-    url="https://github.com/ourownstory/deja-vu",
+    url="https://github.com/ourownstory/test-of-time",
     license="MIT",
     packages=setuptools.find_packages(
         exclude=(
@@ -34,7 +34,7 @@ setuptools.setup(
         "full": ["prophet"],
     },
     # setup_requires=[""],
-    scripts=["scripts/deja-vu_dev_setup.py"],
+    scripts=["scripts/tot_dev_setup.py"],
     long_description=readme,
     long_description_content_type="text/markdown",
     include_package_data=True,
