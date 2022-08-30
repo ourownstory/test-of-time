@@ -34,6 +34,14 @@ except ImportError:
     Prophet = None
     _prophet_installed = False
 
+try:
+    from pmdarima import auto_arima
+
+    _autoarima_installed = True
+except ImportError:
+    auto_arima = None
+    _autoarima_installed = False
+
 NROWS = 100
 EPOCHS = 2
 BATCH_SIZE = 50
@@ -367,6 +375,32 @@ def test_simple_benchmark_prophet():
             results_train, results_test = benchmark.run()
     log.info("#### Done with test_simple_benchmark_prophet")
 
+def test_simple_experiment_ARIMA():
+    log.info("test_simple_experiment_arima")
+    air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
+    peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
+    dataset_list = [
+        Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
+        Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
+    ]
+    model_classes_and_params = [
+        (AutoArimaModel, {"start_p": 3, "max_p": 6}),
+    ]
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,  # iterate over this list of tuples
+        datasets=dataset_list,  # iterate over this list
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    if _arima_installed:
+        results_train, results_test = benchmark.run()
+        log.debug(results_test.to_string())
+    else:
+        with pytest.raises(RuntimeError):
+            results_train, results_test = benchmark.run()
+    log.info("#### Done with test_simple_experiment_arima")
 
 def test_cv_benchmark():
     log.info("test_cv_benchmark")
