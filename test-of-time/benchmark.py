@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from multiprocessing.pool import Pool
 from typing import List, Optional, Tuple, Type
+from collections import OrderedDict
 
 import numpy as np
 import pandas as pd
@@ -22,12 +23,11 @@ except ImportError:
     _prophet_installed = False
 
 try:
-    from pmdarima import auto_arima
-
-    _autoarima_installed = True
+    from catboost import CatBoostRegressor
+    _cb_installed = True
 except ImportError:
-    auto_arima = None
-    _autoarima_installed = False
+    CatBoostRegressor = None
+    _cb_installed = False
 
 log = logging.getLogger("NP.benchmark")
 log.debug(
@@ -37,6 +37,48 @@ log.debug(
     "If you use multiprocessing, only run one benchmark per python script."
 )
 
+def helper_tabularize_and_normalize(
+        df,
+        n_lags=0,
+        n_forecasts=1,
+):
+    # normalize dataframe
+    df = df_utils.check_dataframe(df)
+    df_dict, _ = df_utils.prep_copy_df_dict(df)
+    _, global_data_params = df_utils.init_data_params(df_dict=df_dict, normalize="off")
+    df = df_utils.normalize(df, global_data_params)
+
+    n_samples = len(df) - n_lags + 1 - n_forecasts
+    # data is stored in OrderedDict
+    inputs = OrderedDict({})
+
+    def _stride_time_features_for_forecasts(x):
+        # only for case where n_lags > 0
+        return np.array([x[n_lags + i: n_lags + i + n_forecasts] for i in range(n_samples)], dtype=np.float64)
+
+    # time is the time at each forecast step
+    t = df.loc[:, "t"].values
+    if n_lags == 0:
+        assert n_forecasts == 1
+        time = np.expand_dims(t, 1)
+    else:
+        time = _stride_time_features_for_forecasts(t)
+    inputs["time"] = time
+
+    def _stride_lagged_features(df_col_name, feature_dims):
+        # only for case where n_lags > 0
+        series = df.loc[:, df_col_name].values
+        ## Added dtype=np.float64 to solve the problem with np.isnan for ubuntu test
+        return np.array([series[i + n_lags - feature_dims: i + n_lags] for i in range(n_samples)], dtype=np.float64)
+
+    if n_lags > 0 and "y" in df.columns:
+        inputs["lags"] = _stride_lagged_features(df_col_name="y_scaled", feature_dims=n_lags)
+        if np.isnan(inputs["lags"]).any():
+            raise ValueError("Input lags contain NaN values in y.")
+
+    targets = _stride_time_features_for_forecasts(df["y_scaled"].values)
+
+    return inputs, targets, global_data_params
 
 def _calc_mae(
     predictions: np.ndarray,
@@ -231,62 +273,50 @@ class Model(ABC):
         return predicted.reset_index(drop=True), df.reset_index(drop=True)
 
 @dataclass
-class AutoArimaModel(Model):
-    model_name: str = "AutoArima"
-    model_class: Type = auto_arima
+class CBModel(Model):
+    model_name: str = "CatBoost"
+    model_class: Type = CatBoostRegressor
 
     def __post_init__(self):
-        if not _autoarima_installed:
-            raise ImportError("Requires AutoArima to be installed")
-        data_params = self.params["_data_params"]
-        self.custom_seasonalities = None
-        if "seasonalities" in data_params and len(data_params["seasonalities"]) > 0:
-            self.custom_seasonalities = data_params["seasonalities"]
-        self.custom_seasonalities = self.custom_seasonalities or []
-        self.model_params = deepcopy(self.params)
-        self.model_params.pop("_data_params")
+        if not _cb_installed:
+            raise RuntimeError("CatBoostRegressor requires catboost to be installed")
+        model_params = deepcopy(self.params)
+        model_params.pop("_data_params")
+        self.n_lags = model_params['n_lags']
+        model_params.pop("n_lags")
+
+        self.model = CatBoostRegressor(**model_params)
         self.n_forecasts = 1
-        self.n_lags = 0
 
     def fit(self, df: pd.DataFrame, freq: str):
-        self.start_train = pd.to_datetime(df.ds.iloc[0])
-        self.end_train = pd.to_datetime(df.ds.iloc[-1])
-
-        self.freq = freq
-        if "min" in self.freq:
-            factor = int(60 / int(self.freq[:-3]))
-        elif freq == "H":
-            factor = 24
-        elif freq == "D":
-            factor = 1
-        else:
-            factor = 1
-
-        if len(self.custom_seasonalities) == 0:
-            m = 1
-        else:
-            m = np.max(self.custom_seasonalities) * factor
-
-        self.model = auto_arima(
-            df.y, seasonal=True, m=m, error_action="ignore", suppress_warnings=True, **self.model_params
-        )
+        inputs, targets, _ = helper_tabularize_and_normalize(df, n_lags=self.n_lags, n_forecasts=self.n_forecasts)
+        self.model = self.model.fit(inputs["lags"], targets)
 
     def predict(self, df: pd.DataFrame):
-        if (pd.to_datetime(df.ds.iloc[0]) <= self.end_train) and (pd.to_datetime(df.ds.iloc[-1]) <= self.end_train):
-            run_on_train = True
-        elif pd.to_datetime(df.ds.iloc[0]) == pd.date_range(self.end_train, periods=2, freq=self.freq)[-1]:
-            run_on_train = False
-        else:
-            NotImplementedError('Forecasting on parts of train is not supported')
+        # This model tabularizes and normalizes data
+        inputs, _, global_data_params = helper_tabularize_and_normalize(
+            df, n_lags=self.n_lags, n_forecasts=self.n_forecasts
+        )
+        fcst_normalized = self.model.predict(inputs["lags"])
 
-        if run_on_train:
-            fcst = self.model.predict_in_sample()
-        else:
-            fcst = self.model.predict(df.shape[0])
-        fcst_df = df.copy(deep=True)
-        fcst_df["yhat1"] = fcst
-        fcst_df = pd.DataFrame({"time": fcst_df.ds, "y": fcst_df.y, "yhat1": fcst_df.yhat1})
+        # shift and scale normalized data to original scale
+        fcst = (fcst_normalized * global_data_params["y"].scale) + global_data_params["y"].shift
+        fcst_dict = {"ds": df["ds"].values, "y": [0] * self.n_lags + fcst.tolist()}
+        fcst_df = pd.DataFrame(fcst_dict)
+        fcst_df.columns = ["time", "yhat1"]
+        fcst_df["y"] = df["y"].values
         return fcst_df
+
+    def maybe_drop_first_forecasts(self, predicted, df):
+        """
+        if Model with lags: removes firt n_lags values from predicted and df
+        else (time-features only): returns unchanged df
+        """
+        if self.n_lags > 0:
+            predicted = predicted[self.n_lags :]
+            df = df[self.n_lags :]
+        return predicted.reset_index(drop=True), df.reset_index(drop=True)
+
 
 @dataclass
 class ProphetModel(Model):
