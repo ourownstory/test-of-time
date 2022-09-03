@@ -26,7 +26,8 @@ if write_log_file:
 from ._version import __version__
 
 # make classes available upon package import
-from .benchmark import Dataset
-from .benchmark import NeuralProphetModel, ProphetModel
-from .benchmark import SimpleExperiment, CrossValidationExperiment
+from .dataset import Dataset
+from .models import NeuralProphetModel, ProphetModel
+from .experiment import SimpleExperiment, CrossValidationExperiment
 from .benchmark import ManualBenchmark, ManualCVBenchmark, SimpleBenchmark, CrossValidationBenchmark
+

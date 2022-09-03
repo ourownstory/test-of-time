@@ -9,13 +9,13 @@ with open(os.path.join(dir_repo, "requirements.txt"), "r") as f:
 with open(os.path.join(dir_repo, "README.md"), encoding="utf-8") as f:
     readme = f.read()
 # read the version name
-with open("test-of-time/_version.py") as f:
+with open("tot/_version.py") as f:
     exec(f.read())
 
 setuptools.setup(
     name="test-of-time",
     version=__version__,
-    description="Evaluate forecasting models using backtesting",
+    description="Evaluate forecasting models",
     author="Oskar Triebe",
     author_email="trieb@stanford.edu",
     url="https://github.com/ourownstory/test-of-time",
