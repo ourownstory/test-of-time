@@ -20,13 +20,7 @@ setuptools.setup(
     author_email="trieb@stanford.edu",
     url="https://github.com/ourownstory/test-of-time",
     license="MIT",
-    packages=setuptools.find_packages(
-        exclude=(
-            "tests",
-            "scripts",
-            "tutorials",
-        )
-    ),
+    packages=["tot"],
     python_requires=">=3.6",
     install_requires=requirements,
     extras_require={
