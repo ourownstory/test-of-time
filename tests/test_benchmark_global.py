@@ -111,7 +111,7 @@ def test_benchmark_CV_global_modeling():
         ercot_df = pd.concat(
             (ercot_df, ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True)), ignore_index=True
         )
-    peyton_manning_df_aux = pd.read_csv(PEYTON_FILE, nrows=NROWS)
+    peyton_manning_df_aux = pd.read_csv(PEYTON_FILE, nrows=200)
     peyton_manning_df = pd.DataFrame()
     cont = 0
     for df_name in ["df1", "df2", "df3"]:
@@ -229,9 +229,10 @@ def test_benchmark_manualCV_global_modeling():
         )
     peyton_manning_df_aux = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     peyton_manning_df = pd.DataFrame()
-    cont = 0
+    cont = 25
+    log.info("Creating a date intersection between df1 and df2")
     for df_name in ["df1", "df2", "df3"]:
-        df_aux = peyton_manning_df_aux.iloc[cont : cont + 100]
+        df_aux = peyton_manning_df_aux.iloc[cont - 25 : cont + 100]
         df_aux = df_aux.assign(ID=df_name)
         peyton_manning_df = pd.concat((peyton_manning_df, df_aux), ignore_index=True)
         cont = cont + 100
