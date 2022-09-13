@@ -6,7 +6,7 @@ from typing import List, Optional, Tuple, Type
 
 import pandas as pd
 from neuralprophet import NeuralProphet, df_utils
-from tot.utils import convert_to_datetime, _get_seasons
+from tot.utils import convert_to_datetime, _get_seasons, helper_tabularize
 
 try:
     from prophet import Prophet
@@ -15,6 +15,13 @@ try:
 except ImportError:
     Prophet = None
     _prophet_installed = False
+
+try:
+    from catboost import CatBoostRegressor
+    _cb_installed = True
+except ImportError:
+    CatBoostRegressor = None
+    _cb_installed = False
 
 log = logging.getLogger("tot.model")
 
@@ -220,3 +227,49 @@ class NeuralProphetModel(Model):
             predicted_new, received_ID_col_pred, received_single_time_series_pred, received_dict_test_pred
         )
         return predicted, df
+
+@dataclass
+class CBModel(Model):
+    model_name: str = "CatBoost"
+    model_class: Type = CatBoostRegressor
+
+    def __post_init__(self):
+        if not _cb_installed:
+            raise RuntimeError("CatBoostRegressor requires catboost to be installed")
+        model_params = deepcopy(self.params)
+        model_params.pop("_data_params")
+        self.n_lags = model_params['n_lags']
+        model_params.pop("n_lags")
+
+        self.model = CatBoostRegressor(**model_params)
+        self.n_forecasts = 1
+
+    def fit(self, df: pd.DataFrame, freq: str):
+        inputs, targets, _ = helper_tabularize(df, n_lags=self.n_lags, n_forecasts=self.n_forecasts)
+        self.model = self.model.fit(inputs["lags"], targets)
+
+    def predict(self, df: pd.DataFrame):
+        # This model tabularizes and normalizes data
+        inputs, _, global_data_params = helper_tabularize(
+            df, n_lags=self.n_lags, n_forecasts=self.n_forecasts
+        )
+        fcst_normalized = self.model.predict(inputs["lags"])
+
+        # shift and scale normalized data to original scale
+        fcst = (fcst_normalized * global_data_params["y"].scale) + global_data_params["y"].shift
+        fcst_dict = {"ds": df["ds"].values, "y": [0] * self.n_lags + fcst.tolist()}
+        fcst_df = pd.DataFrame(fcst_dict)
+        fcst_df.columns = ["time", "yhat1"]
+        fcst_df["y"] = df["y"].values
+        return fcst_df
+
+    def maybe_drop_first_forecasts(self, predicted, df):
+        """
+        if Model with lags: removes firt n_lags values from predicted and df
+        else (time-features only): returns unchanged df
+        """
+        if self.n_lags > 0:
+            predicted = predicted[self.n_lags :]
+            df = df[self.n_lags :]
+        return predicted.reset_index(drop=True), df.reset_index(drop=True)
+
