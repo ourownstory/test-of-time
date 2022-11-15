@@ -35,7 +35,7 @@ except ImportError:
     Prophet = None
     _prophet_installed = False
 
-NROWS = 128
+NROWS = 200
 EPOCHS = 2
 BATCH_SIZE = 64
 LR = 1.0
@@ -113,12 +113,12 @@ def test_benchmark_CV_global_modeling():
         )
     peyton_manning_df_aux = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     peyton_manning_df = pd.DataFrame()
-    cont = 0
-    for df_name in ["df1", "df2", "df3"]:
-        df_aux = peyton_manning_df_aux.iloc[cont : cont + 100]
+    slice_idx = 0
+    for df_name in ["df1", "df2"]:
+        df_aux = peyton_manning_df_aux.iloc[slice_idx : slice_idx + 100]
         df_aux = df_aux.assign(ID=df_name)
         peyton_manning_df = pd.concat((peyton_manning_df, df_aux), ignore_index=True)
-        cont = cont + 100
+        slice_idx = slice_idx + 100
 
     dataset_list = [
         Dataset(df=ercot_df, name="ercot_load", freq="H"),
@@ -188,12 +188,12 @@ def test_benchmark_manual_global_modeling():
         )
     peyton_manning_df_aux = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     peyton_manning_df = pd.DataFrame()
-    cont = 0
-    for df_name in ["df1", "df2", "df3"]:
-        df_aux = peyton_manning_df_aux.iloc[cont : cont + 100]
+    slice_idx = 0
+    for df_name in ["df1", "df2"]:
+        df_aux = peyton_manning_df_aux.iloc[slice_idx : slice_idx + 100]
         df_aux = df_aux.assign(ID=df_name)
         peyton_manning_df = pd.concat((peyton_manning_df, df_aux), ignore_index=True)
-        cont = cont + 100
+        slice_idx = slice_idx + 100
     metrics = ["MAE", "MSE", "RMSE", "MASE", "RMSSE", "MAPE", "SMAPE"]
     experiments = [
         SimpleExperiment(
@@ -229,12 +229,23 @@ def test_benchmark_manualCV_global_modeling():
         )
     peyton_manning_df_aux = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     peyton_manning_df = pd.DataFrame()
-    cont = 0
-    for df_name in ["df1", "df2", "df3"]:
-        df_aux = peyton_manning_df_aux.iloc[cont : cont + 100]
+    slice_idx = 0
+    log.info("Creating a date intersection between df1 and df2")
+    for df_name in ["df1", "df2"]:
+        df_aux = peyton_manning_df_aux.iloc[slice_idx : slice_idx + 100]
         df_aux = df_aux.assign(ID=df_name)
         peyton_manning_df = pd.concat((peyton_manning_df, df_aux), ignore_index=True)
-        cont = cont + 100
+        slice_idx = slice_idx + 100
+    log.info("Creating an intersection between df1 and df2.")
+    overlap_dates = pd.Series(pd.date_range(start="2008-02-15", end="2008-03-24", freq="D"))
+    overlap_vals = pd.Series(range(len(overlap_dates)))
+    peyton_manning_df_intersect = pd.DataFrame()
+    peyton_manning_df_intersect["ds"] = overlap_dates
+    peyton_manning_df_intersect["y"] = overlap_vals
+    peyton_manning_df_intersect["ID"] = "df2"
+    peyton_manning_df_intersect = pd.concat((peyton_manning_df.iloc[:101],peyton_manning_df_intersect, peyton_manning_df.iloc[101:]), ignore_index=True)
+    peyton_manning_df_intersect["ds"] = pd.to_datetime(peyton_manning_df_intersect["ds"])
+
     metrics = ["MAE", "MSE", "RMSE", "MASE", "RMSSE", "MAPE", "SMAPE"]
     experiments = [
         CrossValidationExperiment(
@@ -270,7 +281,7 @@ def test_benchmark_manualCV_global_modeling():
         CrossValidationExperiment(
             model_class=NeuralProphetModel,
             params={"epochs": EPOCHS, "seasonality_mode": "multiplicative", "learning_rate": 0.1},
-            data=Dataset(df=peyton_manning_df, name="peyton_manning_many_ts", freq="D"),
+            data=Dataset(df=peyton_manning_df_intersect, name="peyton_manning_many_ts", freq="D"),
             metrics=metrics,
             test_percentage=10,
             num_folds=3,
