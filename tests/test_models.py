@@ -7,7 +7,7 @@ import pandas as pd
 import logging
 
 from tot.dataset import Dataset
-from tot.models import NeuralProphetModel, ProphetModel
+from tot.models import LinearModel, NeuralProphetModel, ProphetModel
 from tot.experiment import SimpleExperiment, CrossValidationExperiment
 from tot.benchmark import SimpleBenchmark, CrossValidationBenchmark
 from tot.benchmark import ManualBenchmark, ManualCVBenchmark
@@ -33,6 +33,14 @@ try:
 except ImportError:
     Prophet = None
     _prophet_installed = False
+
+try:
+    from sklearn.linear_model import Lasso
+
+    _sklearn_installed = True
+except ImportError:
+    Lasso = None
+    _sklearn_installed = False
 
 NROWS = 128
 EPOCHS = 2
@@ -100,3 +108,32 @@ def test_prophet_for_global_modeling():
     else:
         with pytest.raises(RuntimeError):
             results_train, results_test = benchmark.run()
+
+
+def test_linear_model():
+    log.info("test linear model")
+    air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
+    peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
+    dataset_list = [
+        Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
+        Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
+    ]
+    model_classes_and_params = [
+        (LinearModel, {}),
+    ]
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,  # iterate over this list of tuples
+        datasets=dataset_list,  # iterate over this list
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    if _sklearn_installed:
+        results_train, results_test = benchmark.run()
+        log.debug(results_test.to_string())
+    else:
+        with pytest.raises(RuntimeError):
+            results_train, results_test = benchmark.run()
+    log.info("#### Done with test_linear_model")
