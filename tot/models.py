@@ -19,6 +19,13 @@ try:
 except ImportError:
     Prophet = None
     _prophet_installed = False
+try:
+    from sktime.forecasting.naive import NaiveForecaster
+
+    _sktime_installed = True
+except ImportError:
+    NaiveForecaster = None
+    _sktime_installed = False
 
 log = logging.getLogger("tot.model")
 
