@@ -34,6 +34,7 @@ except ImportError:
     Prophet = None
     _prophet_installed = False
 
+
 NROWS = 128
 EPOCHS = 2
 BATCH_SIZE = 64
