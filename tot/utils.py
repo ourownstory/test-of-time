@@ -3,6 +3,8 @@ import math
 
 import numpy as np
 import pandas as pd
+from neuralprophet import df_utils
+from collections import OrderedDict
 
 log = logging.getLogger("tot.util")
 
@@ -17,8 +19,6 @@ def convert_to_datetime(series):
     if series.dt.tz is not None:
         raise ValueError("Column ds has timezone specified, which is not supported. Remove timezone.")
     return series
-
-
 
 def _get_seasons(seasonalities):
     custom = []
@@ -35,3 +35,46 @@ def _get_seasons(seasonalities):
         else:
             custom.append(season_days)
     return daily, weekly, yearly, custom
+
+def helper_tabularize(
+        df,
+        n_lags=0,
+        n_forecasts=1,
+):
+    # normalize dataframe
+    df = df_utils.check_dataframe(df)
+    df_dict, _ = df_utils.prep_copy_df_dict(df)
+    _, global_data_params = df_utils.init_data_params(df_dict=df_dict, normalize="off")
+    df = df_utils.normalize(df, global_data_params)
+
+    n_samples = len(df) - n_lags + 1 - n_forecasts
+    # data is stored in OrderedDict
+    inputs = OrderedDict({})
+
+    def _stride_time_features_for_forecasts(x):
+        # only for case where n_lags > 0
+        return np.array([x[n_lags + i: n_lags + i + n_forecasts] for i in range(n_samples)], dtype=np.float64)
+
+    # time is the time at each forecast step
+    t = df.loc[:, "t"].values
+    if n_lags == 0:
+        assert n_forecasts == 1
+        time = np.expand_dims(t, 1)
+    else:
+        time = _stride_time_features_for_forecasts(t)
+    inputs["time"] = time
+
+    def _stride_lagged_features(df_col_name, feature_dims):
+        # only for case where n_lags > 0
+        series = df.loc[:, df_col_name].values
+        ## Added dtype=np.float64 to solve the problem with np.isnan for ubuntu test
+        return np.array([series[i + n_lags - feature_dims: i + n_lags] for i in range(n_samples)], dtype=np.float64)
+
+    if n_lags > 0 and "y" in df.columns:
+        inputs["lags"] = _stride_lagged_features(df_col_name="y_scaled", feature_dims=n_lags)
+        if np.isnan(inputs["lags"]).any():
+            raise ValueError("Input lags contain NaN values in y.")
+
+    targets = _stride_time_features_for_forecasts(df["y_scaled"].values)
+
+    return inputs, targets, global_data_params
