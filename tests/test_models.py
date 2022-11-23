@@ -53,7 +53,7 @@ PLOT = False
 
 
 def test_simple_benchmark_prophet():
-    log.info("test_simple_benchmark")
+    log.info("test_mlp_model")
     air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
     peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     dataset_list = [
@@ -72,13 +72,13 @@ def test_simple_benchmark_prophet():
         save_dir=SAVE_DIR,
         num_processes=1,
     )
-    if _prophet_installed:
+    if _sklearn_installed:
         results_train, results_test = benchmark.run()
         log.debug(results_test.to_string())
     else:
         with pytest.raises(RuntimeError):
             results_train, results_test = benchmark.run()
-    log.info("#### Done with test_simple_benchmark_prophet")
+    log.info("#### Done with test_mlp_model")
 
 
 def test_prophet_for_global_modeling():
