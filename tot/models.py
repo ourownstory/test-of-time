@@ -1,20 +1,30 @@
 import logging
-from copy import copy, deepcopy
 from abc import ABC, abstractmethod
+from copy import copy, deepcopy
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Type
 
 import pandas as pd
+from darts import TimeSeries
+from darts.models import RegressionModel
 from neuralprophet import NeuralProphet, df_utils
-from tot.utils import convert_to_datetime, _get_seasons
+
+from tot.utils import _get_seasons, convert_to_datetime
 
 try:
     from prophet import Prophet
 
     _prophet_installed = True
 except ImportError:
-    Prophet = None
+    RegressionModel = None
     _prophet_installed = False
+try:
+    from darts.models import RegressionModel
+
+    _darts_installed = True
+except ImportError:
+    RegressionModel = None
+    _darts_installed = False
 
 log = logging.getLogger("tot.model")
 
@@ -84,7 +94,7 @@ class ProphetModel(Model):
         if custom_seasonalities is not None:
             for seasonality in custom_seasonalities:
                 self.model.add_seasonality(name="{}_daily".format(str(seasonality)), period=seasonality)
-        self.n_forecasts = 1
+        self.n_forecasts = 1  # adjust as _pred_param
         self.n_lags = 0
 
     def fit(self, df: pd.DataFrame, freq: str):
@@ -120,7 +130,7 @@ class NeuralProphetModel(Model):
         if custom_seasonalities is not None:
             for seasonality in custom_seasonalities:
                 self.model.add_seasonality(name="{}_daily".format(str(seasonality)), period=seasonality)
-        self.n_forecasts = self.model.n_forecasts
+        self.n_forecasts = self.model.n_forecasts  # adjust as _pred_param
         self.n_lags = self.model.n_lags
 
     def fit(self, df: pd.DataFrame, freq: str):
@@ -225,3 +235,39 @@ class NeuralProphetModel(Model):
             predicted_new, received_ID_col_pred, received_single_time_series_pred, received_dict_test_pred
         )
         return predicted, df
+
+
+@dataclass
+class RegressionModelModule(Model):
+    model_name: str = "RegressionModel"
+    model_class: Type = RegressionModel
+
+    def __post_init__(self):
+        if not _darts_installed:
+            raise RuntimeError("Requires darts and sklearn to be installed https://scikit-learn.org/stable/install.html")
+        data_params = self.params["_data_params"]
+        pred_params = self.params["_pred_params"]
+        model_params = deepcopy(self.params)
+        model_params.pop("_data_params")
+        model_params.pop("_pred_params")
+        self.model = self.model_class(**model_params)
+        self.n_forecasts = pred_params["n_forecasts"]
+        self.n_lags = model_params["lags"]
+
+    def fit(self, df: pd.DataFrame, freq: str):
+        self.freq = freq  # TODO: rather store in data specific location
+        series = TimeSeries.from_dataframe(
+            df, time_col="ds", value_cols=df.columns.values[1:-1].tolist(), freq=self.freq
+        )  # TODO: allocate in helper function
+        self.model = self.model.fit(series)
+
+    def predict(self, df: pd.DataFrame):
+        series = TimeSeries.from_dataframe(
+            df, time_col="ds", value_cols=df.columns.values[1:-1].tolist(), freq=self.freq
+        )  # TODO: allocate in helper function
+        fcst = self.model.predict(n=self.n_forecasts)
+        fcst_df_temp = fcst.pd_dataframe(copy=True).rename_axis(["time"]).reset_index()
+        fcst_df = pd.DataFrame(
+            {"time": fcst_df_temp[fcst_df_temp.columns[0]], "y": df.y, "yhat1": fcst_df_temp[fcst_df_temp.columns[1]]}
+        )
+        return fcst_df

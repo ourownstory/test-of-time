@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 
-import pytest
+import logging
 import os
 import pathlib
-import pandas as pd
-import logging
 
+import pandas as pd
+import pytest
+from sklearn.linear_model import LinearRegression
+
+from tot.benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark
 from tot.dataset import Dataset
-from tot.models import NeuralProphetModel, ProphetModel
-from tot.experiment import SimpleExperiment, CrossValidationExperiment
-from tot.benchmark import SimpleBenchmark, CrossValidationBenchmark
-from tot.benchmark import ManualBenchmark, ManualCVBenchmark
+from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.metrics import ERROR_FUNCTIONS
+from tot.models import NeuralProphetModel, ProphetModel, RegressionModelModule
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -33,6 +34,13 @@ try:
 except ImportError:
     Prophet = None
     _prophet_installed = False
+try:
+    from darts.models import RegressionModel
+
+    _darts_installed = True
+except ImportError:
+    RegressionModel = None
+    _darts_installed = False
 
 NROWS = 128
 EPOCHS = 2
@@ -100,3 +108,31 @@ def test_prophet_for_global_modeling():
     else:
         with pytest.raises(RuntimeError):
             results_train, results_test = benchmark.run()
+
+
+def test_regression_model_module():
+    air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
+    peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
+    dataset_list = [
+        Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
+        Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
+    ]
+    model_classes_and_params = [
+        (
+            RegressionModelModule,
+            {"lags": 12, "output_chunk_length": 1, "model": LinearRegression(), "_pred_params": {"n_forecasts": 4}},
+        ),  # output_chunk_length must be set to 1
+    ]
+    log.debug("{}".format(model_classes_and_params))
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    results_train, results_test = benchmark.run()
+    log.info("#### Done with test_simple_benchmark_prophet")
+    print(results_test)
