@@ -27,7 +27,7 @@ from ._version import __version__
 
 # make classes available upon package import
 from .dataset import Dataset
-from .models import NeuralProphetModel, ProphetModel
+from .models import NeuralProphetModel, ProphetModel, RegressionModelModule
 from .experiment import SimpleExperiment, CrossValidationExperiment
 from .benchmark import ManualBenchmark, ManualCVBenchmark, SimpleBenchmark, CrossValidationBenchmark
 

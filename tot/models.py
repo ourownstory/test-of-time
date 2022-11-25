@@ -16,8 +16,9 @@ try:
 
     _prophet_installed = True
 except ImportError:
-    RegressionModel = None
+    Prophet = None
     _prophet_installed = False
+
 try:
     from darts.models import RegressionModel
 
@@ -25,6 +26,14 @@ try:
 except ImportError:
     RegressionModel = None
     _darts_installed = False
+
+try:
+    from sklearn.linear_model import LinearRegression
+
+    _sklearn_installed = True
+except ImportError:
+    LinearRegression = None
+    _sklearn_installed = False
 
 log = logging.getLogger("tot.model")
 
@@ -243,8 +252,10 @@ class RegressionModelModule(Model):
     model_class: Type = RegressionModel
 
     def __post_init__(self):
-        if not _darts_installed:
-            raise RuntimeError("Requires darts and sklearn to be installed https://scikit-learn.org/stable/install.html")
+        if not (_darts_installed or _sklearn_installed):
+            raise RuntimeError(
+                "Requires darts and sklearn to be installed https://scikit-learn.org/stable/install.html"
+            )
         data_params = self.params["_data_params"]
         pred_params = self.params["_pred_params"]
         model_params = deepcopy(self.params)
