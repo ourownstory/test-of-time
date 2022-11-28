@@ -2,15 +2,15 @@ import datetime
 import gc
 import logging
 import os
-from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from abc import ABC
+from dataclasses import dataclass
 from multiprocessing.pool import Pool
-from typing import List, Optional, Tuple, Type
+from typing import List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
 from tot.models import Model
-from tot.dataset import Dataset
+from tot.datasets.dataset import Dataset
 from tot.experiment import Experiment, SimpleExperiment, CrossValidationExperiment
 
 
@@ -202,7 +202,7 @@ class SimpleBenchmark(Benchmark):
         experiments = []
         for ts in self.datasets:
             for model_class, params in self.model_classes_and_params:
-                exp = SimpleExperiment(
+                exp = SimpleExperiment(  # exp instatiation
                     model_class=model_class,
                     params=params,
                     data=ts,

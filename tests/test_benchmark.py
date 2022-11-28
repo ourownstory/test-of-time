@@ -7,7 +7,7 @@ import pandas as pd
 import logging
 import matplotlib.pyplot as plt
 
-from tot.dataset import Dataset
+from tot.datasets.dataset import Dataset
 from tot.models import NeuralProphetModel, ProphetModel
 from tot.experiment import SimpleExperiment, CrossValidationExperiment
 from tot.benchmark import SimpleBenchmark, CrossValidationBenchmark

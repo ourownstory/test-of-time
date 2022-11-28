@@ -2,15 +2,15 @@ import gc
 import logging
 import os
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from multiprocessing.pool import Pool
-from typing import List, Optional, Tuple, Type
+from typing import List, Optional
 
 import numpy as np
 import pandas as pd
 from neuralprophet import df_utils
 
-from tot.dataset import Dataset
+from tot.datasets.dataset import Dataset
 from tot.models import Model
 from tot.metrics import ERROR_FUNCTIONS
 
@@ -38,11 +38,19 @@ class Experiment(ABC):
 
     def __post_init__(self):
 
+        # TODO: add custom meta-data here: Load dataset.metadata, set self.param witht dataset.metadata, overwrite with custom input
         data_params = {}
-        if len(self.data.seasonalities) > 0:
-            data_params["seasonalities"] = self.data.seasonalities
-        if hasattr(self.data, "seasonality_mode") and self.data.seasonality_mode is not None:
-            data_params["seasonality_mode"] = self.data.seasonality_mode
+        if len(self.data.dataset._metadata.seasonalities) > 0:
+            data_params["seasonalities"] = self.data.dataset._metadata.seasonalities
+        # if len(self.data.seasonalities) > 0:
+        #     data_params["seasonalities"] = self.data.seasonalities
+        if (
+            hasattr(self.data.dataset._metadata, "seasonality_mode")
+            and self.data.dataset._metadata.seasonality_mode is not None
+        ):
+            data_params["seasonality_mode"] = self.data.dataset._metadata.seasonality_mode
+        # if hasattr(self.data, "seasonality_mode") and self.data.seasonality_mode is not None:
+        #     data_params["seasonality_mode"] = self.data.seasonality_mode
         self.params.update({"_data_params": data_params})
         if not hasattr(self, "experiment_name") or self.experiment_name is None:
             self.experiment_name = "{}_{}{}".format(
@@ -155,12 +163,12 @@ class SimpleExperiment(Experiment):
 
     def run(self):
         df_train, df_test = df_utils.split_df(
-            df=self.data.df,
+            df=self.data.dataset.load(),
             n_lags=0,
             n_forecasts=1,
             valid_p=self.test_percentage / 100.0,
         )
-        model = self.model_class(self.params)
+        model = self.model_class(self.params)  # model instatiation
         model.fit(df=df_train, freq=self.data.freq)
         result_train, result_test = self._evaluate_model(model, df_train, df_test)
         return result_train, result_test
