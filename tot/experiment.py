@@ -40,15 +40,15 @@ class Experiment(ABC):
 
         # TODO: add custom meta-data here: Load dataset.metadata, set self.param witht dataset.metadata, overwrite with custom input
         data_params = {}
-        if len(self.data.dataset._metadata.seasonalities) > 0:
-            data_params["seasonalities"] = self.data.dataset._metadata.seasonalities
+        if len(self.data.dataset.metadata.seasonalities) > 0:
+            data_params["seasonalities"] = self.data.dataset.metadata.seasonalities
         # if len(self.data.seasonalities) > 0:
         #     data_params["seasonalities"] = self.data.seasonalities
         if (
-            hasattr(self.data.dataset._metadata, "seasonality_mode")
-            and self.data.dataset._metadata.seasonality_mode is not None
+            hasattr(self.data.dataset.metadata, "seasonality_mode")
+            and self.data.dataset.metadata.seasonality_mode is not None
         ):
-            data_params["seasonality_mode"] = self.data.dataset._metadata.seasonality_mode
+            data_params["seasonality_mode"] = self.data.dataset.metadata.seasonality_mode
         # if hasattr(self.data, "seasonality_mode") and self.data.seasonality_mode is not None:
         #     data_params["seasonality_mode"] = self.data.seasonality_mode
         self.params.update({"_data_params": data_params})

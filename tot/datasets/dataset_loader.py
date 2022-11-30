@@ -58,20 +58,20 @@ class DatasetLoadingException(BaseException):
     pass
 
 
+@dataclass
 class DatasetLoader(ABC):
     """
     Class that loads/ downloads a dataset and stores it locally.
     Assumes that the file can be downloaded (i.e. publicly available via a URL) or is already stores locally
     """
 
+    metadata: DatasetMetadataLoader
+    _root_path: Optional[Path] = None
     _DEFAULT_DIRECTORY = os.path.join(Path(__file__).parent.parent.parent.absolute(), "datasets")
 
-    def __init__(self, metadata: DatasetMetadataLoader, root_path: Path = None):
-        self._metadata: DatasetMetadataLoader = metadata
-        if root_path is None:
-            self._root_path: Path = DatasetLoader._DEFAULT_DIRECTORY
-        else:
-            self._root_path: Path = root_path
+    def __post_init__(self):
+        if self._root_path is None:
+            self._root_path: Path = self._DEFAULT_DIRECTORY
 
     def load(self) -> pd.DataFrame:
         """
@@ -84,14 +84,14 @@ class DatasetLoader(ABC):
             A dataframe that contains the dataset
         """
 
-        if self._metadata.url is not None:  # replace with: if not self._is_already_downloaded():
-            if self._metadata.url.endswith(".zip"):
+        if self.metadata.url is not None:  # replace with: if not self._is_already_downloaded():
+            if self.metadata.url.endswith(".zip"):
                 self._download_zip_dataset()
             else:
                 self._download_dataset_file()
 
         # TODO: add integrity check  self._check_dataset_integrity_or_raise(
-        return self._load_from_disk(self._get_path_dataset(), self._metadata)
+        return self._load_from_disk(self._get_path_dataset(), self.metadata)
 
     def _download_dataset_file(self):
         """
@@ -105,9 +105,15 @@ class DatasetLoader(ABC):
         os.makedirs(self._root_path, exist_ok=True)
 
         try:
-            request = requests.get(self._metadata.url)
-            with open(self._get_path_dataset(), "wb") as f:
-                f.write(request.content)
+            with TemporaryDirectory() as temp_dir:
+                temp_path = Path(temp_dir)
+
+                dataset_path = self._download(temp_path)
+                # archive.extractall(path=temp_path)
+                shutil.copy(
+                    os.path.join(temp_path, self.metadata.name), os.path.join(self._root_path, self.metadata.name)
+                )
+                shutil.rmtree(temp_dir)  # delete directory
         except Exception as e:
             raise DatasetLoadingException("Could not download the dataset. Reason:" + e.__repr__()) from None
 
@@ -124,8 +130,9 @@ class DatasetLoader(ABC):
                 with ZipFile(self._download(temp_path)) as archive:
                     archive.extractall(path=temp_path)
                     shutil.copy(
-                        os.path.join(temp_path, self._metadata.name), os.path.join(self._root_path, self._metadata.name)
+                        os.path.join(temp_path, self.metadata.name), os.path.join(self._root_path, self.metadata.name)
                     )
+                    shutil.rmtree(temp_dir)  # delete directory
         except Exception as e:
             raise DatasetLoadingException("Could not download the dataset. Reason:" + e.__repr__()) from None
 
@@ -133,12 +140,14 @@ class DatasetLoader(ABC):
         """
         Downloads file at given path.
         """
-        file_path = path / self._metadata.name
-        if self._metadata.name.endswith("zip"):
-            file_path = filepath.replace("tsf", "zip")
+        if self.metadata.name.endswith("tsf"):
+            metadata_name = self.metadata.name.replace("tsf", "zip")
+        else:
+            metadata_name = self.metadata.name
+        file_path = path / metadata_name
         # TODO: add progress bar and itshook
         request.urlretrieve(
-            self._metadata.url,
+            self.metadata.url,
             filename=file_path,
         )
         return file_path
@@ -164,15 +173,15 @@ class DatasetLoader(ABC):
         pass
 
     def _get_path_dataset(self) -> Path:
-        return Path(os.path.join(self._root_path, self._metadata.name))
+        return Path(os.path.join(self._root_path, self.metadata.name))
 
     def _is_already_downloaded(self) -> bool:
         return os.path.isfile(self._get_path_dataset())
 
     def _format_time_column(self, df):
-        df[self._metadata.header_time] = pd.to_datetime(
-            df[self._metadata.header_time],
-            format=self._metadata.format_time,
+        df[self.metadata.header_time] = pd.to_datetime(
+            df[self.metadata.header_time],
+            format=self.metadata.format_time,
             errors="raise",
         )
         return df
@@ -181,10 +190,8 @@ class DatasetLoader(ABC):
         pass
 
 
+@dataclass()
 class DatasetLoaderCSV(DatasetLoader):
-    def __init__(self, metadata: DatasetMetadataLoader, root_path: Path = None):
-        super().__init__(metadata, root_path)
-
     def _load_from_disk(self, path_to_file: Path, metadata: DatasetMetadataLoader) -> pd.DataFrame:
         """
         Given a Path to the .csv file and a DataLoaderMetadata object, return a pd.Dataframe.
@@ -206,16 +213,14 @@ class DatasetLoaderCSV(DatasetLoader):
         if metadata.format_time is not None:
             df = self._format_time_column(df)
         if metadata.header_time is not None:
-            df.rename(columns={self._metadata.header_time: "ds"}, inplace=True)
+            df.rename(columns={self.metadata.header_time: "ds"}, inplace=True)
         df.sort_index(inplace=True)
 
         return df
 
 
+@dataclass()
 class DatasetLoaderTSF(DatasetLoader):
-    def __init__(self, metadata: DatasetMetadataLoader, root_path: Path = None):
-        super().__init__(metadata, root_path)
-
     def _load_from_disk(self, path_to_file: Path, metadata: DatasetMetadataLoader) -> pd.DataFrame:
         """
         Given a Path to the .tsf file and a DataLoaderMetadata object, return a pd.Dataframe.
@@ -236,10 +241,10 @@ class DatasetLoaderTSF(DatasetLoader):
 
         (
             df,
-            self._metadata.freq,
-            self._metadata.horizon,
-            self._metadata.equallength,
-            self._metadata.missing,
+            self.metadata.freq,
+            self.metadata.horizon,
+            self.metadata.equallength,
+            self.metadata.missing,
         ) = self._convert_tsf_to_dataframe(
             full_file_path_and_name=path_to_file,
             replace_missing_vals_with="NaN",
@@ -402,7 +407,7 @@ class DatasetLoaderTSF(DatasetLoader):
             # TODO: check if format of df is suited for neuralprophet
             ID = row.series_name
             series = row.y
-            dti = pd.date_range(row.start_timestamp, periods=row.y.size, freq="M")  # TODO: adopt frequency
+            dti = pd.date_range(row.start_timestamp, periods=row.y.size, freq="D")  # TODO: adopt frequency
             df_converted = pd.concat(
                 [df_converted, pd.DataFrame({"ds": dti, "y": series, "ID": ID})], ignore_index=True
             )

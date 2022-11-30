@@ -6,8 +6,10 @@ fill respective information.
 """
 
 # imports
+from dataclasses import dataclass
 
-from .dataset_loader import DatasetLoaderCSV, DatasetMetadataLoader, DatasetLoaderTSF
+from .dataset_loader import (DatasetLoaderCSV, DatasetLoaderTSF,
+                             DatasetMetadataLoader)
 
 """
     Overall usage of this package:
@@ -18,6 +20,7 @@ from .dataset_loader import DatasetLoaderCSV, DatasetMetadataLoader, DatasetLoad
 # logger = get_logger(__name__)
 
 # example for loading local .csv
+@dataclass
 class AirPassengersDataset(DatasetLoaderCSV):
     """
     Monthly Air Passengers Dataset, from 1949 to 1960.
@@ -27,22 +30,20 @@ class AirPassengersDataset(DatasetLoaderCSV):
     .. [1] # TODO: add reference
     """
 
-    def __init__(self):
-        super().__init__(
-            metadata=DatasetMetadataLoader(
-                name="air_passengers.csv",
-                freq="MS",
-                start_timestamp="1949-01-01",
-                horizon=3,
-                missing=False,
-                equallength=True,
-                multivariate=False,
-                seasonality_mode="multiplicative",
-            )
-        )
+    metadata: DatasetMetadataLoader = DatasetMetadataLoader(
+        name="air_passengers.csv",
+        freq="MS",
+        start_timestamp="1949-01-01",
+        horizon=3,
+        missing=False,
+        equallength=True,
+        multivariate=False,
+        seasonality_mode="multiplicative",
+    )
 
 
 # example for downloading .csv
+@dataclass
 class AusBeerDataset(DatasetLoaderCSV):
     """
     Total quarterly beer production in Australia (in megalitres) from 1956:Q1 to 2008:Q3 [1]_.
@@ -51,18 +52,16 @@ class AusBeerDataset(DatasetLoaderCSV):
     .. [1] https://rdrr.io/cran/fpp/man/ausbeer.html
     """
 
-    def __init__(self):
-        super().__init__(
-            metadata=DatasetMetadataLoader(
-                "ausbeer.csv",
-                url="https://raw.githubusercontent.com/unit8co/darts/master/datasets/ausbeer.csv",
-                header_time="date",
-                format_time="%Y-%m-%d",
-            )
-        )
+    metadata: DatasetMetadataLoader = DatasetMetadataLoader(
+        "ausbeer.csv",
+        url="https://raw.githubusercontent.com/unit8co/darts/master/datasets/ausbeer.csv",
+        header_time="date",
+        format_time="%Y-%m-%d",
+    )
 
 
 # example for downloading .tsf
+@dataclass
 class SunspotsNoMissing(DatasetLoaderTSF):
     """
     Contains the single daily time series representing the sunspot numbers from 08/01/1818 to 31/05/2020. As the
@@ -71,16 +70,14 @@ class SunspotsNoMissing(DatasetLoaderTSF):
     .. [1] http://doi.org/10.5281/zenodo.4654722
     """
 
-    def __init__(self):
-        super().__init__(
-            metadata=DatasetMetadataLoader(
-                name="sunspot_dataset_without_missing_values.tsf",
-                url="https://zenodo.org/record/4654722/files/sunspot_dataset_without_missing_values.zip",
-            )
-        )
+    metadata: DatasetMetadataLoader = DatasetMetadataLoader(
+        name="sunspot_dataset_without_missing_values.tsf",
+        url="https://zenodo.org/record/4654722/files/sunspot_dataset_without_missing_values.zip",
+    )
 
 
 # example for loading local .tsf
+@dataclass
 class TourismYearly(DatasetLoaderTSF):
     """
     This dataset originates from a Kaggle competition and contains 518 yearly time series related to tourism.
@@ -88,10 +85,7 @@ class TourismYearly(DatasetLoaderTSF):
     .. [1] http://doi.org/10.5281/zenodo.4656103
     """
 
-    def __init__(self):
-        super().__init__(
-            metadata=DatasetMetadataLoader(
-                name="tourism_yearly_dataset.tsf",
-                # url="https://zenodo.org/record/4656103/files/tourism_yearly_dataset.zip",
-            )
-        )
+    metadata: DatasetMetadataLoader = DatasetMetadataLoader(
+        name="tourism_yearly_dataset.tsf",
+        # url="https://zenodo.org/record/4656103/files/tourism_yearly_dataset.zip",
+    )
