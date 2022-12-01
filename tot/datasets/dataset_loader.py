@@ -414,3 +414,30 @@ class DatasetLoaderTSF(DatasetLoader):
 
         df_converted.sort_values(by="ds", inplace=True)
         return df_converted
+
+
+@dataclass
+class MaunalDataset(DatasetLoader):
+    """
+    >>> dataset = Dataset(
+    >>>     filename = "air_passengers.csv",
+    >>>     name = "AirPassengers",
+    >>>     freq = "MS",
+    >>>     seasonalities = [365.25,], # yearly seasonality
+    >>>     seasonality_mode = "multiplicative",
+    >>> ),
+    """
+
+    metadata: DatasetMetadataLoader = None
+    _root_path: Optional[Path] = None
+    filename: str = None
+    name: Optional[str] = None
+    freq: Optional[str] = None
+    seasonalities: Optional[List] = field(default_factory=list)
+    seasonality_mode: Optional[str] = "additive"
+
+    def __post_init__(self):
+        self.metadata = DatasetMetadataLoader(name=self.filename)
+
+    def _load_from_disk(self, path_to_file: Path, metadata: DatasetMetadataLoader) -> pd.DataFrame:
+        pass
