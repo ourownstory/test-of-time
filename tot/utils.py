@@ -3,6 +3,7 @@ import math
 
 import numpy as np
 import pandas as pd
+from darts import TimeSeries
 
 log = logging.getLogger("tot.util")
 
@@ -17,7 +18,6 @@ def convert_to_datetime(series):
     if series.dt.tz is not None:
         raise ValueError("Column ds has timezone specified, which is not supported. Remove timezone.")
     return series
-
 
 
 def _get_seasons(seasonalities):
@@ -35,3 +35,8 @@ def _get_seasons(seasonalities):
         else:
             custom.append(season_days)
     return daily, weekly, yearly, custom
+
+
+def convert_df_to_TimeSeries(df, value_cols, freq) -> TimeSeries:
+    series = TimeSeries.from_dataframe(df=df, time_col="ds", value_cols=value_cols, freq=freq)
+    return series

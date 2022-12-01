@@ -5,11 +5,11 @@ from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Type
 
 import pandas as pd
-from darts import TimeSeries
 from darts.models import RegressionModel
 from neuralprophet import NeuralProphet, df_utils
 
-from tot.utils import _get_seasons, convert_to_datetime
+from tot.utils import (_get_seasons, convert_df_to_TimeSeries,
+                       convert_to_datetime)
 
 try:
     from prophet import Prophet
@@ -267,15 +267,11 @@ class RegressionModelModule(Model):
 
     def fit(self, df: pd.DataFrame, freq: str):
         self.freq = freq  # TODO: rather store in data specific location
-        series = TimeSeries.from_dataframe(
-            df, time_col="ds", value_cols=df.columns.values[1:-1].tolist(), freq=self.freq
-        )  # TODO: allocate in helper function
+        series = convert_df_to_TimeSeries(df, value_cols=df.columns.values[1:-1].tolist(), freq=self.freq)
         self.model = self.model.fit(series)
 
     def predict(self, df: pd.DataFrame):
-        series = TimeSeries.from_dataframe(
-            df, time_col="ds", value_cols=df.columns.values[1:-1].tolist(), freq=self.freq
-        )  # TODO: allocate in helper function
+        series = convert_df_to_TimeSeries(df, value_cols=df.columns.values[1:-1].tolist(), freq=self.freq)
         fcst = self.model.predict(n=self.n_forecasts)
         fcst_df_temp = fcst.pd_dataframe(copy=True).rename_axis(["time"]).reset_index()
         fcst_df = pd.DataFrame(
