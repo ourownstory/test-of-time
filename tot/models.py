@@ -8,8 +8,7 @@ import pandas as pd
 from darts.models import RegressionModel
 from neuralprophet import NeuralProphet, df_utils
 
-from tot.utils import (_get_seasons, convert_df_to_TimeSeries,
-                       convert_to_datetime)
+from tot.utils import _get_seasons, convert_df_to_TimeSeries, convert_to_datetime
 
 try:
     from prophet import Prophet
@@ -266,7 +265,7 @@ class RegressionModelModule(Model):
         self.n_lags = model_params["lags"]
 
     def fit(self, df: pd.DataFrame, freq: str):
-        self.freq = freq  # TODO: rather store in data specific location
+        self.freq = freq
         series = convert_df_to_TimeSeries(df, value_cols=df.columns.values[1:-1].tolist(), freq=self.freq)
         self.model = self.model.fit(series)
 
@@ -275,6 +274,10 @@ class RegressionModelModule(Model):
         fcst = self.model.predict(n=self.n_forecasts)
         fcst_df_temp = fcst.pd_dataframe(copy=True).rename_axis(["time"]).reset_index()
         fcst_df = pd.DataFrame(
-            {"time": fcst_df_temp[fcst_df_temp.columns[0]], "y": df.y, "yhat1": fcst_df_temp[fcst_df_temp.columns[1]]}
+            {
+                "time": fcst_df_temp[fcst_df_temp.columns[0]],
+                "y": df.y,
+                "yhat1": fcst_df_temp[fcst_df_temp.columns[1]],
+            }  # yhat1
         )
         return fcst_df

@@ -38,5 +38,23 @@ def _get_seasons(seasonalities):
 
 
 def convert_df_to_TimeSeries(df, value_cols, freq) -> TimeSeries:
+    """
+    Converts pd.Dataframe to TimeSeries (e.g. output of darts).
+
+    Parameters
+    ----------
+        df : pd.Dataframe
+            time series to be fitted or predicted
+        value_cols : List
+            A string or list of strings representing the value column(s) to be extracted from the DataFrame.
+        freq : str (must ahere to darts format)
+            Optionally, a string representing the frequency of the Pandas DateTimeIndex.
+
+    Returns
+    ----------
+        series : TimeSeries
+            time series to be fitted or predicted
+
+    """
     series = TimeSeries.from_dataframe(df=df, time_col="ds", value_cols=value_cols, freq=freq)
     return series
