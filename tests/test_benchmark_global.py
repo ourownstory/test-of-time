@@ -7,8 +7,8 @@ import pandas as pd
 import logging
 import matplotlib.pyplot as plt
 
-from tot.dataset import Dataset
-from tot.models import NeuralProphetModel, ProphetModel
+from tot.datasets.dataset import Dataset
+from tot.models import NeuralProphetModel
 from tot.experiment import SimpleExperiment, CrossValidationExperiment
 from tot.benchmark import SimpleBenchmark, CrossValidationBenchmark
 from tot.benchmark import ManualBenchmark, ManualCVBenchmark
@@ -42,7 +42,6 @@ LR = 1.0
 ERCOT_REGIONS = ["NORTH", "EAST", "FAR_WEST"]
 
 PLOT = False
-
 
 
 def test_benchmark_simple_global_modeling():
@@ -243,7 +242,9 @@ def test_benchmark_manualCV_global_modeling():
     peyton_manning_df_intersect["ds"] = overlap_dates
     peyton_manning_df_intersect["y"] = overlap_vals
     peyton_manning_df_intersect["ID"] = "df2"
-    peyton_manning_df_intersect = pd.concat((peyton_manning_df.iloc[:101],peyton_manning_df_intersect, peyton_manning_df.iloc[101:]), ignore_index=True)
+    peyton_manning_df_intersect = pd.concat(
+        (peyton_manning_df.iloc[:101], peyton_manning_df_intersect, peyton_manning_df.iloc[101:]), ignore_index=True
+    )
     peyton_manning_df_intersect["ds"] = pd.to_datetime(peyton_manning_df_intersect["ds"])
 
     metrics = ["MAE", "MSE", "RMSE", "MASE", "RMSSE", "MAPE", "SMAPE"]
@@ -334,4 +335,3 @@ def test_benchmark_dict_global_modeling():
     results_train, results_test = benchmark.run()
 
     log.debug("{}".format(results_test))
-

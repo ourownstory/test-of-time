@@ -6,11 +6,9 @@ import pathlib
 import pandas as pd
 import logging
 
-from tot.dataset import Dataset
+from tot.datasets.dataset import Dataset
 from tot.models import NeuralProphetModel, ProphetModel
 from tot.experiment import SimpleExperiment, CrossValidationExperiment
-from tot.benchmark import SimpleBenchmark, CrossValidationBenchmark
-from tot.benchmark import ManualBenchmark, ManualCVBenchmark
 from tot.metrics import ERROR_FUNCTIONS
 
 log = logging.getLogger("tot.test")
@@ -81,4 +79,3 @@ def test_cv_experiment():
     result_train, result_val = exp_cv.run()
     log.debug(result_val)
     log.info("#### Done with test_cv_experiment")
-

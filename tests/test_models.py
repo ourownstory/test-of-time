@@ -6,11 +6,9 @@ import pathlib
 import pandas as pd
 import logging
 
-from tot.dataset import Dataset
-from tot.models import NeuralProphetModel, ProphetModel
-from tot.experiment import SimpleExperiment, CrossValidationExperiment
-from tot.benchmark import SimpleBenchmark, CrossValidationBenchmark
-from tot.benchmark import ManualBenchmark, ManualCVBenchmark
+from tot.datasets.dataset import Dataset
+from tot.models import ProphetModel
+from tot.benchmark import SimpleBenchmark
 from tot.metrics import ERROR_FUNCTIONS
 
 log = logging.getLogger("tot.test")
