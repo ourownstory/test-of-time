@@ -1,4 +1,5 @@
 import logging
+import numpy as np
 from copy import copy, deepcopy
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
@@ -225,3 +226,140 @@ class NeuralProphetModel(Model):
             predicted_new, received_ID_col_pred, received_single_time_series_pred, received_dict_test_pred
         )
         return predicted, df
+
+
+@dataclass
+class SeasonalNaiveModel(Model):
+    """
+    Seasonal Naive model
+    TODO: add capabilities
+    """
+
+    model_name: str = "SeasonalNaiveModel"
+    model_class: Type = None  # make sense?
+
+    def __post_init__(self):
+        # TODO: any installation checks?
+        data_params = self.params["_data_params"]
+        custom_seasonalities = None  # TODO: relevant for seasonal naive
+
+        # TODO: check what is self.model
+        self.n_forecasts = self.params["n_forecasts"]
+        self.n_lags = 0  # seasonal naive model does not support autoregression
+        self.K = self.params["K"]  # for seasonal naive K is input parameter
+
+    def fit(self, df: pd.DataFrame, freq: str):
+        """Fits the seasonal naive model.
+        Seasonal Naive model does not need to be explicitly fitted. However, we store fitting-related information.
+        Parameters
+        ----------
+            df : pd.DataFrame
+                dataframe containing column ``ds``, ``y``, and ``ID`` with all data
+            freq : str
+                frequency of the input data
+        """
+        if "ID" in df.columns and len(df["ID"].unique()) > 1:
+            raise NotImplementedError("NaiveModel does not work with many ts df")
+        if df.shape[0] <= self.K:
+            raise ValueError(f"The time series requires at least K={self.K} points")
+
+        self.freq = freq
+        # min. number of prebious observations to base first naive prediction on
+        self.min_observations = max(3, self.K)
+        # TODO: edit length of df_test based on K
+        # TODO: add auto-seasonality
+
+    def predict(self, df: pd.DataFrame):
+        """Runs the model to make predictions.
+        Expects all data needed to be present in dataframe.
+        Parameters
+        ----------
+            df : pd.DataFrame
+                dataframe containing column ``ds``, ``y``, and ``ID`` with data
+        Returns
+        -------
+            pd.DataFrame
+                columns ``ds``, ``y``, and [``yhat<i>``] where yhat<i> refers to the i-step-ahead prediction for this
+                row's datetime, e.g. yhat3 is the prediction for this datetime, predicted 3 steps ago, "3 steps old".
+                Note
+                ----
+                 *  raw data is not supported
+        """
+        # Receives df with single ID column
+        assert len(df["ID"].unique()) == 1
+
+        # TODO: add prep_or_copy_df(df)
+        fcst_df = pd.DataFrame
+        for df_name, df_i in df.groupby("ID"):
+            dates, predicted = self._predict_raw(df_i, df_name)
+            # TODO: add raw prediction option based on dates
+            fcst_df = self._reshape_raw_predictions_to_forecst_df(df_i, predicted)
+            # TODO: add method to return df in original format? i.e. drop ID column
+        return fcst_df
+
+    def _predict_raw(self, df, df_name):
+        """Computes forecast-origin-wise seasonal naive predictions.
+        Predictions are returned in raw vector format. Predictions are given on a forecast origin basis,
+        not on a target basis.
+        Parameters
+        ----------
+            df : pd.DataFrame
+                dataframe containing column ``ds``, ``y``, and optionally``ID`` with all data
+            df_name : str
+                name of the data params from which the current dataframe refers to (only in case of local_normalization)
+        Returns
+        -------
+            pd.Series
+                timestamps referring to the start of the predictions.
+            np.array
+                array containing the forecasts
+        """
+        # Receives df with single ID column
+        assert len(df["ID"].unique()) == 1
+
+        # set start_date for first naive prediction
+        start_date_index = self.min_observations
+        dates = df["ds"].iloc[start_date_index : -self.n_forecasts + 1].reset_index(drop=True)
+        # assemble last values based on K
+        last_k_vals_arrays = [
+            df["y"].iloc[i : i + self.K].values for i in range(0, df["y"].shape[0] - self.K - self.n_forecasts - 1)
+        ]
+        last_k_vals = np.stack(last_k_vals_arrays, axis=0)
+        # Compute the predictions
+        predicted = np.array([last_k_vals[:, i % self.K] for i in range(self.n_forecasts)]).T
+
+        # No un-scaling and un-normalization needed. Components not applicable for naive model
+        return dates, predicted
+
+    def _reshape_raw_predictions_to_forecst_df(self, df_i, predicted):  # Todo outsource to df_utils?
+        """Turns forecast-origin-wise predictions into forecast-target-wise predictions.
+        Parameters
+        ----------
+            df : pd.DataFrame
+                input dataframe
+            predicted : np.array
+                Array containing the forecasts
+        Returns
+        -------
+            pd.DataFrame
+                columns ``ds``, ``y``,``ID`` and [``yhat<i>``],
+                Note
+                ----
+                where yhat<i> refers to the i-step-ahead prediction for this row's datetime.
+                e.g. yhat3 is the prediction for this datetime, predicted 3 steps ago, "3 steps old".
+        """
+        cols = ["ds", "y", "ID"]  # cols to keep from df
+        fcst_df = pd.concat((df_i[cols],), axis=1)
+        # create a line for each forecast_lag
+        # 'yhat<i>' is the forecast for 'y' at 'ds' from i steps ago.
+        for forecast_lag in range(1, self.n_forecasts + 1):
+            forecast = predicted[:, forecast_lag - 1]
+            pad_before = self.min_observations + forecast_lag - 1
+            pad_after = self.n_forecasts - forecast_lag
+            yhat = np.concatenate(
+                ([np.NaN] * pad_before, forecast, [np.NaN] * pad_after)
+            )  # add pad based on n_forecasts and current forecast_lag
+            name = f"yhat{forecast_lag}"
+            fcst_df[name] = yhat
+
+        return fcst_df
