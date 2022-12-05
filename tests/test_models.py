@@ -7,11 +7,12 @@ import pathlib
 import pandas as pd
 import pytest
 
-from tot.benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark
+from tot.benchmark import (CrossValidationBenchmark, ManualBenchmark,
+                           ManualCVBenchmark, SimpleBenchmark)
 from tot.dataset import Dataset
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.metrics import ERROR_FUNCTIONS
-from tot.models import NaiveModel, NeuralProphetModel, ProphetModel, SeasonalNaiveModel
+from tot.models import NaiveModel, NeuralProphetModel, ProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -33,14 +34,6 @@ try:
 except ImportError:
     Prophet = None
     _prophet_installed = False
-
-try:
-    from sktime.forecasting.naive import NaiveForecaster
-
-    _sktime_installed = True
-except ImportError:
-    NaiveForecaster = None
-    _sktime_installed = False
 
 
 NROWS = 128
