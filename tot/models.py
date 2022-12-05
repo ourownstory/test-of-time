@@ -9,7 +9,8 @@ import pandas as pd
 from neuralprophet import NeuralProphet, df_utils
 
 from tot.df_utils import reshape_raw_predictions_to_forecast_df
-from tot.utils import _convert_seasonality_to_season_length, _get_seasons, convert_to_datetime
+from tot.utils import (_convert_seasonality_to_season_length, _get_seasons,
+                       convert_to_datetime)
 
 try:
     from prophet import Prophet
@@ -455,3 +456,27 @@ class SeasonalNaiveModel(Model):
 
         # No un-scaling and un-normalization needed. Operations not applicable for naive model
         return dates, predicted
+
+
+class NaiveModel(SeasonalNaiveModel):
+    """
+    Naive model predicts the value of the last observation.
+
+    Parameters
+    ----------
+        n_forecasts : int
+            number of steps ahead of prediction time step to forecast
+
+    """
+
+    model_name: str = "NaiveModel"
+
+    def __post_init__(self):
+        # no installation checks required
+
+        model_params = deepcopy(self.params)
+        model_params.pop("_data_params")
+        self.n_forecasts = model_params["n_forecasts"]
+        assert self.n_forecasts >= 1, "Model parameter n_forecasts must be >=1. "
+        self.n_lags = None  # TODO: should not be set to None. Find different solution.
+        self.season_length = 1  # season_length=1 for NaiveModel

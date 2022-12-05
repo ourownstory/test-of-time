@@ -12,7 +12,8 @@ from tot.benchmark import (CrossValidationBenchmark, ManualBenchmark,
 from tot.dataset import Dataset
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.metrics import ERROR_FUNCTIONS
-from tot.models import NeuralProphetModel, ProphetModel, SeasonalNaiveModel
+from tot.models import (NaiveModel, NeuralProphetModel, ProphetModel,
+                        SeasonalNaiveModel)
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -195,3 +196,30 @@ def test_seasonal_naive_model_invalid_input(dataset_input, model_classes_and_par
         _, _ = benchmark.run()
 
     log.info("#### Done with test_seasonal_naive_model_invalid_input")
+
+
+def test_naive_model():
+    log.info("test_naive_model")
+    peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
+    dataset_list = [
+        Dataset(
+            df=peyton_manning_df,
+            name="peyton_manning",
+            freq="D",
+        ),
+    ]
+    model_classes_and_params = [
+        (NaiveModel, {"n_forecasts": 4}),
+    ]
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+
+    results_train, results_test = benchmark.run()
+    log.debug(results_test.to_string())
