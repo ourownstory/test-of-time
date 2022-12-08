@@ -8,7 +8,7 @@ import logging
 import matplotlib.pyplot as plt
 
 from tot.dataset import Dataset
-from tot.models import NaiveModel, NeuralProphetModel, ProphetModel
+from tot.models import NeuralProphetModel, ProphetModel
 from tot.experiment import SimpleExperiment, CrossValidationExperiment
 from tot.benchmark import SimpleBenchmark, CrossValidationBenchmark
 from tot.benchmark import ManualBenchmark, ManualCVBenchmark

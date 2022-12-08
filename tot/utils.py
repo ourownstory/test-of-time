@@ -17,19 +17,6 @@ FREQ_TO_SEASON_STEP_MAPPING = {
     "5min": {"yearly": 12 * 24 * 356, "weekly": 12 * 24 * 7, "daily": 12 * 24},
 }
 
-# TODO: relocate FREQ_TABLE
-# hash-map supporting pd.PeriodIndex, which uses different frequency standards than pd.date_range
-FREQ_TABLE = {
-    "MS": "M",
-    "M": "M",
-    "YS": "Y",
-    "DS": "D",
-    "D": "D",
-    "HS": "H",
-    "H": "H",
-    "5min": "5min",
-}
-
 
 def convert_to_datetime(series):
     if series.isnull().any():
