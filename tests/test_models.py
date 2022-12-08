@@ -7,7 +7,7 @@ import pandas as pd
 import logging
 
 from tot.dataset import Dataset
-from tot.models import NeuralProphetModel, ProphetModel
+from tot.models import NeuralProphetModel, ProphetModel, SeasonalNaiveModel
 from tot.experiment import SimpleExperiment, CrossValidationExperiment
 from tot.benchmark import SimpleBenchmark, CrossValidationBenchmark
 from tot.benchmark import ManualBenchmark, ManualCVBenchmark
@@ -100,3 +100,60 @@ def test_prophet_for_global_modeling():
     else:
         with pytest.raises(RuntimeError):
             results_train, results_test = benchmark.run()
+
+
+def test_seasonal_naive_model():
+    log.info("test_seasonal_naive_model")
+    peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
+    peyton_manning_df_with_ID = peyton_manning_df.copy(deep=True)
+    peyton_manning_df_with_ID["ID"] = "df1"
+    dataset_list = [
+        Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
+        Dataset(df=peyton_manning_df_with_ID, name="peyton_manning", freq="D"),
+    ]
+    model_classes_and_params = [
+        (SeasonalNaiveModel, {"n_forecasts": 4, "K": 7}),
+    ]
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,  # iterate over this list of tuples
+        datasets=dataset_list,  # iterate over this list
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+
+    results_train, results_test = benchmark.run()
+    log.debug(results_test.to_string())
+
+    log.info("Test invalid model input - Raise Assertion")
+    model_classes_and_params_invalid = [
+        (SeasonalNaiveModel, {"n_forecasts": 0, "K": 1}),
+    ]
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params_invalid,
+        datasets=dataset_list,
+        metrics=list("MASE"),
+        test_percentage=25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    with pytest.raises(AssertionError):
+        _, _ = benchmark.run()
+
+    model_classes_and_params_invalid = [
+        (SeasonalNaiveModel, {"n_forecasts": 4}),
+    ]
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params_invalid,
+        datasets=dataset_list,
+        metrics=list("MASE"),
+        test_percentage=25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    with pytest.raises(AssertionError):
+        _, _ = benchmark.run()
+
+    log.info("#### Done with test_seasonal_naive_model")

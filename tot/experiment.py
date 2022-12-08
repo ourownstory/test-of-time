@@ -70,14 +70,19 @@ class Experiment(ABC):
 
     def _evaluate_model(self, model, df_train, df_test, current_fold=None):
         df_test = model.maybe_add_first_inputs_to_df(df_train, df_test)
-        min_length = model.n_lags + model.n_forecasts
-        if min_length > len(df_train):
+        if model.n_lags is not None:
+            if model.n_lags > 0:
+                self.required_past_observations = model.n_lags + model.n_forecasts
+        elif model.K is not None:
+            if model.K > 0:
+                self.required_past_observations = model.K + model.n_forecasts
+        if self.required_past_observations > len(df_train):
             raise ValueError("Not enough training data to create a single input sample.")
-        elif len(df_train) - min_length < 5:
+        elif len(df_train) - self.required_past_observations < 5:
             log.warning("Less than 5 training samples")
-        if min_length > len(df_test):
+        if self.required_past_observations > len(df_test):
             raise ValueError("Not enough test data to create a single input sample.")
-        elif len(df_test) - min_length < 5:
+        elif len(df_test) - self.required_past_observations < 5:
             log.warning("Less than 5 test samples")
         fcst_train = model.predict(df_train)
         fcst_test = model.predict(df_test)

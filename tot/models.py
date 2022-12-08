@@ -47,14 +47,16 @@ class Model(ABC):
 
     def maybe_add_first_inputs_to_df(self, df_train, df_test):
         """
-        if Model with lags: adds n_lags values to start of df_test.
+        if historic data is used to fit the model (e.g. n_lags>0 or K>0): adds number of historic observations
+        (e.g. n_lags or K) values to start of df_test.
         else (time-features only): returns unchanged df_test
         """
         return df_test.reset_index(drop=True)
 
     def maybe_drop_first_forecasts(self, predicted, df):
         """
-        if Model with lags: removes first n_lags values from predicted and df_test
+        if historic data is used to fit the model (e.g. n_lags>0 or K>0): removes first n_lags values from
+        predicted and df_test
         else (time-features only): returns unchanged df_test
         """
         return predicted.reset_index(drop=True), df.reset_index(drop=True)
@@ -231,118 +233,278 @@ class NeuralProphetModel(Model):
 @dataclass
 class SeasonalNaiveModel(Model):
     """
-    Seasonal Naive model
-    TODO: add capabilities
+    A `SeasonalNaiveModel` is a naive model that forecasts future values of a target series based on past observations
+    of the target series of the specified period, i.e season.
+
+    The naive models act on time series data having ``fit()`` and ``predict()`` methods. The season can be specified
+    by K steps. Therefore, the model predicts the value of `K` time steps ago. When `K>1`, it repeats the last `K`
+    values.
+
+    Parameters
+    ----------
+        K : int
+            the number of last time steps to repeat
+        n_forecasts : int
+            Number of steps ahead of prediction time step to forecast.
+    Note
+    ----
+        ``Supported capabilities``
+        * univariate time series
+        * single target
+        * manually select season steps K
+        * n_forecats>1
+
+        ``Not supported capabilities``
+        * autoregression
+
+        ``Planned capabilities``
+        * auto-detect season
+        * multi-variate time series only with multi-target
+        * frequency check and optional frequency conversion
     """
 
-    model_name: str = "SeasonalNaiveModel"
+    model_name: str = "SeasonalNaive"
     model_class: Type = None  # make sense?
 
     def __post_init__(self):
-        # TODO: any installation checks?
-        data_params = self.params["_data_params"]
-        custom_seasonalities = None  # TODO: relevant for seasonal naive
+        # no installation checks required
 
-        # TODO: check what is self.model
-        self.n_forecasts = self.params["n_forecasts"]
-        self.n_lags = 0  # seasonal naive model does not support autoregression
-        self.K = self.params["K"]  # for seasonal naive K is input parameter
+        # expect no _data_params
+        data_params = self.params["_data_params"]
+        assert len(data_params) == 0
+        custom_seasonalities = None  # TODO: auto-detect season from metadata
+
+        # Verify expected model_prams: K > 1, n_forecasts >1
+        model_params = deepcopy(self.params)
+        model_params.pop("_data_params")
+        assert len(model_params) == 2, "Model parameters K and n_forecasts must be provided"
+        self.n_forecasts = model_params["n_forecasts"]
+        assert self.n_forecasts > 1, "Model parameter n_forecasts must be >1. "
+        self.K = model_params["K"]  # for seasonal naive K is input parameter
+        assert self.K > 1, "Model parameter K must be >1 for seasonal naive. For K=1 select NaiveModel instead. "
+        self.n_lags = None  # TODO: should not be set to None. Find different solution.
 
     def fit(self, df: pd.DataFrame, freq: str):
-        """Fits the seasonal naive model.
-        Seasonal Naive model does not need to be explicitly fitted. However, we store fitting-related information.
+        """Fits the naive model.
+        Naive models do not need to be explicitly fitted. However, we store fitting-related information.
+
         Parameters
         ----------
             df : pd.DataFrame
-                dataframe containing column ``ds``, ``y``, and ``ID`` with all data
+                dataframe containing column ``ds``, ``y``, and optionally ``ID`` with all data
             freq : str
                 frequency of the input data
         """
-        if "ID" in df.columns and len(df["ID"].unique()) > 1:
-            raise NotImplementedError("NaiveModel does not work with many ts df")
-        if df.shape[0] <= self.K:
-            raise ValueError(f"The time series requires at least K={self.K} points")
+        df, received_ID_col, received_single_time_series, received_dict, _ = df_utils.prep_or_copy_df(df)
+        # Receives df with single ID column. Only single time series accepted.
+        assert len(df["ID"].unique()) == 1  # TODO: add multi-ID, multi-target
 
         self.freq = freq
-        # min. number of prebious observations to base first naive prediction on
-        self.min_observations = max(3, self.K)
-        # TODO: edit length of df_test based on K
-        # TODO: add auto-seasonality
 
     def predict(self, df: pd.DataFrame):
         """Runs the model to make predictions.
-        Expects all data needed to be present in dataframe.
+        Expects all data to be present in dataframe.
+
         Parameters
         ----------
             df : pd.DataFrame
-                dataframe containing column ``ds``, ``y``, and ``ID`` with data
+                dataframe containing column ``ds``, ``y``, and optionally ``ID`` with data
         Returns
         -------
             pd.DataFrame
-                columns ``ds``, ``y``, and [``yhat<i>``] where yhat<i> refers to the i-step-ahead prediction for this
-                row's datetime, e.g. yhat3 is the prediction for this datetime, predicted 3 steps ago, "3 steps old".
+                columns ``ds``, ``y``, optionally [``ID``], and [``yhat<i>``] where yhat<i> refers to the
+                i-step-ahead prediction for this row's datetime, e.g. yhat3 is the prediction for this datetime,
+                predicted 3 steps ago, "3 steps old".
+
                 Note
                 ----
                  *  raw data is not supported
         """
-        # Receives df with single ID column
-        assert len(df["ID"].unique()) == 1
+        df, received_ID_col, received_single_time_series, received_dict, _ = df_utils.prep_or_copy_df(df)
+        # Receives df with single ID column. Only single time series accepted.
+        assert len(df["ID"].unique()) == 1  # TODO: add multi-ID, multi-target
 
-        # TODO: add prep_or_copy_df(df)
-        fcst_df = pd.DataFrame
+        forecast = pd.DataFrame
+        # check also no id column
         for df_name, df_i in df.groupby("ID"):
-            dates, predicted = self._predict_raw(df_i, df_name)
-            # TODO: add raw prediction option based on dates
-            fcst_df = self._reshape_raw_predictions_to_forecst_df(df_i, predicted)
-            # TODO: add method to return df in original format? i.e. drop ID column
+            dates, predicted = self._predict_raw(df_i)
+            forecast = self._reshape_raw_predictions_to_forecst_df(df_i, predicted)
+        fcst_df = df_utils.return_df_in_original_format(
+            forecast, received_ID_col, received_single_time_series, received_dict
+        )
         return fcst_df
 
-    def _predict_raw(self, df, df_name):
+    def maybe_add_first_inputs_to_df(self, df_train, df_test):
+        """Adds last K values from df_train to start of df_test.
+
+        Parameters
+        ----------
+            df_train: pd.DataFrame
+                dataframe containing train data
+            df_test: pd.DataFrame
+                dataframe containing test data of previous split
+
+        Returns
+        -------
+            pd.DataFrame
+                dataframe containing test data enlarged with K values.
+        """
+        if self.K > 0:
+            df_train, _, _, _, _ = df_utils.prep_or_copy_df(df_train)
+            (
+                df_test,
+                received_ID_col_test,
+                received_single_time_series_test,
+                received_dict_test,
+                _,
+            ) = df_utils.prep_or_copy_df(df_test)
+            df_test_new = pd.DataFrame()
+            for df_name, df_test_i in df_test.groupby("ID"):
+                df_train_i = df_train[df_train["ID"] == df_name].copy(deep=True)
+                df_test_i = pd.concat([df_train_i.tail(self.K), df_test_i], ignore_index=True)
+                df_test_new = pd.concat((df_test_new, df_test_i), ignore_index=True)
+            df_test = df_utils.return_df_in_original_format(
+                df_test_new, received_ID_col_test, received_single_time_series_test, received_dict_test
+            )
+        return df_test
+
+    def maybe_drop_first_forecasts(self, predicted, df):
+        """
+        Removes first K values from predicted and df that have been previously added.
+
+        Parameters
+        ----------
+            predicted: pd.DataFrame
+                dataframe containing predicted data
+            df: pd.DataFrame
+                dataframe containing initial data
+
+        Returns
+        -------
+            pd.DataFrame
+                dataframe containing predicted data reduced by the first K values.
+            pd.DataFrame
+                dataframe containing initial data reduced by the first K values.
+        """
+        if self.K > 0:
+            (
+                predicted,
+                received_ID_col_pred,
+                received_single_time_series_pred,
+                received_dict_test_pred,
+                _,
+            ) = df_utils.prep_or_copy_df(predicted)
+            df, received_ID_col_df, received_single_time_series_df, received_dict_test_df, _ = df_utils.prep_or_copy_df(
+                df
+            )
+            predicted_new = pd.DataFrame()
+            df_new = pd.DataFrame()
+            for df_name, df_i in df.groupby("ID"):
+                predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
+                predicted_i = predicted_i[self.K :]
+                df_i = df_i[self.K :]
+                df_new = pd.concat((df_new, df_i), ignore_index=True)
+                predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
+            df = df_utils.return_df_in_original_format(
+                df_new, received_ID_col_df, received_single_time_series_df, received_dict_test_df
+            )
+            predicted = df_utils.return_df_in_original_format(
+                predicted_new, received_ID_col_pred, received_single_time_series_pred, received_dict_test_pred
+            )
+        return predicted, df
+
+    def maybe_drop_added_dates(self, predicted, df):
+        """if Model imputed any dates: removes any dates in predicted which are not in df_test.
+
+        Parameters
+        ----------
+            predicted: pd.DataFrame
+                dataframe containing predicted data
+            df: pd.DataFrame
+                dataframe containing initial data
+
+        Returns
+        -------
+            pd.DataFrame
+                dataframe containing predicted data of dates that are present in df.
+            pd.DataFrame
+                dataframe containing initial data.
+        """
+        (
+            predicted,
+            received_ID_col_pred,
+            received_single_time_series_pred,
+            received_dict_test_pred,
+            _,
+        ) = df_utils.prep_or_copy_df(predicted)
+        df, received_ID_col_df, received_single_time_series_df, received_dict_test_df, _ = df_utils.prep_or_copy_df(df)
+        predicted_new = pd.DataFrame()
+        df_new = pd.DataFrame()
+        for df_name, df_i in df.groupby("ID"):
+            predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
+            predicted_i["ds"] = convert_to_datetime(predicted_i["ds"])
+            df_i["ds"] = convert_to_datetime(df_i["ds"])
+            df_i.set_index("ds", inplace=True)
+            predicted_i.set_index("ds", inplace=True)
+            predicted_i = predicted_i.loc[df_i.index]
+            predicted_i = predicted_i.reset_index()
+            df_i = df_i.reset_index()
+            df_new = pd.concat((df_new, df_i), ignore_index=True)
+            predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
+        df = df_utils.return_df_in_original_format(
+            df_new, received_ID_col_df, received_single_time_series_df, received_dict_test_df
+        )
+        predicted = df_utils.return_df_in_original_format(
+            predicted_new, received_ID_col_pred, received_single_time_series_pred, received_dict_test_pred
+        )
+        return predicted, df
+
+    def _predict_raw(self, df):
         """Computes forecast-origin-wise seasonal naive predictions.
-        Predictions are returned in raw vector format. Predictions are given on a forecast origin basis,
+
+        Predictions are returned in vector format. Predictions are given on a forecast origin basis,
         not on a target basis.
+
         Parameters
         ----------
             df : pd.DataFrame
                 dataframe containing column ``ds``, ``y``, and optionally``ID`` with all data
-            df_name : str
-                name of the data params from which the current dataframe refers to (only in case of local_normalization)
+
         Returns
         -------
             pd.Series
                 timestamps referring to the start of the predictions.
             np.array
-                array containing the forecasts
+                array containing the predictions
         """
         # Receives df with single ID column
         assert len(df["ID"].unique()) == 1
 
-        # set start_date for first naive prediction
-        start_date_index = self.min_observations
-        dates = df["ds"].iloc[start_date_index : -self.n_forecasts + 1].reset_index(drop=True)
+        dates = df["ds"].iloc[self.K : -self.n_forecasts + 1].reset_index(drop=True)
         # assemble last values based on K
-        last_k_vals_arrays = [
-            df["y"].iloc[i : i + self.K].values for i in range(0, df["y"].shape[0] - self.K - self.n_forecasts - 1)
-        ]
+        last_k_vals_arrays = [df["y"].iloc[i : i + self.K].values for i in range(0, dates.shape[0])]
         last_k_vals = np.stack(last_k_vals_arrays, axis=0)
         # Compute the predictions
         predicted = np.array([last_k_vals[:, i % self.K] for i in range(self.n_forecasts)]).T
 
-        # No un-scaling and un-normalization needed. Components not applicable for naive model
+        # No un-scaling and un-normalization needed. Operations not applicable for naive model
         return dates, predicted
 
     def _reshape_raw_predictions_to_forecst_df(self, df_i, predicted):  # Todo outsource to df_utils?
         """Turns forecast-origin-wise predictions into forecast-target-wise predictions.
+
         Parameters
         ----------
             df : pd.DataFrame
                 input dataframe
             predicted : np.array
-                Array containing the forecasts
+                Array containing the predictions
+
         Returns
         -------
             pd.DataFrame
-                columns ``ds``, ``y``,``ID`` and [``yhat<i>``],
+                columns ``ds``, ``y``, optionally ``ID`` and [``yhat<i>``],
+
                 Note
                 ----
                 where yhat<i> refers to the i-step-ahead prediction for this row's datetime.
@@ -354,7 +516,7 @@ class SeasonalNaiveModel(Model):
         # 'yhat<i>' is the forecast for 'y' at 'ds' from i steps ago.
         for forecast_lag in range(1, self.n_forecasts + 1):
             forecast = predicted[:, forecast_lag - 1]
-            pad_before = self.min_observations + forecast_lag - 1
+            pad_before = self.K + forecast_lag - 1
             pad_after = self.n_forecasts - forecast_lag
             yhat = np.concatenate(
                 ([np.NaN] * pad_before, forecast, [np.NaN] * pad_after)
