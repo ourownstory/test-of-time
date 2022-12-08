@@ -9,7 +9,8 @@ import pandas as pd
 from neuralprophet import NeuralProphet, df_utils
 
 from tot.df_utils import reshape_raw_predictions_to_forecast_df
-from tot.utils import _convert_seasonality_to_season_length, _get_seasons, convert_to_datetime
+from tot.utils import (_convert_seasonality_to_season_length, _get_seasons,
+                       convert_to_datetime)
 
 try:
     from prophet import Prophet
@@ -466,7 +467,8 @@ class SeasonalNaiveModel(Model):
 
 class NaiveModel(SeasonalNaiveModel):
     """
-    Naive model predicts the value of the last observation.
+    A `NaiveModel` is a naive model that forecasts future values of a target series as the value of the
+    last observation of the target series. The NaiveModel is SeasonalNaiveModel with K=1.
 
     Parameters
     ----------
