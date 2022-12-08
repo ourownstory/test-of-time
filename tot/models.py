@@ -259,6 +259,8 @@ class SeasonalNaiveModel(Model):
 
         ``Not supported capabilities``
         * autoregression
+        * past covariates
+        * future covariates
 
         ``Planned capabilities``
         * auto-detect season
