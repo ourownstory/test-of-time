@@ -244,23 +244,34 @@ class NeuralProphetModel(Model):
 @dataclass
 class SeasonalNaiveModel(Model):
     """
-    A `SeasonalNaiveModel` is a naive model that forecasts future values of a target series based on past observations
-    of the target series of the specified period, i.e season.
+        A `SeasonalNaiveModel` is a naive model that forecasts future values of a target series based on past observations
+        of the target series of the specified period, i.e season.
 
-    Parameters
-    ----------
-        season_length : int
-            seasonal period in number of time steps
-        n_forecasts : int
-            number of steps ahead of prediction time step to forecast
-    Note
-    ----
-        ``Supported capabilities``
-        * univariate time series
-        * n_forecats > 1
+        Parameters
+        ----------
+            season_length : int
+                seasonal period in number of time steps
+            n_forecasts : int
+                number of steps ahead of prediction time step to forecast
+        Note
+        ----
+            ``Supported capabilities``
+            * univariate time series
+            * n_forecats > 1
 
-        ``Not supported capabilities``
-        * multivariate time series input
+            ``Not supported capabilities``
+    <<<<<<< HEAD
+            * multivariate time series input
+    =======
+            * autoregression
+            * past covariates
+            * future covariates
+
+            ``Planned capabilities``
+            * auto-detect season
+            * multi-variate time series only with multi-target
+            * frequency check and optional frequency conversion
+    >>>>>>> 48f5569 (adapt docstring)
     """
 
     model_name: str = "SeasonalNaive"
@@ -467,13 +478,27 @@ class SeasonalNaiveModel(Model):
 
 class NaiveModel(SeasonalNaiveModel):
     """
-    A `NaiveModel` is a naive model that forecasts future values of a target series as the value of the
-    last observation of the target series. The NaiveModel is SeasonalNaiveModel with K=1.
+        A `NaiveModel` is a naive model that forecasts future values of a target series as the value of the
+        last observation of the target series. The NaiveModel is SeasonalNaiveModel with K=1.
 
-    Parameters
-    ----------
-        n_forecasts : int
-            number of steps ahead of prediction time step to forecast
+        Parameters
+        ----------
+            n_forecasts : int
+                number of steps ahead of prediction time step to forecast
+
+        Note
+        ----
+            ``Supported capabilities``
+            * univariate time series
+            * single target
+            * n_forecats>1
+
+            ``Not supported capabilities``
+            * autoregression
+            * past covariates
+            * future covariates
+
+    >>>>>>> 48f5569 (adapt docstring)
 
     """
 
