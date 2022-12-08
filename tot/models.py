@@ -1,13 +1,14 @@
 import logging
-import numpy as np
-from copy import copy, deepcopy
 from abc import ABC, abstractmethod
+from copy import copy, deepcopy
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Type
 
+import numpy as np
 import pandas as pd
 from neuralprophet import NeuralProphet, df_utils
-from tot.utils import convert_to_datetime, _get_seasons
+
+from tot.utils import _get_seasons, convert_to_datetime
 
 try:
     from prophet import Prophet
@@ -89,6 +90,7 @@ class ProphetModel(Model):
                 self.model.add_seasonality(name="{}_daily".format(str(seasonality)), period=seasonality)
         self.n_forecasts = 1
         self.n_lags = 0
+        self.K = None
 
     def fit(self, df: pd.DataFrame, freq: str):
         if "ID" in df.columns and len(df["ID"].unique()) > 1:
@@ -125,6 +127,7 @@ class NeuralProphetModel(Model):
                 self.model.add_seasonality(name="{}_daily".format(str(seasonality)), period=seasonality)
         self.n_forecasts = self.model.n_forecasts
         self.n_lags = self.model.n_lags
+        self.K = None
 
     def fit(self, df: pd.DataFrame, freq: str):
         self.freq = freq

@@ -11,9 +11,8 @@ import pandas as pd
 from neuralprophet import df_utils
 
 from tot.dataset import Dataset
-from tot.models import Model
 from tot.metrics import ERROR_FUNCTIONS
-
+from tot.models import Model
 
 log = logging.getLogger("tot.benchmark")
 log.debug(
@@ -70,6 +69,7 @@ class Experiment(ABC):
 
     def _evaluate_model(self, model, df_train, df_test, current_fold=None):
         df_test = model.maybe_add_first_inputs_to_df(df_train, df_test)
+        self.required_past_observations = 0
         if model.n_lags is not None:
             if model.n_lags > 0:
                 self.required_past_observations = model.n_lags + model.n_forecasts
