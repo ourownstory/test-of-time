@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
-
 import logging
 import os
 import pathlib
 
 import pandas as pd
 import pytest
-from sklearn.linear_model import LinearRegression
 
 from tot.benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark
 from tot.dataset import Dataset
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.metrics import ERROR_FUNCTIONS
-from tot.models import NeuralProphetModel, ProphetModel, RegressionModelModule
+from tot.models import LinearRegressionModel, NeuralProphetModel, ProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -27,20 +25,6 @@ SAVE_DIR = os.path.join(DIR, "tests", "test-logs")
 if not os.path.isdir(SAVE_DIR):
     os.makedirs(SAVE_DIR)
 
-try:
-    from prophet import Prophet
-
-    _prophet_installed = True
-except ImportError:
-    Prophet = None
-    _prophet_installed = False
-try:
-    from darts.models import RegressionModel
-
-    _darts_installed = True
-except ImportError:
-    RegressionModel = None
-    _darts_installed = False
 
 NROWS = 128
 EPOCHS = 2
@@ -119,9 +103,9 @@ def test_regression_model_module():
     ]
     model_classes_and_params = [
         (
-            RegressionModelModule,
-            {"lags": 12, "output_chunk_length": 1, "model": LinearRegression(), "_pred_params": {"n_forecasts": 4}},
-        ),  # output_chunk_length must be set to 1
+            LinearRegressionModel,
+            {"n_lags": 12, "output_chunk_length": 1, "n_forecasts": 4},
+        ),
     ]
     log.debug("{}".format(model_classes_and_params))
 

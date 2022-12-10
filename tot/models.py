@@ -7,6 +7,7 @@ from typing import List, Optional, Tuple, Type
 import pandas as pd
 from darts.models import RegressionModel
 from neuralprophet import NeuralProphet, df_utils
+from sklearn.linear_model import LinearRegression
 
 from tot.utils import _get_seasons, convert_df_to_TimeSeries, convert_to_datetime
 
@@ -246,7 +247,7 @@ class NeuralProphetModel(Model):
 
 
 @dataclass
-class RegressionModelModule(Model):
+class LinearRegressionModel(Model):
     model_name: str = "RegressionModel"
     model_class: Type = RegressionModel
 
@@ -256,13 +257,16 @@ class RegressionModelModule(Model):
                 "Requires darts and sklearn to be installed https://scikit-learn.org/stable/install.html"
             )
         data_params = self.params["_data_params"]
-        pred_params = self.params["_pred_params"]
+        # pred_params = self.params["_pred_params"]
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
-        model_params.pop("_pred_params")
+        model_params.pop("n_forecasts")
+        # model_params.pop("_pred_params")
+        model = LinearRegression()
+        model_params.update({"model": model})
         self.model = self.model_class(**model_params)
-        self.n_forecasts = pred_params["n_forecasts"]
-        self.n_lags = model_params["lags"]
+        self.n_forecasts = self.params["n_forecasts"]
+        self.n_lags = model_params["lags"] # TODO: translate input to ensure same usage for all models
 
     def fit(self, df: pd.DataFrame, freq: str):
         self.freq = freq
@@ -278,6 +282,6 @@ class RegressionModelModule(Model):
                 "time": fcst_df_temp[fcst_df_temp.columns[0]],
                 "y": df.y,
                 "yhat1": fcst_df_temp[fcst_df_temp.columns[1]],
-            }  # yhat1
+            }  # TODO: yhat1
         )
         return fcst_df
