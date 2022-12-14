@@ -42,12 +42,14 @@ class Experiment(ABC):
             data_params["seasonalities"] = self.data.seasonalities
         if hasattr(self.data, "seasonality_mode") and self.data.seasonality_mode is not None:
             data_params["seasonality_mode"] = self.data.seasonality_mode
+        if hasattr(self.data, "freq") and self.data.freq is not None:
+            data_params["freq"] = self.data.freq
         self.params.update({"_data_params": data_params})
         if not hasattr(self, "experiment_name") or self.experiment_name is None:
             self.experiment_name = "{}_{}{}".format(
                 self.data.name,
                 self.model_class.model_name,
-                "".join(["_{0}_{1}".format(k, v) for k, v in self.params.items()]),
+                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()]).replace("\'","").replace(":","_"),
             )
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
@@ -72,18 +74,14 @@ class Experiment(ABC):
         self.required_past_observations = 0
         if model.n_lags is not None:
             if model.n_lags > 0:
-                self.required_past_observations = model.n_lags + model.n_forecasts
-        elif model.K is not None:
-            if model.K > 0:
-                self.required_past_observations = model.K + model.n_forecasts
-        if self.required_past_observations > len(df_train):
+                self.required_past_observations = model.n_lags
+        elif model.season_length is not None:
+            if model.season_length > 0:
+                self.required_past_observations = model.season_length
+        if self.required_past_observations + model.n_forecasts > len(df_train):
             raise ValueError("Not enough training data to create a single input sample.")
-        elif len(df_train) - self.required_past_observations < 5:
-            log.warning("Less than 5 training samples")
-        if self.required_past_observations > len(df_test):
+        if self.required_past_observations + model.n_forecasts > len(df_test):
             raise ValueError("Not enough test data to create a single input sample.")
-        elif len(df_test) - self.required_past_observations < 5:
-            log.warning("Less than 5 test samples")
         fcst_train = model.predict(df_train)
         fcst_test = model.predict(df_test)
         # remove added input lags
