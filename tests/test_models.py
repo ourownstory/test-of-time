@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 
-import pytest
+import logging
 import os
 import pathlib
-import pandas as pd
-import logging
 
+import pandas as pd
+import pytest
+
+from tot.benchmark import (CrossValidationBenchmark, ManualBenchmark,
+                           ManualCVBenchmark, SimpleBenchmark)
 from tot.dataset import Dataset
-from tot.models import NeuralProphetModel, ProphetModel, SeasonalNaiveModel
-from tot.experiment import SimpleExperiment, CrossValidationExperiment
-from tot.benchmark import SimpleBenchmark, CrossValidationBenchmark
-from tot.benchmark import ManualBenchmark, ManualCVBenchmark
+from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.metrics import ERROR_FUNCTIONS
+from tot.models import NeuralProphetModel, ProphetModel, SeasonalNaiveModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -102,22 +103,45 @@ def test_prophet_for_global_modeling():
             results_train, results_test = benchmark.run()
 
 
-def test_seasonal_naive_model():
+# parameter input for test_seasonal_naive_model
+dataset_input = [
+    {"df": "peyton_manning_df", "name": "peyton_manning", "freq": "D", "seasonalities": [7, 365.25]},
+    {"df": "peyton_manning_df", "name": "peyton_manning", "freq": "D", "seasonalities": ""},
+    {"df": "peyton_manning_df_with_ID", "name": "peyton_manning", "freq": "D", "seasonalities": ""},
+]
+model_classes_and_params_input = [{"n_forecasts": 4}, {"n_forecasts": 4, "season_length": 3}]
+decorator_input = [
+    "dataset_input, model_classes_and_params_input",
+    [
+        (dataset_input[0], model_classes_and_params_input[0]),
+        (dataset_input[1], model_classes_and_params_input[1]),
+        (dataset_input[2], model_classes_and_params_input[1]),
+    ],
+]
+
+
+@pytest.mark.parametrize(*decorator_input)
+def test_seasonal_naive_model(dataset_input, model_classes_and_params_input):
     log.info("test_seasonal_naive_model")
     peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     peyton_manning_df_with_ID = peyton_manning_df.copy(deep=True)
     peyton_manning_df_with_ID["ID"] = "df1"
+    df = {"peyton_manning_df": peyton_manning_df, "peyton_manning_df_with_ID": peyton_manning_df_with_ID}
     dataset_list = [
-        Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
-        Dataset(df=peyton_manning_df_with_ID, name="peyton_manning", freq="D"),
+        Dataset(
+            df=df[dataset_input["df"]],
+            name=dataset_input["name"],
+            freq=dataset_input["freq"],
+            seasonalities=dataset_input["seasonalities"],
+        ),
     ]
     model_classes_and_params = [
-        (SeasonalNaiveModel, {"n_forecasts": 4, "K": 7}),
+        (SeasonalNaiveModel, model_classes_and_params_input),
     ]
 
     benchmark = SimpleBenchmark(
-        model_classes_and_params=model_classes_and_params,  # iterate over this list of tuples
-        datasets=dataset_list,  # iterate over this list
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
         metrics=list(ERROR_FUNCTIONS.keys()),
         test_percentage=25,
         save_dir=SAVE_DIR,
@@ -127,33 +151,47 @@ def test_seasonal_naive_model():
     results_train, results_test = benchmark.run()
     log.debug(results_test.to_string())
 
+
+# parameter input for test_seasonal_naive_model_invalid_input
+dataset_input = [
+    {"df": "peyton_manning_df", "name": "peyton_manning", "freq": "D", "seasonalities": ""},
+]
+model_classes_and_params_input = [
+    {"n_forecasts": 4},
+    {"n_forecasts": 4, "season_length": 1},
+]
+decorator_input = [
+    "dataset_input, model_classes_and_params_input",
+    [(dataset_input[0], model_classes_and_params_input[0]), (dataset_input[0], model_classes_and_params_input[1])],
+]
+
+
+@pytest.mark.parametrize(*decorator_input)
+def test_seasonal_naive_model_invalid_input(dataset_input, model_classes_and_params_input):
     log.info("Test invalid model input - Raise Assertion")
-    model_classes_and_params_invalid = [
-        (SeasonalNaiveModel, {"n_forecasts": 0, "K": 1}),
+    peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
+    dataset_list = [
+        Dataset(
+            df=peyton_manning_df,
+            name=dataset_input["name"],
+            freq=dataset_input["freq"],
+            seasonalities=dataset_input["seasonalities"],
+        ),
     ]
+    model_classes_and_params = [
+        (SeasonalNaiveModel, model_classes_and_params_input),
+    ]
+
     benchmark = SimpleBenchmark(
-        model_classes_and_params=model_classes_and_params_invalid,
+        model_classes_and_params=model_classes_and_params,
         datasets=dataset_list,
-        metrics=list("MASE"),
+        metrics=list(ERROR_FUNCTIONS.keys()),
         test_percentage=25,
         save_dir=SAVE_DIR,
         num_processes=1,
     )
+
     with pytest.raises(AssertionError):
         _, _ = benchmark.run()
 
-    model_classes_and_params_invalid = [
-        (SeasonalNaiveModel, {"n_forecasts": 4}),
-    ]
-    benchmark = SimpleBenchmark(
-        model_classes_and_params=model_classes_and_params_invalid,
-        datasets=dataset_list,
-        metrics=list("MASE"),
-        test_percentage=25,
-        save_dir=SAVE_DIR,
-        num_processes=1,
-    )
-    with pytest.raises(AssertionError):
-        _, _ = benchmark.run()
-
-    log.info("#### Done with test_seasonal_naive_model")
+    log.info("#### Done with test_seasonal_naive_model_invalid_input")
