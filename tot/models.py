@@ -466,6 +466,7 @@ class SeasonalNaiveModel(Model):
         return dates, predicted
 
 
+@dataclass()
 class NaiveModel(SeasonalNaiveModel):
     """
     A `NaiveModel` is a naive model that forecasts future values of a target series as the value of the
