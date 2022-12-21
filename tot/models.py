@@ -170,7 +170,7 @@ class NeuralProphetModel(Model):
 
     def predict(self, df: pd.DataFrame):
         fcst = self.model.predict(df=df)
-        fcst, received_ID_col, received_single_time_series, received_dict, _ = df_utils.prep_or_copy_df(fcst)
+        fcst, received_ID_col, received_single_time_series, _  = df_utils.prep_or_copy_df(fcst)
         fcst_df = pd.DataFrame()
         for df_name, fcst_i in fcst.groupby("ID"):
             y_cols = ["y"] + [col for col in fcst_i.columns if "yhat" in col]
@@ -180,20 +180,19 @@ class NeuralProphetModel(Model):
             fcst_aux["ID"] = df_name
             fcst_df = pd.concat((fcst_df, fcst_aux), ignore_index=True)
         fcst_df = df_utils.return_df_in_original_format(
-            fcst_df, received_ID_col, received_single_time_series, received_dict
+            fcst_df, received_ID_col, received_single_time_series
         )
         return fcst_df
 
     def maybe_add_first_inputs_to_df(self, df_train, df_test):
         """Adds last n_lags values from df_train to start of df_test."""
         if self.model.n_lags > 0:
-            df_train, _, _, _, _ = df_utils.prep_or_copy_df(df_train)
+            df_train, _, _, _  = df_utils.prep_or_copy_df(df_train)
             (
                 df_test,
                 received_ID_col_test,
                 received_single_time_series_test,
-                received_dict_test,
-                _,
+                _
             ) = df_utils.prep_or_copy_df(df_test)
             df_test_new = pd.DataFrame()
             for df_name, df_test_i in df_test.groupby("ID"):
@@ -201,7 +200,7 @@ class NeuralProphetModel(Model):
                 df_test_i = pd.concat([df_train_i.tail(self.model.n_lags), df_test_i], ignore_index=True)
                 df_test_new = pd.concat((df_test_new, df_test_i), ignore_index=True)
             df_test = df_utils.return_df_in_original_format(
-                df_test_new, received_ID_col_test, received_single_time_series_test, received_dict_test
+                df_test_new, received_ID_col_test, received_single_time_series_test
             )
         return df_test
 
@@ -214,11 +213,10 @@ class NeuralProphetModel(Model):
             (
                 predicted,
                 received_ID_col_pred,
-                received_single_time_series_pred,
-                received_dict_test_pred,
-                _,
+                received_single_time_series_pred
+                , _
             ) = df_utils.prep_or_copy_df(predicted)
-            df, received_ID_col_df, received_single_time_series_df, received_dict_test_df, _ = df_utils.prep_or_copy_df(
+            df, received_ID_col_df, received_single_time_series_df, _ = df_utils.prep_or_copy_df(
                 df
             )
             predicted_new = pd.DataFrame()
@@ -230,10 +228,10 @@ class NeuralProphetModel(Model):
                 df_new = pd.concat((df_new, df_i), ignore_index=True)
                 predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
             df = df_utils.return_df_in_original_format(
-                df_new, received_ID_col_df, received_single_time_series_df, received_dict_test_df
+                df_new, received_ID_col_df, received_single_time_series_df
             )
             predicted = df_utils.return_df_in_original_format(
-                predicted_new, received_ID_col_pred, received_single_time_series_pred, received_dict_test_pred
+                predicted_new, received_ID_col_pred, received_single_time_series_pred
             )
         return predicted, df
 
@@ -242,11 +240,10 @@ class NeuralProphetModel(Model):
         (
             predicted,
             received_ID_col_pred,
-            received_single_time_series_pred,
-            received_dict_test_pred,
-            _,
+            received_single_time_series_pred
+            , _
         ) = df_utils.prep_or_copy_df(predicted)
-        df, received_ID_col_df, received_single_time_series_df, received_dict_test_df, _ = df_utils.prep_or_copy_df(df)
+        df, received_ID_col_df, received_single_time_series_df, _  = df_utils.prep_or_copy_df(df)
         predicted_new = pd.DataFrame()
         df_new = pd.DataFrame()
         for df_name, df_i in df.groupby("ID"):
@@ -260,10 +257,10 @@ class NeuralProphetModel(Model):
             df_new = pd.concat((df_new, df_i), ignore_index=True)
             predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
         df = df_utils.return_df_in_original_format(
-            df_new, received_ID_col_df, received_single_time_series_df, received_dict_test_df
+            df_new, received_ID_col_df, received_single_time_series_df
         )
         predicted = df_utils.return_df_in_original_format(
-            predicted_new, received_ID_col_pred, received_single_time_series_pred, received_dict_test_pred
+            predicted_new, received_ID_col_pred, received_single_time_series_pred
         )
         return predicted, df
 
@@ -342,7 +339,7 @@ class SeasonalNaiveModel(Model):
             freq : str
                 frequency of the input data
         """
-        df, received_ID_col, received_single_time_series, received_dict, _ = df_utils.prep_or_copy_df(df)
+        df, received_ID_col, received_single_time_series,_ = df_utils.prep_or_copy_df(df)
         # Receives df with single ID column. Only single time series accepted.
         assert len(df["ID"].unique()) == 1  # TODO: add multi-ID, multi-target
 
@@ -367,7 +364,7 @@ class SeasonalNaiveModel(Model):
                 ----
                  *  raw data is not supported
         """
-        df, received_ID_col, received_single_time_series, received_dict, _ = df_utils.prep_or_copy_df(df)
+        df, received_ID_col, received_single_time_series,_ = df_utils.prep_or_copy_df(df)
         # Receives df with single ID column. Only single time series accepted.
         assert len(df["ID"].unique()) == 1  # TODO: add multi-ID, multi-target
 
@@ -379,7 +376,7 @@ class SeasonalNaiveModel(Model):
                 df_i, predicted, n_req_past_observations=self.season_length, n_req_future_observations=self.n_forecasts
             )
         fcst_df = df_utils.return_df_in_original_format(
-            forecast, received_ID_col, received_single_time_series, received_dict
+            forecast, received_ID_col, received_single_time_series
         )
         return fcst_df
 
@@ -398,13 +395,12 @@ class SeasonalNaiveModel(Model):
             pd.DataFrame
                 dataframe containing test data enlarged with season_length values.
         """
-        df_train, _, _, _, _ = df_utils.prep_or_copy_df(df_train.tail(self.season_length))
+        df_train, _, _, _ = df_utils.prep_or_copy_df(df_train.tail(self.season_length))
         (
             df_test,
             received_ID_col_test,
             received_single_time_series_test,
-            received_dict_test,
-            _,
+            _
         ) = df_utils.prep_or_copy_df(df_test)
         df_test_new = pd.DataFrame()
         for df_name, df_test_i in df_test.groupby("ID"):
@@ -412,7 +408,7 @@ class SeasonalNaiveModel(Model):
             df_test_i = pd.concat([df_train_i.tail(self.season_length), df_test_i], ignore_index=True)
             df_test_new = pd.concat((df_test_new, df_test_i), ignore_index=True)
         df_test = df_utils.return_df_in_original_format(
-            df_test_new, received_ID_col_test, received_single_time_series_test, received_dict_test
+            df_test_new, received_ID_col_test, received_single_time_series_test
         )
         return df_test
 
@@ -439,10 +435,9 @@ class SeasonalNaiveModel(Model):
                 predicted,
                 received_ID_col_pred,
                 received_single_time_series_pred,
-                received_dict_test_pred,
-                _,
+                _
             ) = df_utils.prep_or_copy_df(predicted)
-            df, received_ID_col_df, received_single_time_series_df, received_dict_test_df, _ = df_utils.prep_or_copy_df(
+            df, received_ID_col_df, received_single_time_series_df, _ = df_utils.prep_or_copy_df(
                 df
             )
             predicted_new = pd.DataFrame()
@@ -454,10 +449,10 @@ class SeasonalNaiveModel(Model):
                 df_new = pd.concat((df_new, df_i), ignore_index=True)
                 predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
             df = df_utils.return_df_in_original_format(
-                df_new, received_ID_col_df, received_single_time_series_df, received_dict_test_df
+                df_new, received_ID_col_df, received_single_time_series_df
             )
             predicted = df_utils.return_df_in_original_format(
-                predicted_new, received_ID_col_pred, received_single_time_series_pred, received_dict_test_pred
+                predicted_new, received_ID_col_pred, received_single_time_series_pred
             )
         return predicted, df
 
@@ -633,7 +628,7 @@ class LinearRegressionModel(Model):
                 i-step-ahead prediction for this row's datetime, e.g. yhat3 is the prediction for this datetime,
                 predicted 3 steps ago, "3 steps old".
         """
-        df, received_ID_col, received_single_time_series, received_dict, _ = df_utils.prep_or_copy_df(df)
+        df, received_ID_col, received_single_time_series, _  = df_utils.prep_or_copy_df(df)
         # Receives df with single ID column. Only single time series accepted.
         assert received_ID_col
         series = convert_df_to_TimeSeries(df, value_cols=df.columns.values[1:-1].tolist(), freq=self.freq)
@@ -827,7 +822,7 @@ class LinearRegressionModel(Model):
         -------
             pre-processed df
         """
-        df, _, _, _, _ = df_utils.prep_or_copy_df(df)
+        df, _, _, _  = df_utils.prep_or_copy_df(df)
         df_handled_missing = pd.DataFrame()
         for df_name, df_i in df.groupby("ID"):
             df_handled_missing_aux = self.__handle_missing_data(df_i, freq, predicting).copy(deep=True)
