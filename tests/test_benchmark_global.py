@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 
-import pytest
+import logging
 import os
 import pathlib
-import pandas as pd
-import logging
-import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
+import pandas as pd
+import pytest
+
+from tot.benchmark import (CrossValidationBenchmark, ManualBenchmark,
+                           ManualCVBenchmark, SimpleBenchmark)
 from tot.dataset import Dataset
-from tot.models import NeuralProphetModel, ProphetModel
-from tot.experiment import SimpleExperiment, CrossValidationExperiment
-from tot.benchmark import SimpleBenchmark, CrossValidationBenchmark
-from tot.benchmark import ManualBenchmark, ManualCVBenchmark
+from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.metrics import ERROR_FUNCTIONS
+from tot.models import NeuralProphetModel, ProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -42,7 +43,6 @@ LR = 1.0
 ERCOT_REGIONS = ["NORTH", "EAST", "FAR_WEST"]
 
 PLOT = False
-
 
 
 def test_benchmark_simple_global_modeling():
@@ -243,7 +243,9 @@ def test_benchmark_manualCV_global_modeling():
     peyton_manning_df_intersect["ds"] = overlap_dates
     peyton_manning_df_intersect["y"] = overlap_vals
     peyton_manning_df_intersect["ID"] = "df2"
-    peyton_manning_df_intersect = pd.concat((peyton_manning_df.iloc[:101],peyton_manning_df_intersect, peyton_manning_df.iloc[101:]), ignore_index=True)
+    peyton_manning_df_intersect = pd.concat(
+        (peyton_manning_df.iloc[:101], peyton_manning_df_intersect, peyton_manning_df.iloc[101:]), ignore_index=True
+    )
     peyton_manning_df_intersect["ds"] = pd.to_datetime(peyton_manning_df_intersect["ds"])
 
     metrics = ["MAE", "MSE", "RMSE", "MASE", "RMSSE", "MAPE", "SMAPE"]
@@ -299,15 +301,10 @@ def test_benchmark_manualCV_global_modeling():
 
 
 def test_benchmark_dict_global_modeling():
-    # It will be deprecated soon
-    ercot_df_aux = pd.read_csv(ERCOT_FILE)
-    ercot_dict = {}
-    for region in ERCOT_REGIONS:
-        aux = ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True)
-        aux.drop("ID", axis=1, inplace=True)
-        ercot_dict[region] = aux
+    ercot_df = pd.read_csv(ERCOT_FILE)
+
     dataset_list = [
-        Dataset(df=ercot_dict, name="ercot_load", freq="H"),
+        Dataset(df=ercot_df, name="ercot_load", freq="H"),
     ]
     model_classes_and_params = [
         (
@@ -334,4 +331,3 @@ def test_benchmark_dict_global_modeling():
     results_train, results_test = benchmark.run()
 
     log.debug("{}".format(results_test))
-
