@@ -209,7 +209,7 @@ def test_naive_model():
     log.debug(results_test.to_string())
 
 
-def test_regression_model_module():
+def test_linear_regression_model():
     air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
     peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     dataset_list = [
