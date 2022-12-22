@@ -1,12 +1,13 @@
 import logging
-from copy import copy, deepcopy
 from abc import ABC, abstractmethod
+from copy import copy, deepcopy
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Type
 
 import pandas as pd
 from neuralprophet import NeuralProphet, df_utils
-from tot.utils import convert_to_datetime, _get_seasons
+
+from tot.utils import _get_seasons, convert_to_datetime
 
 try:
     from prophet import Prophet
@@ -129,7 +130,7 @@ class NeuralProphetModel(Model):
 
     def predict(self, df: pd.DataFrame):
         fcst = self.model.predict(df=df)
-        fcst, received_ID_col, received_single_time_series, received_dict, _ = df_utils.prep_or_copy_df(fcst)
+        fcst, received_ID_col, received_single_time_series, received_dict = df_utils.prep_or_copy_df(fcst)
         fcst_df = pd.DataFrame()
         for df_name, fcst_i in fcst.groupby("ID"):
             y_cols = ["y"] + [col for col in fcst_i.columns if "yhat" in col]
@@ -146,13 +147,12 @@ class NeuralProphetModel(Model):
     def maybe_add_first_inputs_to_df(self, df_train, df_test):
         """Adds last n_lags values from df_train to start of df_test."""
         if self.model.n_lags > 0:
-            df_train, _, _, _, _ = df_utils.prep_or_copy_df(df_train)
+            df_train, _, _, _ = df_utils.prep_or_copy_df(df_train)
             (
                 df_test,
                 received_ID_col_test,
                 received_single_time_series_test,
                 received_dict_test,
-                _,
             ) = df_utils.prep_or_copy_df(df_test)
             df_test_new = pd.DataFrame()
             for df_name, df_test_i in df_test.groupby("ID"):
@@ -175,11 +175,8 @@ class NeuralProphetModel(Model):
                 received_ID_col_pred,
                 received_single_time_series_pred,
                 received_dict_test_pred,
-                _,
             ) = df_utils.prep_or_copy_df(predicted)
-            df, received_ID_col_df, received_single_time_series_df, received_dict_test_df, _ = df_utils.prep_or_copy_df(
-                df
-            )
+            df, received_ID_col_df, received_single_time_series_df, received_dict_test_df = df_utils.prep_or_copy_df(df)
             predicted_new = pd.DataFrame()
             df_new = pd.DataFrame()
             for df_name, df_i in df.groupby("ID"):
@@ -203,9 +200,8 @@ class NeuralProphetModel(Model):
             received_ID_col_pred,
             received_single_time_series_pred,
             received_dict_test_pred,
-            _,
         ) = df_utils.prep_or_copy_df(predicted)
-        df, received_ID_col_df, received_single_time_series_df, received_dict_test_df, _ = df_utils.prep_or_copy_df(df)
+        df, received_ID_col_df, received_single_time_series_df, received_dict_test_df = df_utils.prep_or_copy_df(df)
         predicted_new = pd.DataFrame()
         df_new = pd.DataFrame()
         for df_name, df_i in df.groupby("ID"):
