@@ -19,6 +19,13 @@ try:
 except ImportError:
     Prophet = None
     _prophet_installed = False
+try:
+    from sktime.forecasting.naive import NaiveForecaster
+
+    _sktime_installed = True
+except ImportError:
+    NaiveForecaster = None
+    _sktime_installed = False
 
 log = logging.getLogger("tot.model")
 
@@ -235,6 +242,7 @@ class SeasonalNaiveModel(Model):
 
         ``Not supported capabilities``
         * multivariate time series input
+
     """
 
     model_name: str = "SeasonalNaive"
@@ -411,3 +419,28 @@ class SeasonalNaiveModel(Model):
 
         # No un-scaling and un-normalization needed. Operations not applicable for naive model
         return dates, predicted
+
+
+@dataclass()
+class NaiveModel(SeasonalNaiveModel):
+    """
+    A `NaiveModel` is a naive model that forecasts future values of a target series as the value of the
+    last observation of the target series. The NaiveModel is SeasonalNaiveModel with K=1.
+
+    Parameters
+    ----------
+        n_forecasts : int
+            number of steps ahead of prediction time step to forecast
+    """
+
+    model_name: str = "NaiveModel"
+
+    def __post_init__(self):
+        # no installation checks required
+
+        model_params = deepcopy(self.params)
+        model_params.pop("_data_params")
+        self.n_forecasts = model_params["n_forecasts"]
+        assert self.n_forecasts >= 1, "Model parameter n_forecasts must be >=1. "
+        self.n_lags = None  # TODO: should not be set to None. Find different solution.
+        self.season_length = 1  # season_length=1 for NaiveModel
