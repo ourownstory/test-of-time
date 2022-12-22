@@ -6,13 +6,14 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from multiprocessing.pool import Pool
 from typing import List, Optional, Tuple, Type
+
 import numpy as np
 import pandas as pd
 
-from tot.models import Model
 from tot.dataset import Dataset
-from tot.experiment import Experiment, SimpleExperiment, CrossValidationExperiment
-
+from tot.experiment import (CrossValidationExperiment, Experiment,
+                            SimpleExperiment)
+from tot.models import Model
 
 log = logging.getLogger("tot.benchmark")
 log.info(
@@ -118,7 +119,7 @@ class CVBenchmark(Benchmark, ABC):
         ]
         models = "_".join(list(set(models)))
         stamp = str(datetime.datetime.now().strftime("%Y%m%d_%H-%M-%S-%f"))
-        name = "metrics_summary_" + models + stamp + ".csv"
+        name = ("metrics_summary_" + models + stamp + ".csv").replace("'", "").replace(":", "_")[:40]
         log.debug(name)
         df_summary.to_csv(os.path.join(save_dir, name), encoding="utf-8", index=False)
 
