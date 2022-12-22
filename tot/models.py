@@ -9,7 +9,8 @@ import pandas as pd
 from neuralprophet import NeuralProphet, df_utils
 
 from tot.df_utils import reshape_raw_predictions_to_forecast_df
-from tot.utils import _convert_seasonality_to_season_length, _get_seasons, convert_to_datetime
+from tot.utils import (_convert_seasonality_to_season_length, _get_seasons,
+                       convert_to_datetime)
 
 try:
     from prophet import Prophet
@@ -262,6 +263,7 @@ class SeasonalNaiveModel(Model):
 
         # re-assign _data_params
         data_params = self.params["_data_params"]
+        self.freq = data_params["freq"]
         custom_seasonalities = None
         if "seasonalities" in data_params and len(data_params["seasonalities"]) > 0:
             daily, weekly, yearly, custom_seasonalities = _get_seasons(data_params["seasonalities"])
@@ -296,21 +298,7 @@ class SeasonalNaiveModel(Model):
         self.n_lags = None  # TODO: should not be set to None. Find different solution.
 
     def fit(self, df: pd.DataFrame, freq: str):
-        """Fits the naive model.
-        Naive models do not need to be explicitly fitted. However, we store fitting-related information.
-
-        Parameters
-        ----------
-            df : pd.DataFrame
-                dataframe containing column ``ds``, ``y``, and optionally ``ID`` with all data
-            freq : str
-                frequency of the input data
-        """
-        df, received_ID_col, received_single_time_series, received_dict, _ = df_utils.prep_or_copy_df(df)
-        # Receives df with single ID column. Only single time series accepted.
-        assert len(df["ID"].unique()) == 1  # TODO: add multi-ID, multi-target
-
-        self.freq = freq
+        pass
 
     def predict(self, df: pd.DataFrame):
         """Runs the model to make predictions.
