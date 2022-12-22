@@ -11,9 +11,8 @@ import pandas as pd
 from neuralprophet import df_utils
 
 from tot.dataset import Dataset
-from tot.models import Model
 from tot.metrics import ERROR_FUNCTIONS
-
+from tot.models import Model
 
 log = logging.getLogger("tot.benchmark")
 log.debug(
@@ -154,13 +153,14 @@ class SimpleExperiment(Experiment):
     """
 
     def run(self):
+        model = self.model_class(self.params)
+        df = model._handle_missing_data(self.data.df, freq=self.data.freq, predicting=False)
         df_train, df_test = df_utils.split_df(
-            df=self.data.df,
+            df=df,
             n_lags=0,
             n_forecasts=1,
             valid_p=self.test_percentage / 100.0,
         )
-        model = self.model_class(self.params)
         model.fit(df=df_train, freq=self.data.freq)
         result_train, result_test = self._evaluate_model(model, df_train, df_test)
         return result_train, result_test
