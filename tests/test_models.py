@@ -7,13 +7,10 @@ import pathlib
 import pandas as pd
 import pytest
 
-from tot.benchmark import (CrossValidationBenchmark, ManualBenchmark,
-                           ManualCVBenchmark, SimpleBenchmark)
+from tot.benchmark import SimpleBenchmark
 from tot.dataset import Dataset
-from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.metrics import ERROR_FUNCTIONS
-from tot.models import (NaiveModel, NeuralProphetModel, ProphetModel,
-                        SeasonalNaiveModel)
+from tot.models import NaiveModel, ProphetModel, SeasonalNaiveModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")

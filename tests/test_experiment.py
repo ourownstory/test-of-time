@@ -55,7 +55,6 @@ def test_simple_experiment():
         data=ts,
         metrics=list(ERROR_FUNCTIONS.keys()),
         test_percentage=25,
-        # save_dir=SAVE_DIR,
     )
     result_train, result_val = exp.run()
     log.debug(result_val)
@@ -77,7 +76,6 @@ def test_cv_experiment():
         num_folds=2,
         fold_overlap_pct=0,
         save_dir=SAVE_DIR,
-        # num_processes=1,
     )
     result_train, result_val = exp_cv.run()
     log.debug(result_val)

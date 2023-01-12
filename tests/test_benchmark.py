@@ -55,8 +55,6 @@ def test_2_benchmark_simple():
     ]
     model_classes_and_params = [
         (NeuralProphetModel, {"n_lags": 5, "n_forecasts": 3, "learning_rate": 0.1, "epochs": EPOCHS}),
-        # (NeuralProphetModel, {"seasonality_mode": "multiplicative", "learning_rate": 0.1, "epochs": EPOCHS}),
-        # (ProphetModel, {"seasonality_mode": "multiplicative"}) # needs to be installed
     ]
     log.debug("{}".format(model_classes_and_params))
 

@@ -4,7 +4,6 @@ log = logging.getLogger("dv")
 log.setLevel("INFO")
 
 c_handler = logging.StreamHandler()
-# c_handler.setLevel("WARNING")
 c_format = logging.Formatter("%(levelname)s - (%(name)s.%(funcName)s) - %(message)s")
 c_handler.setFormatter(c_format)
 log.addHandler(c_handler)

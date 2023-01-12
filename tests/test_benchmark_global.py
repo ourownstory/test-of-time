@@ -88,7 +88,6 @@ def test_benchmark_simple_global_modeling():
                 "global_time_normalization": False,
             },
         ),
-        # (NeuralProphetModel, {"n_lags": 24, "n_forecasts": 8, "learning_rate": 0.1, "epochs": EPOCHS, "global_normalization": True, "global_time_normalization": False, "unknown_data_normalization": False}),
     ]
     log.debug("{}".format(model_classes_and_params))
 
@@ -158,7 +157,6 @@ def test_benchmark_CV_global_modeling():
                 "global_time_normalization": False,
             },
         ),
-        # (NeuralProphetModel, {"n_lags": 24, "n_forecasts": 8, "learning_rate": 0.1, "epochs": EPOCHS, "global_normalization": True, "global_time_normalization": False, "unknown_data_normalization": False}),
     ]
     log.debug("{}".format(model_classes_and_params))
 
@@ -317,7 +315,6 @@ def test_benchmark_dict_global_modeling():
                 "global_time_normalization": True,
             },
         ),
-        # (NeuralProphetModel, {"n_lags": 24, "n_forecasts": 8, "learning_rate": 0.1, "epochs": EPOCHS, "global_normalization": True, "global_time_normalization": False, "unknown_data_normalization": False}),
     ]
     log.debug("{}".format(model_classes_and_params))
 
