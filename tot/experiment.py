@@ -49,7 +49,7 @@ class Experiment(ABC):
             self.experiment_name = "{}_{}{}".format(
                 self.data.name,
                 self.model_class.model_name,
-                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()]).replace("\'","").replace(":","_"),
+                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()]).replace("'", "").replace(":", "_"),
             )
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {

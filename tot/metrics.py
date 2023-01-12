@@ -102,4 +102,3 @@ ERROR_FUNCTIONS = {
     "MAPE": _calc_mape,
     "SMAPE": _calc_smape,
 }
-
