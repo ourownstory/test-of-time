@@ -23,10 +23,9 @@ if write_log_file:
 
 # make version number accessible
 from ._version import __version__
-from .benchmark import (CrossValidationBenchmark, ManualBenchmark,
-                        ManualCVBenchmark, SimpleBenchmark)
+from .benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark
+
 # make classes available upon package import
 from .dataset import Dataset
 from .experiment import CrossValidationExperiment, SimpleExperiment
-from .models import (NaiveModel, NeuralProphetModel, ProphetModel,
-                     SeasonalNaiveModel)
+from .models import NaiveModel, NeuralProphetModel, ProphetModel, SeasonalNaiveModel
