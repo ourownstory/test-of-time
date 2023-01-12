@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 
-import pytest
+import logging
 import os
 import pathlib
-import pandas as pd
-import logging
-import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
+import pandas as pd
+import pytest
+
+from tot.benchmark import (CrossValidationBenchmark, ManualBenchmark,
+                           ManualCVBenchmark, SimpleBenchmark)
 from tot.dataset import Dataset
-from tot.models import NeuralProphetModel, ProphetModel
-from tot.experiment import SimpleExperiment, CrossValidationExperiment
-from tot.benchmark import SimpleBenchmark, CrossValidationBenchmark
-from tot.benchmark import ManualBenchmark, ManualCVBenchmark
+from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.metrics import ERROR_FUNCTIONS
+from tot.models import NeuralProphetModel, ProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
