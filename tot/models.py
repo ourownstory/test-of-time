@@ -9,7 +9,11 @@ import pandas as pd
 from neuralprophet import NeuralProphet, df_utils
 
 from tot.df_utils import reshape_raw_predictions_to_forecast_df
-from tot.utils import _convert_seasonality_to_season_length, _get_seasons, convert_to_datetime
+from tot.utils import (
+    _convert_seasonality_to_season_length,
+    _get_seasons,
+    convert_to_datetime,
+)
 
 try:
     from prophet import Prophet
