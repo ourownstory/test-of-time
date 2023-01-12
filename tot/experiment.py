@@ -8,7 +8,7 @@ from typing import List, Optional, Tuple, Type
 
 import numpy as np
 import pandas as pd
-from neuralprophet import df_utils
+from neuralprophet import df_utils, set_random_seed
 
 from tot.dataset import Dataset
 from tot.metrics import ERROR_FUNCTIONS
@@ -49,7 +49,7 @@ class Experiment(ABC):
             self.experiment_name = "{}_{}{}".format(
                 self.data.name,
                 self.model_class.model_name,
-                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()]).replace("\'","").replace(":","_"),
+                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()]).replace("'", "").replace(":", "_"),
             )
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
@@ -157,6 +157,7 @@ class SimpleExperiment(Experiment):
     """
 
     def run(self):
+        set_random_seed(42)
         model = self.model_class(self.params)
         df = model._handle_missing_data(self.data.df, freq=self.data.freq, predicting=False)
         df_train, df_test = df_utils.split_df(

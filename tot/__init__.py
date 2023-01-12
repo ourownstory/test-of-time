@@ -29,4 +29,12 @@ from .benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchm
 # make classes available upon package import
 from .dataset import Dataset
 from .experiment import CrossValidationExperiment, SimpleExperiment
-from .models import NaiveModel, NeuralProphetModel, ProphetModel, SeasonalNaiveModel, LinearRegressionModel, BayesianRidgeModel
+from .models import (
+    BayesianRidgeModel,
+    LinearRegressionModel,
+    NaiveModel,
+    NeuralProphetModel,
+    ProphetModel,
+    SeasonalNaiveModel,
+    TorchProphetModel,
+)
