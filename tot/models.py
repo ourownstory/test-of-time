@@ -248,8 +248,8 @@ class NeuralProphetModel(Model):
                 predicted_i = predicted[predicted["ID"] == df_name].copy(
                     deep=True
                 )
-                predicted_i = predicted_i[self.model.n_lags:]
-                df_i = df_i[self.model.n_lags:]
+                predicted_i = predicted_i[self.model.n_lags :]
+                df_i = df_i[self.model.n_lags :]
                 df_new = pd.concat((df_new, df_i), ignore_index=True)
                 predicted_new = pd.concat(
                     (predicted_new, predicted_i), ignore_index=True
@@ -512,8 +512,8 @@ class SeasonalNaiveModel(Model):
                 predicted_i = predicted[predicted["ID"] == df_name].copy(
                     deep=True
                 )
-                predicted_i = predicted_i[self.season_length:]
-                df_i = df_i[self.season_length:]
+                predicted_i = predicted_i[self.season_length :]
+                df_i = df_i[self.season_length :]
                 df_new = pd.concat((df_new, df_i), ignore_index=True)
                 predicted_new = pd.concat(
                     (predicted_new, predicted_i), ignore_index=True
@@ -551,12 +551,12 @@ class SeasonalNaiveModel(Model):
 
         dates = (
             df["ds"]
-            .iloc[self.season_length: -self.n_forecasts + 1]
+            .iloc[self.season_length : -self.n_forecasts + 1]
             .reset_index(drop=True)
         )
         # assemble last values based on season_length
         last_k_vals_arrays = [
-            df["y"].iloc[i: i + self.season_length].values
+            df["y"].iloc[i : i + self.season_length].values
             for i in range(0, dates.shape[0])
         ]
         last_k_vals = np.stack(last_k_vals_arrays, axis=0)

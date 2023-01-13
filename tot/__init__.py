@@ -1,8 +1,8 @@
 import logging
 
 # make version number accessible
-from ._version import __version__
-from .benchmark import (
+from ._version import __version__  # noqa: F401
+from .benchmark import (  # noqa: F401
     CrossValidationBenchmark,
     ManualBenchmark,
     ManualCVBenchmark,
@@ -10,9 +10,12 @@ from .benchmark import (
 )
 
 # make classes available upon package import
-from .dataset import Dataset
-from .experiment import CrossValidationExperiment, SimpleExperiment
-from .models import (
+from .dataset import Dataset  # noqa: F401
+from .experiment import (
+    CrossValidationExperiment,
+    SimpleExperiment,
+)  # noqa: F401
+from .models import (  # noqa: F401
     NaiveModel,
     NeuralProphetModel,
     ProphetModel,
