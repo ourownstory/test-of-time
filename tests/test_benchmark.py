@@ -6,7 +6,6 @@ import pathlib
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import pytest  # noga: F401
 
 from tot.benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark
 from tot.dataset import Dataset

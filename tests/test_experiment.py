@@ -5,9 +5,8 @@ import os
 import pathlib
 
 import pandas as pd
-import pytest  # noga: F401
+import pytest
 
-from tot.benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark
 from tot.dataset import Dataset
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.metrics import ERROR_FUNCTIONS

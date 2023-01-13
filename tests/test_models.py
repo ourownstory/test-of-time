@@ -5,7 +5,7 @@ import os
 import pathlib
 
 import pandas as pd
-import pytest  # noga: F401
+import pytest
 
 from tot.benchmark import SimpleBenchmark
 from tot.dataset import Dataset
