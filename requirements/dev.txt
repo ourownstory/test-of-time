@@ -1,0 +1,11 @@
+black[jupyter]
+flake8
+isort
+prophet
+pyright
+pytest>=6.2.3
+pytest-cov
+sphinx>=4.2.0
+twine
+wheel
+
