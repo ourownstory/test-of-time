@@ -12,13 +12,20 @@ from .benchmark import (
 # make classes available upon package import
 from .dataset import Dataset
 from .experiment import CrossValidationExperiment, SimpleExperiment
-from .models import NaiveModel, NeuralProphetModel, ProphetModel, SeasonalNaiveModel
+from .models import (
+    NaiveModel,
+    NeuralProphetModel,
+    ProphetModel,
+    SeasonalNaiveModel,
+)
 
 log = logging.getLogger("dv")
 log.setLevel("INFO")
 
 c_handler = logging.StreamHandler()
-c_format = logging.Formatter("%(levelname)s - (%(name)s.%(funcName)s) - %(message)s")
+c_format = logging.Formatter(
+    "%(levelname)s - (%(name)s.%(funcName)s) - %(message)s"
+)
 c_handler.setFormatter(c_format)
 log.addHandler(c_handler)
 
@@ -30,7 +37,9 @@ write_log_file = False
 if write_log_file:
     f_handler = logging.FileHandler("logs.log", "w+")
     # f_handler.setLevel("ERROR")
-    f_format = logging.Formatter("%(asctime)s; %(levelname)s; %(name)s; %(funcName)s; %(message)s")
+    f_format = logging.Formatter(
+        "%(asctime)s; %(levelname)s; %(name)s; %(funcName)s; %(message)s"
+    )
     f_handler.setFormatter(f_format)
     log.addHandler(f_handler)
     warnings_log.addHandler(f_handler)

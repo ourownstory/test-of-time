@@ -2,10 +2,10 @@ import datetime
 import gc
 import logging
 import os
-from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from abc import ABC
+from dataclasses import dataclass
 from multiprocessing.pool import Pool
-from typing import List, Optional, Tuple, Type
+from typing import List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
