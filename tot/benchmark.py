@@ -11,11 +11,7 @@ import numpy as np
 import pandas as pd
 
 from tot.dataset import Dataset
-from tot.experiment import (
-    CrossValidationExperiment,
-    Experiment,
-    SimpleExperiment,
-)
+from tot.experiment import CrossValidationExperiment, Experiment, SimpleExperiment
 from tot.models import Model
 
 log = logging.getLogger("tot.benchmark")

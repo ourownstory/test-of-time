@@ -11,16 +11,13 @@ from .benchmark import (  # noqa: F401
 
 # make classes available upon package import
 from .dataset import Dataset  # noqa: F401
-from .experiment import (  # noqa: F401
-    # CrossValidationExperiment,  # noqa: F401
-    SimpleExperiment,  # noqa: F401
-)  # noqa: F401
-from .models import (  # noqa: F401
-    NaiveModel,  # noqa: F401
-    NeuralProphetModel,  # noqa: F401
-    ProphetModel,  # noqa: F401
-    SeasonalNaiveModel,  # noqa: F401
+from .experiment import (  # CrossValidationExperiment,  # noqa: F401; noqa: F401; noqa: F401
+    SimpleExperiment,
 )
+from .models import NaiveModel  # noqa: F401
+from .models import NeuralProphetModel  # noqa: F401
+from .models import ProphetModel  # noqa: F401
+from .models import SeasonalNaiveModel  # noqa: F401; noqa: F401
 
 log = logging.getLogger("dv")
 log.setLevel("INFO")
