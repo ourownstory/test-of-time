@@ -223,8 +223,8 @@ class NeuralProphetModel(Model):
             df_new = pd.DataFrame()
             for df_name, df_i in df.groupby("ID"):
                 predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
-                predicted_i = predicted_i[self.model.n_lags :]
-                df_i = df_i[self.model.n_lags :]
+                predicted_i = predicted_i[self.model.n_lags:]
+                df_i = df_i[self.model.n_lags:]
                 df_new = pd.concat((df_new, df_i), ignore_index=True)
                 predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
             df = df_utils.return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
@@ -452,8 +452,8 @@ class SeasonalNaiveModel(Model):
             df_new = pd.DataFrame()
             for df_name, df_i in df.groupby("ID"):
                 predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
-                predicted_i = predicted_i[self.season_length :]
-                df_i = df_i[self.season_length :]
+                predicted_i = predicted_i[self.season_length:]
+                df_i = df_i[self.season_length:]
                 df_new = pd.concat((df_new, df_i), ignore_index=True)
                 predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
             df = df_utils.return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
@@ -485,9 +485,9 @@ class SeasonalNaiveModel(Model):
         # Receives df with single ID column
         assert len(df["ID"].unique()) == 1
 
-        dates = df["ds"].iloc[self.season_length : -self.n_forecasts + 1].reset_index(drop=True)
+        dates = df["ds"].iloc[self.season_length: -self.n_forecasts + 1].reset_index(drop=True)
         # assemble last values based on season_length
-        last_k_vals_arrays = [df["y"].iloc[i : i + self.season_length].values for i in range(0, dates.shape[0])]
+        last_k_vals_arrays = [df["y"].iloc[i: i + self.season_length].values for i in range(0, dates.shape[0])]
         last_k_vals = np.stack(last_k_vals_arrays, axis=0)
         # Compute the predictions
         predicted = np.array([last_k_vals[:, i % self.season_length] for i in range(self.n_forecasts)]).T
