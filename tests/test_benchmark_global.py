@@ -54,7 +54,13 @@ def test_benchmark_simple_global_modeling():
     ercot_df = pd.DataFrame()
     for region in ERCOT_REGIONS:
         ercot_df = pd.concat(
-            (ercot_df, ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True)), ignore_index=True
+            (
+                ercot_df,
+                ercot_df_aux[ercot_df_aux["ID"] == region]
+                .iloc[:NROWS]
+                .copy(deep=True),
+            ),
+            ignore_index=True,
         )
     dataset_list = [
         Dataset(df=ercot_df, name="ercot_load", freq="H"),
@@ -112,7 +118,13 @@ def test_benchmark_CV_global_modeling():
     ercot_df = pd.DataFrame()
     for region in ERCOT_REGIONS:
         ercot_df = pd.concat(
-            (ercot_df, ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True)), ignore_index=True
+            (
+                ercot_df,
+                ercot_df_aux[ercot_df_aux["ID"] == region]
+                .iloc[:NROWS]
+                .copy(deep=True),
+            ),
+            ignore_index=True,
         )
     peyton_manning_df_aux = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     peyton_manning_df = pd.DataFrame()
@@ -120,7 +132,9 @@ def test_benchmark_CV_global_modeling():
     for df_name in ["df1", "df2"]:
         df_aux = peyton_manning_df_aux.iloc[slice_idx : slice_idx + 100]
         df_aux = df_aux.assign(ID=df_name)
-        peyton_manning_df = pd.concat((peyton_manning_df, df_aux), ignore_index=True)
+        peyton_manning_df = pd.concat(
+            (peyton_manning_df, df_aux), ignore_index=True
+        )
         slice_idx = slice_idx + 100
 
     dataset_list = [
@@ -186,7 +200,13 @@ def test_benchmark_manual_global_modeling():
     ercot_df = pd.DataFrame()
     for region in ERCOT_REGIONS:
         ercot_df = pd.concat(
-            (ercot_df, ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True)), ignore_index=True
+            (
+                ercot_df,
+                ercot_df_aux[ercot_df_aux["ID"] == region]
+                .iloc[:NROWS]
+                .copy(deep=True),
+            ),
+            ignore_index=True,
         )
     peyton_manning_df_aux = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     peyton_manning_df = pd.DataFrame()
@@ -194,21 +214,34 @@ def test_benchmark_manual_global_modeling():
     for df_name in ["df1", "df2"]:
         df_aux = peyton_manning_df_aux.iloc[slice_idx : slice_idx + 100]
         df_aux = df_aux.assign(ID=df_name)
-        peyton_manning_df = pd.concat((peyton_manning_df, df_aux), ignore_index=True)
+        peyton_manning_df = pd.concat(
+            (peyton_manning_df, df_aux), ignore_index=True
+        )
         slice_idx = slice_idx + 100
     metrics = ["MAE", "MSE", "RMSE", "MASE", "RMSSE", "MAPE", "SMAPE"]
     experiments = [
         SimpleExperiment(
             model_class=NeuralProphetModel,
-            params={"n_lags": 5, "n_forecasts": 3, "epochs": EPOCHS, "learning_rate": 0.1},
+            params={
+                "n_lags": 5,
+                "n_forecasts": 3,
+                "epochs": EPOCHS,
+                "learning_rate": 0.1,
+            },
             data=Dataset(df=ercot_df, name="ercot_load", freq="H"),
             metrics=metrics,
             test_percentage=25,
         ),
         SimpleExperiment(
             model_class=NeuralProphetModel,
-            params={"seasonality_mode": "multiplicative", "learning_rate": 0.1, "epochs": EPOCHS},
-            data=Dataset(df=peyton_manning_df, name="peyton_manning_many_ts", freq="D"),
+            params={
+                "seasonality_mode": "multiplicative",
+                "learning_rate": 0.1,
+                "epochs": EPOCHS,
+            },
+            data=Dataset(
+                df=peyton_manning_df, name="peyton_manning_many_ts", freq="D"
+            ),
             metrics=metrics,
             test_percentage=25,
         ),
@@ -227,7 +260,13 @@ def test_benchmark_manualCV_global_modeling():
     ercot_df = pd.DataFrame()
     for region in ERCOT_REGIONS:
         ercot_df = pd.concat(
-            (ercot_df, ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True)), ignore_index=True
+            (
+                ercot_df,
+                ercot_df_aux[ercot_df_aux["ID"] == region]
+                .iloc[:NROWS]
+                .copy(deep=True),
+            ),
+            ignore_index=True,
         )
     peyton_manning_df_aux = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     peyton_manning_df = pd.DataFrame()
@@ -236,25 +275,41 @@ def test_benchmark_manualCV_global_modeling():
     for df_name in ["df1", "df2"]:
         df_aux = peyton_manning_df_aux.iloc[slice_idx : slice_idx + 100]
         df_aux = df_aux.assign(ID=df_name)
-        peyton_manning_df = pd.concat((peyton_manning_df, df_aux), ignore_index=True)
+        peyton_manning_df = pd.concat(
+            (peyton_manning_df, df_aux), ignore_index=True
+        )
         slice_idx = slice_idx + 100
     log.info("Creating an intersection between df1 and df2.")
-    overlap_dates = pd.Series(pd.date_range(start="2008-02-15", end="2008-03-24", freq="D"))
+    overlap_dates = pd.Series(
+        pd.date_range(start="2008-02-15", end="2008-03-24", freq="D")
+    )
     overlap_vals = pd.Series(range(len(overlap_dates)))
     peyton_manning_df_intersect = pd.DataFrame()
     peyton_manning_df_intersect["ds"] = overlap_dates
     peyton_manning_df_intersect["y"] = overlap_vals
     peyton_manning_df_intersect["ID"] = "df2"
     peyton_manning_df_intersect = pd.concat(
-        (peyton_manning_df.iloc[:101], peyton_manning_df_intersect, peyton_manning_df.iloc[101:]), ignore_index=True
+        (
+            peyton_manning_df.iloc[:101],
+            peyton_manning_df_intersect,
+            peyton_manning_df.iloc[101:],
+        ),
+        ignore_index=True,
     )
-    peyton_manning_df_intersect["ds"] = pd.to_datetime(peyton_manning_df_intersect["ds"])
+    peyton_manning_df_intersect["ds"] = pd.to_datetime(
+        peyton_manning_df_intersect["ds"]
+    )
 
     metrics = ["MAE", "MSE", "RMSE", "MASE", "RMSSE", "MAPE", "SMAPE"]
     experiments = [
         CrossValidationExperiment(
             model_class=NeuralProphetModel,
-            params={"n_lags": 5, "n_forecasts": 3, "epochs": EPOCHS, "learning_rate": 0.1},
+            params={
+                "n_lags": 5,
+                "n_forecasts": 3,
+                "epochs": EPOCHS,
+                "learning_rate": 0.1,
+            },
             data=Dataset(df=ercot_df, name="ercot_load", freq="H"),
             metrics=metrics,
             test_percentage=10,
@@ -264,7 +319,11 @@ def test_benchmark_manualCV_global_modeling():
         ),
         CrossValidationExperiment(
             model_class=NeuralProphetModel,
-            params={"epochs": EPOCHS, "seasonality_mode": "multiplicative", "learning_rate": 0.1},
+            params={
+                "epochs": EPOCHS,
+                "seasonality_mode": "multiplicative",
+                "learning_rate": 0.1,
+            },
             data=Dataset(df=ercot_df, name="ercot_load", freq="H"),
             metrics=metrics,
             test_percentage=10,
@@ -274,8 +333,15 @@ def test_benchmark_manualCV_global_modeling():
         ),
         CrossValidationExperiment(
             model_class=NeuralProphetModel,
-            params={"n_lags": 5, "n_forecasts": 3, "epochs": EPOCHS, "learning_rate": 0.1},
-            data=Dataset(df=peyton_manning_df, name="peyton_manning_many_ts", freq="D"),
+            params={
+                "n_lags": 5,
+                "n_forecasts": 3,
+                "epochs": EPOCHS,
+                "learning_rate": 0.1,
+            },
+            data=Dataset(
+                df=peyton_manning_df, name="peyton_manning_many_ts", freq="D"
+            ),
             metrics=metrics,
             test_percentage=10,
             num_folds=3,
@@ -284,8 +350,16 @@ def test_benchmark_manualCV_global_modeling():
         ),
         CrossValidationExperiment(
             model_class=NeuralProphetModel,
-            params={"epochs": EPOCHS, "seasonality_mode": "multiplicative", "learning_rate": 0.1},
-            data=Dataset(df=peyton_manning_df_intersect, name="peyton_manning_many_ts", freq="D"),
+            params={
+                "epochs": EPOCHS,
+                "seasonality_mode": "multiplicative",
+                "learning_rate": 0.1,
+            },
+            data=Dataset(
+                df=peyton_manning_df_intersect,
+                name="peyton_manning_many_ts",
+                freq="D",
+            ),
             metrics=metrics,
             test_percentage=10,
             num_folds=3,

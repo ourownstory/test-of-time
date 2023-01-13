@@ -95,8 +95,13 @@ class ProphetModel(Model):
             raise RuntimeError("Requires prophet to be installed")
         data_params = self.params["_data_params"]
         custom_seasonalities = None
-        if "seasonalities" in data_params and len(data_params["seasonalities"]) > 0:
-            daily, weekly, yearly, custom_seasonalities = _get_seasons(data_params["seasonalities"])
+        if (
+            "seasonalities" in data_params
+            and len(data_params["seasonalities"]) > 0
+        ):
+            daily, weekly, yearly, custom_seasonalities = _get_seasons(
+                data_params["seasonalities"]
+            )
             self.params.update({"daily_seasonality": daily})
             self.params.update({"weekly_seasonality": weekly})
             self.params.update({"yearly_seasonality": yearly})
@@ -105,7 +110,10 @@ class ProphetModel(Model):
         self.model = self.model_class(**model_params)
         if custom_seasonalities is not None:
             for seasonality in custom_seasonalities:
-                self.model.add_seasonality(name="{}_daily".format(str(seasonality)), period=seasonality)
+                self.model.add_seasonality(
+                    name="{}_daily".format(str(seasonality)),
+                    period=seasonality,
+                )
         self.n_forecasts = 1
         self.n_lags = 0
         self.season_length = None
@@ -118,7 +126,9 @@ class ProphetModel(Model):
 
     def predict(self, df: pd.DataFrame):
         fcst = self.model.predict(df=df)
-        fcst_df = pd.DataFrame({"time": fcst.ds, "y": df.y, "yhat1": fcst.yhat})
+        fcst_df = pd.DataFrame(
+            {"time": fcst.ds, "y": df.y, "yhat1": fcst.yhat}
+        )
         return fcst_df
 
 
@@ -130,19 +140,32 @@ class NeuralProphetModel(Model):
     def __post_init__(self):
         data_params = self.params["_data_params"]
         custom_seasonalities = None
-        if "seasonalities" in data_params and len(data_params["seasonalities"]) > 0:
-            daily, weekly, yearly, custom_seasonalities = _get_seasons(data_params["seasonalities"])
+        if (
+            "seasonalities" in data_params
+            and len(data_params["seasonalities"]) > 0
+        ):
+            daily, weekly, yearly, custom_seasonalities = _get_seasons(
+                data_params["seasonalities"]
+            )
             self.params.update({"daily_seasonality": daily})
             self.params.update({"weekly_seasonality": weekly})
             self.params.update({"yearly_seasonality": yearly})
-        if "seasonality_mode" in data_params and data_params["seasonality_mode"] is not None:
-            self.params.update({"seasonality_mode": data_params["seasonality_mode"]})
+        if (
+            "seasonality_mode" in data_params
+            and data_params["seasonality_mode"] is not None
+        ):
+            self.params.update(
+                {"seasonality_mode": data_params["seasonality_mode"]}
+            )
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
         self.model = self.model_class(**model_params)
         if custom_seasonalities is not None:
             for seasonality in custom_seasonalities:
-                self.model.add_seasonality(name="{}_daily".format(str(seasonality)), period=seasonality)
+                self.model.add_seasonality(
+                    name="{}_daily".format(str(seasonality)),
+                    period=seasonality,
+                )
         self.n_forecasts = self.model.n_forecasts
         self.n_lags = self.model.n_lags
         self.season_length = None
@@ -153,7 +176,12 @@ class NeuralProphetModel(Model):
 
     def predict(self, df: pd.DataFrame):
         fcst = self.model.predict(df=df)
-        fcst, received_ID_col, received_single_time_series, _ = df_utils.prep_or_copy_df(fcst)
+        (
+            fcst,
+            received_ID_col,
+            received_single_time_series,
+            _,
+        ) = df_utils.prep_or_copy_df(fcst)
         fcst_df = pd.DataFrame()
         for df_name, fcst_i in fcst.groupby("ID"):
             y_cols = ["y"] + [col for col in fcst_i.columns if "yhat" in col]
@@ -162,21 +190,37 @@ class NeuralProphetModel(Model):
                 fcst_aux[y_col] = fcst_i[y_col]
             fcst_aux["ID"] = df_name
             fcst_df = pd.concat((fcst_df, fcst_aux), ignore_index=True)
-        fcst_df = df_utils.return_df_in_original_format(fcst_df, received_ID_col, received_single_time_series)
+        fcst_df = df_utils.return_df_in_original_format(
+            fcst_df, received_ID_col, received_single_time_series
+        )
         return fcst_df
 
     def maybe_add_first_inputs_to_df(self, df_train, df_test):
         """Adds last n_lags values from df_train to start of df_test."""
         if self.model.n_lags > 0:
             df_train, _, _, _ = df_utils.prep_or_copy_df(df_train)
-            (df_test, received_ID_col_test, received_single_time_series_test, _) = df_utils.prep_or_copy_df(df_test)
+            (
+                df_test,
+                received_ID_col_test,
+                received_single_time_series_test,
+                _,
+            ) = df_utils.prep_or_copy_df(df_test)
             df_test_new = pd.DataFrame()
             for df_name, df_test_i in df_test.groupby("ID"):
-                df_train_i = df_train[df_train["ID"] == df_name].copy(deep=True)
-                df_test_i = pd.concat([df_train_i.tail(self.model.n_lags), df_test_i], ignore_index=True)
-                df_test_new = pd.concat((df_test_new, df_test_i), ignore_index=True)
+                df_train_i = df_train[df_train["ID"] == df_name].copy(
+                    deep=True
+                )
+                df_test_i = pd.concat(
+                    [df_train_i.tail(self.model.n_lags), df_test_i],
+                    ignore_index=True,
+                )
+                df_test_new = pd.concat(
+                    (df_test_new, df_test_i), ignore_index=True
+                )
             df_test = df_utils.return_df_in_original_format(
-                df_test_new, received_ID_col_test, received_single_time_series_test
+                df_test_new,
+                received_ID_col_test,
+                received_single_time_series_test,
             )
         return df_test
 
@@ -186,26 +230,54 @@ class NeuralProphetModel(Model):
         else (time-features only): returns unchanged df
         """
         if self.model.n_lags > 0:
-            (predicted, received_ID_col_pred, received_single_time_series_pred, _) = df_utils.prep_or_copy_df(predicted)
-            df, received_ID_col_df, received_single_time_series_df, _ = df_utils.prep_or_copy_df(df)
+            (
+                predicted,
+                received_ID_col_pred,
+                received_single_time_series_pred,
+                _,
+            ) = df_utils.prep_or_copy_df(predicted)
+            (
+                df,
+                received_ID_col_df,
+                received_single_time_series_df,
+                _,
+            ) = df_utils.prep_or_copy_df(df)
             predicted_new = pd.DataFrame()
             df_new = pd.DataFrame()
             for df_name, df_i in df.groupby("ID"):
-                predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
+                predicted_i = predicted[predicted["ID"] == df_name].copy(
+                    deep=True
+                )
                 predicted_i = predicted_i[self.model.n_lags :]
                 df_i = df_i[self.model.n_lags :]
                 df_new = pd.concat((df_new, df_i), ignore_index=True)
-                predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
-            df = df_utils.return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
+                predicted_new = pd.concat(
+                    (predicted_new, predicted_i), ignore_index=True
+                )
+            df = df_utils.return_df_in_original_format(
+                df_new, received_ID_col_df, received_single_time_series_df
+            )
             predicted = df_utils.return_df_in_original_format(
-                predicted_new, received_ID_col_pred, received_single_time_series_pred
+                predicted_new,
+                received_ID_col_pred,
+                received_single_time_series_pred,
             )
         return predicted, df
 
     def maybe_drop_added_dates(self, predicted, df):
         """if Model imputed any dates: removes any dates in predicted which are not in df_test."""
-        (predicted, received_ID_col_pred, received_single_time_series_pred, _) = df_utils.prep_or_copy_df(predicted)
-        df, received_ID_col_df, received_single_time_series_df, _ = df_utils.prep_or_copy_df(df)
+        (
+            predicted,
+            received_ID_col_pred,
+            received_single_time_series_pred,
+            _,
+        ) = df_utils.prep_or_copy_df(predicted)
+        (
+            df,
+            received_ID_col_df,
+            received_single_time_series_df,
+            _,
+        ) = df_utils.prep_or_copy_df(df)
         predicted_new = pd.DataFrame()
         df_new = pd.DataFrame()
         for df_name, df_i in df.groupby("ID"):
@@ -217,10 +289,16 @@ class NeuralProphetModel(Model):
             predicted_i = predicted_i.reset_index()
             df_i = df_i.reset_index()
             df_new = pd.concat((df_new, df_i), ignore_index=True)
-            predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
-        df = df_utils.return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
+            predicted_new = pd.concat(
+                (predicted_new, predicted_i), ignore_index=True
+            )
+        df = df_utils.return_df_in_original_format(
+            df_new, received_ID_col_df, received_single_time_series_df
+        )
         predicted = df_utils.return_df_in_original_format(
-            predicted_new, received_ID_col_pred, received_single_time_series_pred
+            predicted_new,
+            received_ID_col_pred,
+            received_single_time_series_pred,
         )
         return predicted, df
 
@@ -257,28 +335,49 @@ class SeasonalNaiveModel(Model):
         data_params = self.params["_data_params"]
         self.freq = data_params["freq"]
         custom_seasonalities = None
-        if "seasonalities" in data_params and len(data_params["seasonalities"]) > 0:
-            daily, weekly, yearly, custom_seasonalities = _get_seasons(data_params["seasonalities"])
+        if (
+            "seasonalities" in data_params
+            and len(data_params["seasonalities"]) > 0
+        ):
+            daily, weekly, yearly, custom_seasonalities = _get_seasons(
+                data_params["seasonalities"]
+            )
             self.params.update({"daily_seasonality": daily})
             self.params.update({"weekly_seasonality": weekly})
             self.params.update({"yearly_seasonality": yearly})
-        if "seasonality_mode" in data_params and data_params["seasonality_mode"] is not None:
-            self.params.update({"seasonality_mode": data_params["seasonality_mode"]})
+        if (
+            "seasonality_mode" in data_params
+            and data_params["seasonality_mode"] is not None
+        ):
+            self.params.update(
+                {"seasonality_mode": data_params["seasonality_mode"]}
+            )
 
         # Verify expected model_params: season_length > 1, n_forecasts >=1
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
         self.n_forecasts = model_params["n_forecasts"]
-        assert self.n_forecasts >= 1, "Model parameter n_forecasts must be >=1. "
+        assert (
+            self.n_forecasts >= 1
+        ), "Model parameter n_forecasts must be >=1. "
 
         self.season_length = None
         # always select seasonality provided by dataset first
-        if "seasonalities" in data_params and len(data_params["seasonalities"]) > 0:
+        if (
+            "seasonalities" in data_params
+            and len(data_params["seasonalities"]) > 0
+        ):
             self.season_length = _convert_seasonality_to_season_length(
-                data_params["freq"], daily, weekly, yearly, custom_seasonalities
+                data_params["freq"],
+                daily,
+                weekly,
+                yearly,
+                custom_seasonalities,
             )
         elif "season_length" in model_params:
-            self.season_length = model_params["season_length"]  # for seasonal naive season_length is input parameter
+            self.season_length = model_params[
+                "season_length"
+            ]  # for seasonal naive season_length is input parameter
         assert self.season_length is not None, (
             "Dataset does not provide a seasonality. Assign a seasonality to each of the datasets "
             "OR input desired season_length as model parameter to be used for all datasets "
@@ -287,7 +386,9 @@ class SeasonalNaiveModel(Model):
         assert (
             self.season_length > 1
         ), "season_length must be >1 for SeasonalNaiveModel. For season_length=1 select NaiveModel instead."
-        self.n_lags = None  # TODO: should not be set to None. Find different solution.
+        self.n_lags = (
+            None  # TODO: should not be set to None. Find different solution.
+        )
 
     def fit(self, df: pd.DataFrame, freq: str):
         pass
@@ -311,7 +412,12 @@ class SeasonalNaiveModel(Model):
                 ----
                  *  raw data is not supported
         """
-        df, received_ID_col, received_single_time_series, _ = df_utils.prep_or_copy_df(df)
+        (
+            df,
+            received_ID_col,
+            received_single_time_series,
+            _,
+        ) = df_utils.prep_or_copy_df(df)
         # Receives df with single ID column. Only single time series accepted.
         assert len(df["ID"].unique()) == 1  # TODO: add multi-ID, multi-target
 
@@ -320,9 +426,14 @@ class SeasonalNaiveModel(Model):
         for df_name, df_i in df.groupby("ID"):
             dates, predicted = self._predict_raw(df_i)
             forecast = reshape_raw_predictions_to_forecast_df(
-                df_i, predicted, n_req_past_observations=self.season_length, n_req_future_observations=self.n_forecasts
+                df_i,
+                predicted,
+                n_req_past_observations=self.season_length,
+                n_req_future_observations=self.n_forecasts,
             )
-        fcst_df = df_utils.return_df_in_original_format(forecast, received_ID_col, received_single_time_series)
+        fcst_df = df_utils.return_df_in_original_format(
+            forecast, received_ID_col, received_single_time_series
+        )
         return fcst_df
 
     def maybe_add_first_inputs_to_df(self, df_train, df_test):
@@ -340,7 +451,9 @@ class SeasonalNaiveModel(Model):
             pd.DataFrame
                 dataframe containing test data enlarged with season_length values.
         """
-        df_train, _, _, _ = df_utils.prep_or_copy_df(df_train.tail(self.season_length))
+        df_train, _, _, _ = df_utils.prep_or_copy_df(
+            df_train.tail(self.season_length)
+        )
         (
             df_test,
             received_ID_col_test,
@@ -350,8 +463,13 @@ class SeasonalNaiveModel(Model):
         df_test_new = pd.DataFrame()
         for df_name, df_test_i in df_test.groupby("ID"):
             df_train_i = df_train[df_train["ID"] == df_name].copy(deep=True)
-            df_test_i = pd.concat([df_train_i.tail(self.season_length), df_test_i], ignore_index=True)
-            df_test_new = pd.concat((df_test_new, df_test_i), ignore_index=True)
+            df_test_i = pd.concat(
+                [df_train_i.tail(self.season_length), df_test_i],
+                ignore_index=True,
+            )
+            df_test_new = pd.concat(
+                (df_test_new, df_test_i), ignore_index=True
+            )
         df_test = df_utils.return_df_in_original_format(
             df_test_new, received_ID_col_test, received_single_time_series_test
         )
@@ -376,19 +494,37 @@ class SeasonalNaiveModel(Model):
                 dataframe containing initial data reduced by the first season_length values.
         """
         if self.season_length > 0:
-            (predicted, received_ID_col_pred, received_single_time_series_pred, _) = df_utils.prep_or_copy_df(predicted)
-            df, received_ID_col_df, received_single_time_series_df, _ = df_utils.prep_or_copy_df(df)
+            (
+                predicted,
+                received_ID_col_pred,
+                received_single_time_series_pred,
+                _,
+            ) = df_utils.prep_or_copy_df(predicted)
+            (
+                df,
+                received_ID_col_df,
+                received_single_time_series_df,
+                _,
+            ) = df_utils.prep_or_copy_df(df)
             predicted_new = pd.DataFrame()
             df_new = pd.DataFrame()
             for df_name, df_i in df.groupby("ID"):
-                predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
+                predicted_i = predicted[predicted["ID"] == df_name].copy(
+                    deep=True
+                )
                 predicted_i = predicted_i[self.season_length :]
                 df_i = df_i[self.season_length :]
                 df_new = pd.concat((df_new, df_i), ignore_index=True)
-                predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
-            df = df_utils.return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
+                predicted_new = pd.concat(
+                    (predicted_new, predicted_i), ignore_index=True
+                )
+            df = df_utils.return_df_in_original_format(
+                df_new, received_ID_col_df, received_single_time_series_df
+            )
             predicted = df_utils.return_df_in_original_format(
-                predicted_new, received_ID_col_pred, received_single_time_series_pred
+                predicted_new,
+                received_ID_col_pred,
+                received_single_time_series_pred,
             )
         return predicted, df
 
@@ -413,12 +549,24 @@ class SeasonalNaiveModel(Model):
         # Receives df with single ID column
         assert len(df["ID"].unique()) == 1
 
-        dates = df["ds"].iloc[self.season_length : -self.n_forecasts + 1].reset_index(drop=True)
+        dates = (
+            df["ds"]
+            .iloc[self.season_length : -self.n_forecasts + 1]
+            .reset_index(drop=True)
+        )
         # assemble last values based on season_length
-        last_k_vals_arrays = [df["y"].iloc[i : i + self.season_length].values for i in range(0, dates.shape[0])]
+        last_k_vals_arrays = [
+            df["y"].iloc[i : i + self.season_length].values
+            for i in range(0, dates.shape[0])
+        ]
         last_k_vals = np.stack(last_k_vals_arrays, axis=0)
         # Compute the predictions
-        predicted = np.array([last_k_vals[:, i % self.season_length] for i in range(self.n_forecasts)]).T
+        predicted = np.array(
+            [
+                last_k_vals[:, i % self.season_length]
+                for i in range(self.n_forecasts)
+            ]
+        ).T
 
         # No un-scaling and un-normalization needed. Operations not applicable for naive model
         return dates, predicted
@@ -444,6 +592,10 @@ class NaiveModel(SeasonalNaiveModel):
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
         self.n_forecasts = model_params["n_forecasts"]
-        assert self.n_forecasts >= 1, "Model parameter n_forecasts must be >=1. "
-        self.n_lags = None  # TODO: should not be set to None. Find different solution.
+        assert (
+            self.n_forecasts >= 1
+        ), "Model parameter n_forecasts must be >=1. "
+        self.n_lags = (
+            None  # TODO: should not be set to None. Find different solution.
+        )
         self.season_length = 1  # season_length=1 for NaiveModel

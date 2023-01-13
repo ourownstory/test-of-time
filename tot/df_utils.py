@@ -6,7 +6,9 @@ import pandas as pd
 log = logging.getLogger("tot.df_utils")
 
 
-def reshape_raw_predictions_to_forecast_df(df, predicted, n_req_past_observations, n_req_future_observations):
+def reshape_raw_predictions_to_forecast_df(
+    df, predicted, n_req_past_observations, n_req_future_observations
+):
     """Turns forecast-origin-wise predictions into forecast-target-wise predictions.
 
     Parameters

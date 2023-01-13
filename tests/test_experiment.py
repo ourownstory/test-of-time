@@ -52,7 +52,11 @@ def test_simple_experiment():
     log.info("test_simple_experiment")
     air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
     ts = Dataset(df=air_passengers_df, name="air_passengers", freq="MS")
-    params = {"seasonality_mode": "multiplicative", "epochs": EPOCHS, "learning_rate": 0.1}
+    params = {
+        "seasonality_mode": "multiplicative",
+        "epochs": EPOCHS,
+        "learning_rate": 0.1,
+    }
     exp = SimpleExperiment(
         model_class=NeuralProphetModel,
         params=params,

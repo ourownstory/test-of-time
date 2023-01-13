@@ -77,7 +77,13 @@ def test_prophet_for_global_modeling():
     ercot_df = pd.DataFrame()
     for region in ERCOT_REGIONS:
         ercot_df = pd.concat(
-            (ercot_df, ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True)), ignore_index=True
+            (
+                ercot_df,
+                ercot_df_aux[ercot_df_aux["ID"] == region]
+                .iloc[:NROWS]
+                .copy(deep=True),
+            ),
+            ignore_index=True,
         )
     dataset_list = [
         Dataset(df=ercot_df, name="ercot_load", freq="H"),
@@ -104,11 +110,29 @@ def test_prophet_for_global_modeling():
 
 # parameter input for test_seasonal_naive_model
 dataset_input = [
-    {"df": "peyton_manning_df", "name": "peyton_manning", "freq": "D", "seasonalities": [7, 365.25]},
-    {"df": "peyton_manning_df", "name": "peyton_manning", "freq": "D", "seasonalities": ""},
-    {"df": "peyton_manning_df_with_ID", "name": "peyton_manning", "freq": "D", "seasonalities": ""},
+    {
+        "df": "peyton_manning_df",
+        "name": "peyton_manning",
+        "freq": "D",
+        "seasonalities": [7, 365.25],
+    },
+    {
+        "df": "peyton_manning_df",
+        "name": "peyton_manning",
+        "freq": "D",
+        "seasonalities": "",
+    },
+    {
+        "df": "peyton_manning_df_with_ID",
+        "name": "peyton_manning",
+        "freq": "D",
+        "seasonalities": "",
+    },
 ]
-model_classes_and_params_input = [{"n_forecasts": 4}, {"n_forecasts": 4, "season_length": 3}]
+model_classes_and_params_input = [
+    {"n_forecasts": 4},
+    {"n_forecasts": 4, "season_length": 3},
+]
 decorator_input = [
     "dataset_input, model_classes_and_params_input",
     [
@@ -125,7 +149,10 @@ def test_seasonal_naive_model(dataset_input, model_classes_and_params_input):
     peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     peyton_manning_df_with_ID = peyton_manning_df.copy(deep=True)
     peyton_manning_df_with_ID["ID"] = "df1"
-    df = {"peyton_manning_df": peyton_manning_df, "peyton_manning_df_with_ID": peyton_manning_df_with_ID}
+    df = {
+        "peyton_manning_df": peyton_manning_df,
+        "peyton_manning_df_with_ID": peyton_manning_df_with_ID,
+    }
     dataset_list = [
         Dataset(
             df=df[dataset_input["df"]],
@@ -153,7 +180,12 @@ def test_seasonal_naive_model(dataset_input, model_classes_and_params_input):
 
 # parameter input for test_seasonal_naive_model_invalid_input
 dataset_input = [
-    {"df": "peyton_manning_df", "name": "peyton_manning", "freq": "D", "seasonalities": ""},
+    {
+        "df": "peyton_manning_df",
+        "name": "peyton_manning",
+        "freq": "D",
+        "seasonalities": "",
+    },
 ]
 model_classes_and_params_input = [
     {"n_forecasts": 4},
@@ -161,12 +193,17 @@ model_classes_and_params_input = [
 ]
 decorator_input = [
     "dataset_input, model_classes_and_params_input",
-    [(dataset_input[0], model_classes_and_params_input[0]), (dataset_input[0], model_classes_and_params_input[1])],
+    [
+        (dataset_input[0], model_classes_and_params_input[0]),
+        (dataset_input[0], model_classes_and_params_input[1]),
+    ],
 ]
 
 
 @pytest.mark.parametrize(*decorator_input)
-def test_seasonal_naive_model_invalid_input(dataset_input, model_classes_and_params_input):
+def test_seasonal_naive_model_invalid_input(
+    dataset_input, model_classes_and_params_input
+):
     log.info("Test invalid model input - Raise Assertion")
     peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     dataset_list = [

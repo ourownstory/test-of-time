@@ -2,9 +2,9 @@ import gc
 import logging
 import os
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from multiprocessing.pool import Pool
-from typing import List, Optional, Tuple, Type
+from typing import List, Optional
 
 import numpy as np
 import pandas as pd
@@ -40,16 +40,26 @@ class Experiment(ABC):
         data_params = {}
         if len(self.data.seasonalities) > 0:
             data_params["seasonalities"] = self.data.seasonalities
-        if hasattr(self.data, "seasonality_mode") and self.data.seasonality_mode is not None:
+        if (
+            hasattr(self.data, "seasonality_mode")
+            and self.data.seasonality_mode is not None
+        ):
             data_params["seasonality_mode"] = self.data.seasonality_mode
         if hasattr(self.data, "freq") and self.data.freq is not None:
             data_params["freq"] = self.data.freq
         self.params.update({"_data_params": data_params})
-        if not hasattr(self, "experiment_name") or self.experiment_name is None:
+        if (
+            not hasattr(self, "experiment_name")
+            or self.experiment_name is None
+        ):
             self.experiment_name = "{}_{}{}".format(
                 self.data.name,
                 self.model_class.model_name,
-                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()]).replace("'", "").replace(":", "_"),
+                r"".join(
+                    [r"_{0}_{1}".format(k, v) for k, v in self.params.items()]
+                )
+                .replace("'", "")
+                .replace(":", "_"),
             )
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
@@ -67,7 +77,9 @@ class Experiment(ABC):
         if current_fold is not None:
             name = name + "_fold_" + str(current_fold)
         name = prefix + "_" + name + ".csv"
-        df.to_csv(os.path.join(self.save_dir, name), encoding="utf-8", index=False)
+        df.to_csv(
+            os.path.join(self.save_dir, name), encoding="utf-8", index=False
+        )
 
     def _evaluate_model(self, model, df_train, df_test, current_fold=None):
         df_test = model.maybe_add_first_inputs_to_df(df_train, df_test)
@@ -79,26 +91,42 @@ class Experiment(ABC):
             if model.season_length > 0:
                 self.required_past_observations = model.season_length
         if self.required_past_observations + model.n_forecasts > len(df_train):
-            raise ValueError("Not enough training data to create a single input sample.")
+            raise ValueError(
+                "Not enough training data to create a single input sample."
+            )
         if self.required_past_observations + model.n_forecasts > len(df_test):
-            raise ValueError("Not enough test data to create a single input sample.")
+            raise ValueError(
+                "Not enough test data to create a single input sample."
+            )
         fcst_train = model.predict(df_train)
         fcst_test = model.predict(df_test)
         # remove added input lags
-        fcst_train, df_train = model.maybe_drop_first_forecasts(fcst_train, df_train)
-        fcst_test, df_test = model.maybe_drop_first_forecasts(fcst_test, df_test)
+        fcst_train, df_train = model.maybe_drop_first_forecasts(
+            fcst_train, df_train
+        )
+        fcst_test, df_test = model.maybe_drop_first_forecasts(
+            fcst_test, df_test
+        )
         # remove interpolated dates
-        fcst_train, df_train = model.maybe_drop_added_dates(fcst_train, df_train)
+        fcst_train, df_train = model.maybe_drop_added_dates(
+            fcst_train, df_train
+        )
         fcst_test, df_test = model.maybe_drop_added_dates(fcst_test, df_test)
 
         result_train = self.metadata.copy()
         result_test = self.metadata.copy()
         for metric in self.metrics:
             # todo: parallelize
-            n_yhats_train = sum(["yhat" in colname for colname in fcst_train.columns])
-            n_yhats_test = sum(["yhat" in colname for colname in fcst_test.columns])
+            n_yhats_train = sum(
+                ["yhat" in colname for colname in fcst_train.columns]
+            )
+            n_yhats_test = sum(
+                ["yhat" in colname for colname in fcst_test.columns]
+            )
 
-            assert n_yhats_train == n_yhats_test, "Dimensions of fcst dataframe faulty."
+            assert (
+                n_yhats_train == n_yhats_test
+            ), "Dimensions of fcst dataframe faulty."
 
             metric_train_list = []
             metric_test_list = []
@@ -123,12 +151,18 @@ class Experiment(ABC):
                         truth_train=df_train["y"].values,
                     )
                 )
-            result_train[metric] = np.nanmean(metric_train_list, dtype="float32")
+            result_train[metric] = np.nanmean(
+                metric_train_list, dtype="float32"
+            )
             result_test[metric] = np.nanmean(metric_test_list, dtype="float32")
 
         if self.save_dir is not None:
-            self.write_results_to_csv(fcst_train, prefix="predicted_train", current_fold=current_fold)
-            self.write_results_to_csv(fcst_test, prefix="predicted_test", current_fold=current_fold)
+            self.write_results_to_csv(
+                fcst_train, prefix="predicted_train", current_fold=current_fold
+            )
+            self.write_results_to_csv(
+                fcst_test, prefix="predicted_test", current_fold=current_fold
+            )
         del fcst_train
         del fcst_test
         gc.collect()
@@ -158,7 +192,9 @@ class SimpleExperiment(Experiment):
 
     def run(self):
         model = self.model_class(self.params)
-        df = model._handle_missing_data(self.data.df, freq=self.data.freq, predicting=False)
+        df = model._handle_missing_data(
+            self.data.df, freq=self.data.freq, predicting=False
+        )
         df_train, df_test = df_utils.split_df(
             df=df,
             n_lags=0,
@@ -166,7 +202,9 @@ class SimpleExperiment(Experiment):
             valid_p=self.test_percentage / 100.0,
         )
         model.fit(df=df_train, freq=self.data.freq)
-        result_train, result_test = self._evaluate_model(model, df_train, df_test)
+        result_train, result_test = self._evaluate_model(
+            model, df_train, df_test
+        )
         return result_train, result_test
 
 
@@ -198,7 +236,9 @@ class CrossValidationExperiment(Experiment):
         df_train, df_test, current_fold = args
         model = self.model_class(self.params)
         model.fit(df=df_train, freq=self.data.freq)
-        result_train, result_test = self._evaluate_model(model, df_train, df_test, current_fold=current_fold)
+        result_train, result_test = self._evaluate_model(
+            model, df_train, df_test, current_fold=current_fold
+        )
         del model
         gc.collect()
         return (result_train, result_test)
@@ -233,8 +273,16 @@ class CrossValidationExperiment(Experiment):
             self.results_cv_test[m] = []
         if self.num_processes > 1 and self.num_folds > 1:
             with Pool(self.num_processes) as pool:
-                args = [(df_train, df_test, current_fold) for current_fold, (df_train, df_test) in enumerate(folds)]
-                pool.map_async(self._run_fold, args, callback=self._log_results, error_callback=self._log_error)
+                args = [
+                    (df_train, df_test, current_fold)
+                    for current_fold, (df_train, df_test) in enumerate(folds)
+                ]
+                pool.map_async(
+                    self._run_fold,
+                    args,
+                    callback=self._log_results,
+                    error_callback=self._log_error,
+                )
                 pool.close()
                 pool.join()
             gc.collect()
@@ -247,12 +295,18 @@ class CrossValidationExperiment(Experiment):
             results_cv_test_df = pd.DataFrame()
             results_cv_train_df = pd.DataFrame()
             results_cv_test_df = pd.concat(
-                [results_cv_test_df, pd.DataFrame([self.results_cv_test])], ignore_index=True
+                [results_cv_test_df, pd.DataFrame([self.results_cv_test])],
+                ignore_index=True,
             )
             results_cv_train_df = pd.concat(
-                [results_cv_train_df, pd.DataFrame([self.results_cv_train])], ignore_index=True
+                [results_cv_train_df, pd.DataFrame([self.results_cv_train])],
+                ignore_index=True,
             )
-            self.write_results_to_csv(results_cv_test_df, prefix="summary_test")
-            self.write_results_to_csv(results_cv_train_df, prefix="summary_train")
+            self.write_results_to_csv(
+                results_cv_test_df, prefix="summary_test"
+            )
+            self.write_results_to_csv(
+                results_cv_train_df, prefix="summary_train"
+            )
 
         return self.results_cv_train, self.results_cv_test
