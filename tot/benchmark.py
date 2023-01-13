@@ -55,28 +55,16 @@ class Benchmark(ABC):
     def _run_exp(self, args):
         exp, verbose, exp_num = args
         if verbose:
-            log.info(
-                "--------------------------------------------------------"
-            )
-            log.info(
-                "starting exp {}: {}".format(exp_num, exp.experiment_name)
-            )
-            log.info(
-                "--------------------------------------------------------"
-            )
+            log.info("--------------------------------------------------------")
+            log.info("starting exp {}: {}".format(exp_num, exp.experiment_name))
+            log.info("--------------------------------------------------------")
         exp.metrics = self.metrics
         res_train, res_test = exp.run()
         if verbose:
-            log.info(
-                "--------------------------------------------------------"
-            )
-            log.info(
-                "finished exp {}: {}".format(exp_num, exp.experiment_name)
-            )
+            log.info("--------------------------------------------------------")
+            log.info("finished exp {}: {}".format(exp_num, exp.experiment_name))
             log.info("test results {}: {}".format(exp_num, res_test))
-            log.info(
-                "--------------------------------------------------------"
-            )
+            log.info("--------------------------------------------------------")
         # del exp
         # gc.collect()
         return (res_train, res_test)
@@ -107,26 +95,13 @@ class Benchmark(ABC):
         if verbose:
             log.info("Experiment list:")
             for i, exp in enumerate(self.experiments):
-                log.info(
-                    "exp {}/{}: {}".format(
-                        i + 1, len(self.experiments), exp.experiment_name
-                    )
-                )
-        log.info(
-            "---- Staring Series of {} Experiments ----".format(
-                len(self.experiments)
-            )
-        )
+                log.info("exp {}/{}: {}".format(i + 1, len(self.experiments), exp.experiment_name))
+        log.info("---- Staring Series of {} Experiments ----".format(len(self.experiments)))
         if self.num_processes > 1 and len(self.experiments) > 1:
             if not all([exp.num_processes == 1 for exp in self.experiments]):
-                raise ValueError(
-                    "can not set multiprocessing in experiments and Benchmark."
-                )
+                raise ValueError("can not set multiprocessing in experiments and Benchmark.")
             with Pool(self.num_processes) as pool:
-                args_list = [
-                    (exp, verbose, i + 1)
-                    for i, exp in enumerate(self.experiments)
-                ]
+                args_list = [(exp, verbose, i + 1) for i, exp in enumerate(self.experiments)]
                 pool.map_async(
                     self._run_exp,
                     args_list,
@@ -137,9 +112,7 @@ class Benchmark(ABC):
                 pool.join()
             gc.collect()
         else:
-            args_list = [
-                (exp, verbose, i + 1) for i, exp in enumerate(self.experiments)
-            ]
+            args_list = [(exp, verbose, i + 1) for i, exp in enumerate(self.experiments)]
             for args in args_list:
                 self._log_result(self._run_exp(args))
                 gc.collect()
@@ -157,37 +130,23 @@ class CVBenchmark(Benchmark, ABC):
         models = [
             "{}-{}".format(
                 e.metadata["model"],
-                "".join(
-                    ["_{0}_{1}".format(k, v) for k, v in e.params.items()]
-                ),
+                "".join(["_{0}_{1}".format(k, v) for k, v in e.params.items()]),
             )
             for e in self.experiments
         ]
         models = "_".join(list(set(models)))
         stamp = str(datetime.datetime.now().strftime("%Y%m%d_%H-%M-%S-%f"))
-        name = (
-            ("metrics_summary_" + models + stamp + ".csv")
-            .replace("'", "")
-            .replace(":", "_")[:40]
-        )
+        name = ("metrics_summary_" + models + stamp + ".csv").replace("'", "").replace(":", "_")[:40]
         log.debug(name)
-        df_summary.to_csv(
-            os.path.join(save_dir, name), encoding="utf-8", index=False
-        )
+        df_summary.to_csv(os.path.join(save_dir, name), encoding="utf-8", index=False)
 
     def _summarize_cv_metrics(self, df_metrics, name=None):
         df_metrics_summary = df_metrics.copy(deep=True)
         name = "" if name is None else "_{}".format(name)
         for metric in self.metrics:
-            df_metrics_summary[metric + name] = (
-                df_metrics[metric]
-                .copy(deep=True)
-                .apply(lambda x: np.array(x).mean())
-            )
+            df_metrics_summary[metric + name] = df_metrics[metric].copy(deep=True).apply(lambda x: np.array(x).mean())
             df_metrics_summary[metric + "_std" + name] = (
-                df_metrics[metric]
-                .copy(deep=True)
-                .apply(lambda x: np.array(x).std())
+                df_metrics[metric].copy(deep=True).apply(lambda x: np.array(x).std())
             )
         return df_metrics_summary
 
@@ -197,13 +156,9 @@ class CVBenchmark(Benchmark, ABC):
         df_metrics_summary_train["split"] = "train"
         df_metrics_summary_test = self._summarize_cv_metrics(df_metrics_test)
         df_metrics_summary_test["split"] = "test"
-        df_metrics_summary = pd.concat(
-            [df_metrics_summary_train, df_metrics_summary_test]
-        )
+        df_metrics_summary = pd.concat([df_metrics_summary_train, df_metrics_summary_test])
         if self.save_dir is not None:
-            self.write_summary_to_csv(
-                df_metrics_summary, save_dir=self.save_dir
-            )
+            self.write_summary_to_csv(df_metrics_summary, save_dir=self.save_dir)
         return df_metrics_summary, df_metrics_train, df_metrics_test
 
 

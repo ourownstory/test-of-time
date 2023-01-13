@@ -6,7 +6,7 @@ import pathlib
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import pytest #noga: F401
+import pytest  # noga: F401
 
 from tot.benchmark import (
     CrossValidationBenchmark,
@@ -55,9 +55,7 @@ def test_benchmark_simple_global_modeling():
         ercot_df = pd.concat(
             (
                 ercot_df,
-                ercot_df_aux[ercot_df_aux["ID"] == region]
-                .iloc[:NROWS]
-                .copy(deep=True),
+                ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
             ),
             ignore_index=True,
         )
@@ -119,9 +117,7 @@ def test_benchmark_CV_global_modeling():
         ercot_df = pd.concat(
             (
                 ercot_df,
-                ercot_df_aux[ercot_df_aux["ID"] == region]
-                .iloc[:NROWS]
-                .copy(deep=True),
+                ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
             ),
             ignore_index=True,
         )
@@ -129,11 +125,9 @@ def test_benchmark_CV_global_modeling():
     peyton_manning_df = pd.DataFrame()
     slice_idx = 0
     for df_name in ["df1", "df2"]:
-        df_aux = peyton_manning_df_aux.iloc[slice_idx: slice_idx + 100]
+        df_aux = peyton_manning_df_aux.iloc[slice_idx : slice_idx + 100]
         df_aux = df_aux.assign(ID=df_name)
-        peyton_manning_df = pd.concat(
-            (peyton_manning_df, df_aux), ignore_index=True
-        )
+        peyton_manning_df = pd.concat((peyton_manning_df, df_aux), ignore_index=True)
         slice_idx = slice_idx + 100
 
     dataset_list = [
@@ -201,9 +195,7 @@ def test_benchmark_manual_global_modeling():
         ercot_df = pd.concat(
             (
                 ercot_df,
-                ercot_df_aux[ercot_df_aux["ID"] == region]
-                .iloc[:NROWS]
-                .copy(deep=True),
+                ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
             ),
             ignore_index=True,
         )
@@ -211,11 +203,9 @@ def test_benchmark_manual_global_modeling():
     peyton_manning_df = pd.DataFrame()
     slice_idx = 0
     for df_name in ["df1", "df2"]:
-        df_aux = peyton_manning_df_aux.iloc[slice_idx: slice_idx + 100]
+        df_aux = peyton_manning_df_aux.iloc[slice_idx : slice_idx + 100]
         df_aux = df_aux.assign(ID=df_name)
-        peyton_manning_df = pd.concat(
-            (peyton_manning_df, df_aux), ignore_index=True
-        )
+        peyton_manning_df = pd.concat((peyton_manning_df, df_aux), ignore_index=True)
         slice_idx = slice_idx + 100
     metrics = ["MAE", "MSE", "RMSE", "MASE", "RMSSE", "MAPE", "SMAPE"]
     experiments = [
@@ -238,9 +228,7 @@ def test_benchmark_manual_global_modeling():
                 "learning_rate": 0.1,
                 "epochs": EPOCHS,
             },
-            data=Dataset(
-                df=peyton_manning_df, name="peyton_manning_many_ts", freq="D"
-            ),
+            data=Dataset(df=peyton_manning_df, name="peyton_manning_many_ts", freq="D"),
             metrics=metrics,
             test_percentage=25,
         ),
@@ -261,9 +249,7 @@ def test_benchmark_manualCV_global_modeling():
         ercot_df = pd.concat(
             (
                 ercot_df,
-                ercot_df_aux[ercot_df_aux["ID"] == region]
-                .iloc[:NROWS]
-                .copy(deep=True),
+                ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
             ),
             ignore_index=True,
         )
@@ -272,16 +258,12 @@ def test_benchmark_manualCV_global_modeling():
     slice_idx = 0
     log.info("Creating a date intersection between df1 and df2")
     for df_name in ["df1", "df2"]:
-        df_aux = peyton_manning_df_aux.iloc[slice_idx: slice_idx + 100]
+        df_aux = peyton_manning_df_aux.iloc[slice_idx : slice_idx + 100]
         df_aux = df_aux.assign(ID=df_name)
-        peyton_manning_df = pd.concat(
-            (peyton_manning_df, df_aux), ignore_index=True
-        )
+        peyton_manning_df = pd.concat((peyton_manning_df, df_aux), ignore_index=True)
         slice_idx = slice_idx + 100
     log.info("Creating an intersection between df1 and df2.")
-    overlap_dates = pd.Series(
-        pd.date_range(start="2008-02-15", end="2008-03-24", freq="D")
-    )
+    overlap_dates = pd.Series(pd.date_range(start="2008-02-15", end="2008-03-24", freq="D"))
     overlap_vals = pd.Series(range(len(overlap_dates)))
     peyton_manning_df_intersect = pd.DataFrame()
     peyton_manning_df_intersect["ds"] = overlap_dates
@@ -295,9 +277,7 @@ def test_benchmark_manualCV_global_modeling():
         ),
         ignore_index=True,
     )
-    peyton_manning_df_intersect["ds"] = pd.to_datetime(
-        peyton_manning_df_intersect["ds"]
-    )
+    peyton_manning_df_intersect["ds"] = pd.to_datetime(peyton_manning_df_intersect["ds"])
 
     metrics = ["MAE", "MSE", "RMSE", "MASE", "RMSSE", "MAPE", "SMAPE"]
     experiments = [
@@ -338,9 +318,7 @@ def test_benchmark_manualCV_global_modeling():
                 "epochs": EPOCHS,
                 "learning_rate": 0.1,
             },
-            data=Dataset(
-                df=peyton_manning_df, name="peyton_manning_many_ts", freq="D"
-            ),
+            data=Dataset(df=peyton_manning_df, name="peyton_manning_many_ts", freq="D"),
             metrics=metrics,
             test_percentage=10,
             num_folds=3,

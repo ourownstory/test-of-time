@@ -5,7 +5,7 @@ import os
 import pathlib
 
 import pandas as pd
-import pytest #noga: F401
+import pytest  # noga: F401
 
 from tot.benchmark import SimpleBenchmark
 from tot.dataset import Dataset
@@ -79,9 +79,7 @@ def test_prophet_for_global_modeling():
         ercot_df = pd.concat(
             (
                 ercot_df,
-                ercot_df_aux[ercot_df_aux["ID"] == region]
-                .iloc[:NROWS]
-                .copy(deep=True),
+                ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
             ),
             ignore_index=True,
         )
@@ -201,9 +199,7 @@ decorator_input = [
 
 
 @pytest.mark.parametrize(*decorator_input)
-def test_seasonal_naive_model_invalid_input(
-    dataset_input, model_classes_and_params_input
-):
+def test_seasonal_naive_model_invalid_input(dataset_input, model_classes_and_params_input):
     log.info("Test invalid model input - Raise Assertion")
     peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     dataset_list = [

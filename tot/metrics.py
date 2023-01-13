@@ -49,9 +49,7 @@ def _calc_mase(
     """
     assert len(truth_train) > 1
     mae = _calc_mae(predictions, truth)
-    naive_mae = _calc_mae(
-        np.array(truth_train[:-1]), np.array(truth_train[1:])
-    )
+    naive_mae = _calc_mae(np.array(truth_train[:-1]), np.array(truth_train[1:]))
     return np.divide(mae, 1e-9 + naive_mae)
 
 
@@ -69,9 +67,7 @@ def _calc_rmsse(
     """
     assert len(truth_train) > 1
     rmse = _calc_rmse(predictions, truth)
-    naive_rmse = _calc_rmse(
-        np.array(truth_train[:-1]), np.array(truth_train[1:])
-    )
+    naive_rmse = _calc_rmse(np.array(truth_train[:-1]), np.array(truth_train[1:]))
     return np.divide(rmse, 1e-9 + naive_rmse)
 
 

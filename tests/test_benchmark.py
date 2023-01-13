@@ -6,7 +6,7 @@ import pathlib
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import pytest #noga: F401
+import pytest  # noga: F401
 
 from tot.benchmark import (
     CrossValidationBenchmark,
@@ -145,9 +145,7 @@ def test_2_benchmark_manual():
                 "epochs": EPOCHS,
                 "learning_rate": 0.1,
             },
-            data=Dataset(
-                df=air_passengers_df, name="air_passengers", freq="MS"
-            ),
+            data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=25,
         ),
@@ -158,9 +156,7 @@ def test_2_benchmark_manual():
                 "learning_rate": 0.1,
                 "epochs": EPOCHS,
             },
-            data=Dataset(
-                df=air_passengers_df, name="air_passengers", freq="MS"
-            ),
+            data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=25,
         ),
@@ -172,9 +168,7 @@ def test_2_benchmark_manual():
                 params={
                     "seasonality_mode": "multiplicative",
                 },
-                data=Dataset(
-                    df=air_passengers_df, name="air_passengers", freq="MS"
-                ),
+                data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
                 metrics=metrics,
                 test_percentage=25,
             )
@@ -200,9 +194,7 @@ def test_2_benchmark_manualCV():
                 "epochs": EPOCHS,
                 "learning_rate": 0.1,
             },
-            data=Dataset(
-                df=air_passengers_df, name="air_passengers", freq="MS"
-            ),
+            data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=10,
             num_folds=3,
@@ -215,9 +207,7 @@ def test_2_benchmark_manualCV():
                 "seasonality_mode": "multiplicative",
                 "learning_rate": 0.1,
             },
-            data=Dataset(
-                df=air_passengers_df, name="air_passengers", freq="MS"
-            ),
+            data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=10,
             num_folds=3,
@@ -256,9 +246,7 @@ def test_manual_benchmark():
                 "learning_rate": 0.1,
                 "epochs": EPOCHS,
             },
-            data=Dataset(
-                df=air_passengers_df, name="air_passengers", freq="MS"
-            ),
+            data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=25,
             save_dir=SAVE_DIR,
@@ -266,9 +254,7 @@ def test_manual_benchmark():
         SimpleExperiment(
             model_class=NeuralProphetModel,
             params={"learning_rate": 0.1, "epochs": EPOCHS},
-            data=Dataset(
-                df=peyton_manning_df, name="peyton_manning", freq="D"
-            ),
+            data=Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
             metrics=metrics,
             test_percentage=15,
             save_dir=SAVE_DIR,
@@ -278,9 +264,7 @@ def test_manual_benchmark():
         SimpleExperiment(
             model_class=ProphetModel,
             params={"seasonality_mode": "multiplicative"},
-            data=Dataset(
-                df=air_passengers_df, name="air_passengers", freq="MS"
-            ),
+            data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=25,
             save_dir=SAVE_DIR,
@@ -288,9 +272,7 @@ def test_manual_benchmark():
         SimpleExperiment(
             model_class=ProphetModel,
             params={},
-            data=Dataset(
-                df=peyton_manning_df, name="peyton_manning", freq="D"
-            ),
+            data=Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
             metrics=metrics,
             test_percentage=15,
             save_dir=SAVE_DIR,
@@ -298,9 +280,7 @@ def test_manual_benchmark():
     ]
     if _prophet_installed:
         experiments += prophet_exps
-    benchmark = ManualBenchmark(
-        experiments=experiments, metrics=metrics, num_processes=1
-    )
+    benchmark = ManualBenchmark(experiments=experiments, metrics=metrics, num_processes=1)
     results_train, results_test = benchmark.run()
     log.debug(results_test.to_string())
     log.info("#### Done with test_manual_benchmark")
@@ -318,9 +298,7 @@ def test_manual_cv_benchmark():
                 "seasonality_mode": "multiplicative",
                 "learning_rate": 0.1,
             },
-            data=Dataset(
-                df=air_passengers_df, name="air_passengers", freq="MS"
-            ),
+            data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=10,
             num_folds=2,
@@ -334,9 +312,7 @@ def test_manual_cv_benchmark():
                 "epochs": EPOCHS,
                 "learning_rate": 0.1,
             },
-            data=Dataset(
-                df=air_passengers_df, name="air_passengers", freq="MS"
-            ),
+            data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=10,
             num_folds=1,
@@ -344,9 +320,7 @@ def test_manual_cv_benchmark():
             save_dir=SAVE_DIR,
         ),
     ]
-    benchmark_cv = ManualCVBenchmark(
-        experiments=experiments, metrics=metrics, num_processes=1
-    )
+    benchmark_cv = ManualCVBenchmark(experiments=experiments, metrics=metrics, num_processes=1)
     results_summary, results_train, results_test = benchmark_cv.run()
     log.debug(results_summary.to_string())
     log.debug(results_train.to_string())

@@ -14,9 +14,7 @@ def install_hooks():
     for script_f in script_files:
         file = os.path.join(dir_scripts, script_f)
         subprocess.check_call(["chmod", "a+rwx", file])
-    subprocess.call(
-        os.path.join(dir_scripts, "install_hooks.bash"), shell=True
-    )
+    subprocess.call(os.path.join(dir_scripts, "install_hooks.bash"), shell=True)
 
 
 if __name__ == "__main__":

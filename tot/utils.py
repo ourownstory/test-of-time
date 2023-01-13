@@ -26,9 +26,7 @@ def convert_to_datetime(series):
     if not np.issubdtype(series.dtype, np.datetime64):
         series = pd.to_datetime(series)
     if series.dt.tz is not None:
-        raise ValueError(
-            "Column ds has timezone specified, which is not supported. Remove timezone."
-        )
+        raise ValueError("Column ds has timezone specified, which is not supported. Remove timezone.")
     return series
 
 
@@ -42,18 +40,14 @@ def _get_seasons(seasonalities):
             daily = True
         elif math.isclose(season_days, 7):
             weekly = True
-        elif math.isclose(season_days, 365) or math.isclose(
-            season_days, 365.25
-        ):
+        elif math.isclose(season_days, 365) or math.isclose(season_days, 365.25):
             yearly = True
         else:
             custom.append(season_days)
     return daily, weekly, yearly, custom
 
 
-def _convert_seasonality_to_season_length(
-    freq, daily=False, weekly=False, yearly=False, custom_seasonalities=None
-):
+def _convert_seasonality_to_season_length(freq, daily=False, weekly=False, yearly=False, custom_seasonalities=None):
     """Convert seasonality to a number of time steps (season_length) for the given frequency.
 
     Parameters
