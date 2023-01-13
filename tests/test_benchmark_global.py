@@ -6,7 +6,7 @@ import pathlib
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import pytest
+import pytest #noga: F401
 
 from tot.benchmark import (
     CrossValidationBenchmark,
@@ -16,8 +16,7 @@ from tot.benchmark import (
 )
 from tot.dataset import Dataset
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
-from tot.metrics import ERROR_FUNCTIONS
-from tot.models import NeuralProphetModel, ProphetModel
+from tot.models import NeuralProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -130,7 +129,7 @@ def test_benchmark_CV_global_modeling():
     peyton_manning_df = pd.DataFrame()
     slice_idx = 0
     for df_name in ["df1", "df2"]:
-        df_aux = peyton_manning_df_aux.iloc[slice_idx : slice_idx + 100]
+        df_aux = peyton_manning_df_aux.iloc[slice_idx: slice_idx + 100]
         df_aux = df_aux.assign(ID=df_name)
         peyton_manning_df = pd.concat(
             (peyton_manning_df, df_aux), ignore_index=True
@@ -191,7 +190,7 @@ def test_benchmark_CV_global_modeling():
     log.debug("{}".format(results_summary))
     if PLOT:
         ercot = results_summary[results_summary["split"] == "test"]
-        plt_ercot = ercot.plot(x="data", y="MASE", kind="barh")
+        ercot.plot(x="data", y="MASE", kind="barh")
         plt.show()
 
 
@@ -212,7 +211,7 @@ def test_benchmark_manual_global_modeling():
     peyton_manning_df = pd.DataFrame()
     slice_idx = 0
     for df_name in ["df1", "df2"]:
-        df_aux = peyton_manning_df_aux.iloc[slice_idx : slice_idx + 100]
+        df_aux = peyton_manning_df_aux.iloc[slice_idx: slice_idx + 100]
         df_aux = df_aux.assign(ID=df_name)
         peyton_manning_df = pd.concat(
             (peyton_manning_df, df_aux), ignore_index=True
@@ -273,7 +272,7 @@ def test_benchmark_manualCV_global_modeling():
     slice_idx = 0
     log.info("Creating a date intersection between df1 and df2")
     for df_name in ["df1", "df2"]:
-        df_aux = peyton_manning_df_aux.iloc[slice_idx : slice_idx + 100]
+        df_aux = peyton_manning_df_aux.iloc[slice_idx: slice_idx + 100]
         df_aux = df_aux.assign(ID=df_name)
         peyton_manning_df = pd.concat(
             (peyton_manning_df, df_aux), ignore_index=True

@@ -6,7 +6,7 @@ import pathlib
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import pytest
+import pytest #noga: F401
 
 from tot.benchmark import (
     CrossValidationBenchmark,
@@ -129,7 +129,7 @@ def test_2_benchmark_CV():
         # plt_air = air_passengers.plot(x='model', y='RMSE', kind='barh')
         # data plot
         air_passengers = results_summary[results_summary["split"] == "test"]
-        plt_air = air_passengers.plot(x="data", y="MASE", kind="barh")
+        air_passengers.plot(x="data", y="MASE", kind="barh")
         plt.show()
 
 
@@ -309,7 +309,6 @@ def test_manual_benchmark():
 def test_manual_cv_benchmark():
     log.info("test_manual_cv_benchmark")
     air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
-    peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     metrics = list(ERROR_FUNCTIONS.keys())
     experiments = [
         CrossValidationExperiment(

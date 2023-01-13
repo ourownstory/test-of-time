@@ -11,15 +11,15 @@ from .benchmark import (  # noqa: F401
 
 # make classes available upon package import
 from .dataset import Dataset  # noqa: F401
-from .experiment import (
-    CrossValidationExperiment,
-    SimpleExperiment,
+from .experiment import (  # noqa: F401
+    # CrossValidationExperiment,  # noqa: F401
+    SimpleExperiment,  # noqa: F401
 )  # noqa: F401
 from .models import (  # noqa: F401
-    NaiveModel,
-    NeuralProphetModel,
-    ProphetModel,
-    SeasonalNaiveModel,
+    NaiveModel,  # noqa: F401
+    NeuralProphetModel,  # noqa: F401
+    ProphetModel,  # noqa: F401
+    SeasonalNaiveModel,  # noqa: F401
 )
 
 log = logging.getLogger("dv")

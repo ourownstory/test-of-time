@@ -5,7 +5,7 @@ import os
 import pathlib
 
 import pandas as pd
-import pytest
+import pytest #noga: F401
 
 from tot.benchmark import (
     CrossValidationBenchmark,
