@@ -8,12 +8,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pytest
 
-from tot.benchmark import (CrossValidationBenchmark, ManualBenchmark,
-                           ManualCVBenchmark, SimpleBenchmark)
+from tot.benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark
 from tot.dataset import Dataset
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
-from tot.metrics import ERROR_FUNCTIONS
-from tot.models import NeuralProphetModel, ProphetModel
+from tot.models import NeuralProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -50,7 +48,11 @@ def test_benchmark_simple_global_modeling():
     ercot_df = pd.DataFrame()
     for region in ERCOT_REGIONS:
         ercot_df = pd.concat(
-            (ercot_df, ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True)), ignore_index=True
+            (
+                ercot_df,
+                ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
+            ),
+            ignore_index=True,
         )
     dataset_list = [
         Dataset(df=ercot_df, name="ercot_load", freq="H"),
@@ -89,7 +91,6 @@ def test_benchmark_simple_global_modeling():
                 "global_time_normalization": False,
             },
         ),
-        # (NeuralProphetModel, {"n_lags": 24, "n_forecasts": 8, "learning_rate": 0.1, "epochs": EPOCHS, "global_normalization": True, "global_time_normalization": False, "unknown_data_normalization": False}),
     ]
     log.debug("{}".format(model_classes_and_params))
 
@@ -109,7 +110,11 @@ def test_benchmark_CV_global_modeling():
     ercot_df = pd.DataFrame()
     for region in ERCOT_REGIONS:
         ercot_df = pd.concat(
-            (ercot_df, ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True)), ignore_index=True
+            (
+                ercot_df,
+                ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
+            ),
+            ignore_index=True,
         )
     peyton_manning_df_aux = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     peyton_manning_df = pd.DataFrame()
@@ -159,7 +164,6 @@ def test_benchmark_CV_global_modeling():
                 "global_time_normalization": False,
             },
         ),
-        # (NeuralProphetModel, {"n_lags": 24, "n_forecasts": 8, "learning_rate": 0.1, "epochs": EPOCHS, "global_normalization": True, "global_time_normalization": False, "unknown_data_normalization": False}),
     ]
     log.debug("{}".format(model_classes_and_params))
 
@@ -175,7 +179,7 @@ def test_benchmark_CV_global_modeling():
     log.debug("{}".format(results_summary))
     if PLOT:
         ercot = results_summary[results_summary["split"] == "test"]
-        plt_ercot = ercot.plot(x="data", y="MASE", kind="barh")
+        ercot.plot(x="data", y="MASE", kind="barh")
         plt.show()
 
 
@@ -184,7 +188,11 @@ def test_benchmark_manual_global_modeling():
     ercot_df = pd.DataFrame()
     for region in ERCOT_REGIONS:
         ercot_df = pd.concat(
-            (ercot_df, ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True)), ignore_index=True
+            (
+                ercot_df,
+                ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
+            ),
+            ignore_index=True,
         )
     peyton_manning_df_aux = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     peyton_manning_df = pd.DataFrame()
@@ -198,14 +206,23 @@ def test_benchmark_manual_global_modeling():
     experiments = [
         SimpleExperiment(
             model_class=NeuralProphetModel,
-            params={"n_lags": 5, "n_forecasts": 3, "epochs": EPOCHS, "learning_rate": 0.1},
+            params={
+                "n_lags": 5,
+                "n_forecasts": 3,
+                "epochs": EPOCHS,
+                "learning_rate": 0.1,
+            },
             data=Dataset(df=ercot_df, name="ercot_load", freq="H"),
             metrics=metrics,
             test_percentage=25,
         ),
         SimpleExperiment(
             model_class=NeuralProphetModel,
-            params={"seasonality_mode": "multiplicative", "learning_rate": 0.1, "epochs": EPOCHS},
+            params={
+                "seasonality_mode": "multiplicative",
+                "learning_rate": 0.1,
+                "epochs": EPOCHS,
+            },
             data=Dataset(df=peyton_manning_df, name="peyton_manning_many_ts", freq="D"),
             metrics=metrics,
             test_percentage=25,
@@ -225,7 +242,11 @@ def test_benchmark_manualCV_global_modeling():
     ercot_df = pd.DataFrame()
     for region in ERCOT_REGIONS:
         ercot_df = pd.concat(
-            (ercot_df, ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True)), ignore_index=True
+            (
+                ercot_df,
+                ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
+            ),
+            ignore_index=True,
         )
     peyton_manning_df_aux = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     peyton_manning_df = pd.DataFrame()
@@ -244,7 +265,12 @@ def test_benchmark_manualCV_global_modeling():
     peyton_manning_df_intersect["y"] = overlap_vals
     peyton_manning_df_intersect["ID"] = "df2"
     peyton_manning_df_intersect = pd.concat(
-        (peyton_manning_df.iloc[:101], peyton_manning_df_intersect, peyton_manning_df.iloc[101:]), ignore_index=True
+        (
+            peyton_manning_df.iloc[:101],
+            peyton_manning_df_intersect,
+            peyton_manning_df.iloc[101:],
+        ),
+        ignore_index=True,
     )
     peyton_manning_df_intersect["ds"] = pd.to_datetime(peyton_manning_df_intersect["ds"])
 
@@ -252,7 +278,12 @@ def test_benchmark_manualCV_global_modeling():
     experiments = [
         CrossValidationExperiment(
             model_class=NeuralProphetModel,
-            params={"n_lags": 5, "n_forecasts": 3, "epochs": EPOCHS, "learning_rate": 0.1},
+            params={
+                "n_lags": 5,
+                "n_forecasts": 3,
+                "epochs": EPOCHS,
+                "learning_rate": 0.1,
+            },
             data=Dataset(df=ercot_df, name="ercot_load", freq="H"),
             metrics=metrics,
             test_percentage=10,
@@ -262,7 +293,11 @@ def test_benchmark_manualCV_global_modeling():
         ),
         CrossValidationExperiment(
             model_class=NeuralProphetModel,
-            params={"epochs": EPOCHS, "seasonality_mode": "multiplicative", "learning_rate": 0.1},
+            params={
+                "epochs": EPOCHS,
+                "seasonality_mode": "multiplicative",
+                "learning_rate": 0.1,
+            },
             data=Dataset(df=ercot_df, name="ercot_load", freq="H"),
             metrics=metrics,
             test_percentage=10,
@@ -272,7 +307,12 @@ def test_benchmark_manualCV_global_modeling():
         ),
         CrossValidationExperiment(
             model_class=NeuralProphetModel,
-            params={"n_lags": 5, "n_forecasts": 3, "epochs": EPOCHS, "learning_rate": 0.1},
+            params={
+                "n_lags": 5,
+                "n_forecasts": 3,
+                "epochs": EPOCHS,
+                "learning_rate": 0.1,
+            },
             data=Dataset(df=peyton_manning_df, name="peyton_manning_many_ts", freq="D"),
             metrics=metrics,
             test_percentage=10,
@@ -282,8 +322,16 @@ def test_benchmark_manualCV_global_modeling():
         ),
         CrossValidationExperiment(
             model_class=NeuralProphetModel,
-            params={"epochs": EPOCHS, "seasonality_mode": "multiplicative", "learning_rate": 0.1},
-            data=Dataset(df=peyton_manning_df_intersect, name="peyton_manning_many_ts", freq="D"),
+            params={
+                "epochs": EPOCHS,
+                "seasonality_mode": "multiplicative",
+                "learning_rate": 0.1,
+            },
+            data=Dataset(
+                df=peyton_manning_df_intersect,
+                name="peyton_manning_many_ts",
+                freq="D",
+            ),
             metrics=metrics,
             test_percentage=10,
             num_folds=3,
@@ -318,7 +366,6 @@ def test_benchmark_dict_global_modeling():
                 "global_time_normalization": True,
             },
         ),
-        # (NeuralProphetModel, {"n_lags": 24, "n_forecasts": 8, "learning_rate": 0.1, "epochs": EPOCHS, "global_normalization": True, "global_time_normalization": False, "unknown_data_normalization": False}),
     ]
     log.debug("{}".format(model_classes_and_params))
 

@@ -1,4 +1,5 @@
 import logging
+
 import numpy as np
 
 log = logging.getLogger("tot.metric")
@@ -102,4 +103,3 @@ ERROR_FUNCTIONS = {
     "MAPE": _calc_mape,
     "SMAPE": _calc_smape,
 }
-

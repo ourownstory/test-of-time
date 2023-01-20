@@ -1,10 +1,21 @@
 import logging
 
+# make version number accessible
+from ._version import __version__  # noqa: F401
+from .benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark  # noqa: F401
+
+# make classes available upon package import
+from .dataset import Dataset  # noqa: F401
+from .experiment import SimpleExperiment  # CrossValidationExperiment,  # noqa: F401; noqa: F401; noqa: F401
+from .models import NaiveModel  # noqa: F401
+from .models import NeuralProphetModel  # noqa: F401
+from .models import ProphetModel  # noqa: F401
+from .models import SeasonalNaiveModel  # noqa: F401; noqa: F401
+
 log = logging.getLogger("dv")
 log.setLevel("INFO")
 
 c_handler = logging.StreamHandler()
-# c_handler.setLevel("WARNING")
 c_format = logging.Formatter("%(levelname)s - (%(name)s.%(funcName)s) - %(message)s")
 c_handler.setFormatter(c_format)
 log.addHandler(c_handler)
@@ -21,12 +32,3 @@ if write_log_file:
     f_handler.setFormatter(f_format)
     log.addHandler(f_handler)
     warnings_log.addHandler(f_handler)
-
-# make version number accessible
-from ._version import __version__
-from .benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark
-
-# make classes available upon package import
-from .dataset import Dataset
-from .experiment import CrossValidationExperiment, SimpleExperiment
-from .models import NaiveModel, NeuralProphetModel, ProphetModel, SeasonalNaiveModel
