@@ -2,9 +2,9 @@ import gc
 import logging
 import os
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from multiprocessing.pool import Pool
-from typing import List, Optional, Tuple, Type
+from typing import List, Optional
 
 import numpy as np
 import pandas as pd
@@ -49,7 +49,7 @@ class Experiment(ABC):
             self.experiment_name = "{}_{}{}".format(
                 self.data.name,
                 self.model_class.model_name,
-                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()]).replace("\'","").replace(":","_"),
+                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()]).replace("'", "").replace(":", "_"),
             )
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
@@ -234,7 +234,12 @@ class CrossValidationExperiment(Experiment):
         if self.num_processes > 1 and self.num_folds > 1:
             with Pool(self.num_processes) as pool:
                 args = [(df_train, df_test, current_fold) for current_fold, (df_train, df_test) in enumerate(folds)]
-                pool.map_async(self._run_fold, args, callback=self._log_results, error_callback=self._log_error)
+                pool.map_async(
+                    self._run_fold,
+                    args,
+                    callback=self._log_results,
+                    error_callback=self._log_error,
+                )
                 pool.close()
                 pool.join()
             gc.collect()
@@ -247,10 +252,12 @@ class CrossValidationExperiment(Experiment):
             results_cv_test_df = pd.DataFrame()
             results_cv_train_df = pd.DataFrame()
             results_cv_test_df = pd.concat(
-                [results_cv_test_df, pd.DataFrame([self.results_cv_test])], ignore_index=True
+                [results_cv_test_df, pd.DataFrame([self.results_cv_test])],
+                ignore_index=True,
             )
             results_cv_train_df = pd.concat(
-                [results_cv_train_df, pd.DataFrame([self.results_cv_train])], ignore_index=True
+                [results_cv_train_df, pd.DataFrame([self.results_cv_train])],
+                ignore_index=True,
             )
             self.write_results_to_csv(results_cv_test_df, prefix="summary_test")
             self.write_results_to_csv(results_cv_train_df, prefix="summary_train")

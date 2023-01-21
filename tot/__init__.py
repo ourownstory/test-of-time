@@ -1,5 +1,15 @@
 import logging
 
+# make version number accessible
+from ._version import __version__  # noqa: F401
+from .benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark  # noqa: F401
+
+# make classes available upon package import
+from .dataset import Dataset  # noqa: F401
+from .experiment import SimpleExperiment  # CrossValidationExperiment,  # noqa: F401; noqa: F401; noqa: F401
+from .models import (LinearRegressionModel, NaiveModel, NeuralProphetModel,
+                     ProphetModel, SeasonalNaiveModel)
+
 # logger handling
 log = logging.getLogger("dv")
 log.setLevel("INFO")
@@ -24,12 +34,3 @@ if write_log_file:
     log.addHandler(f_handler)
     warnings_log.addHandler(f_handler)
 
-# make version number accessible
-from ._version import __version__
-from .benchmark import (CrossValidationBenchmark, ManualBenchmark,
-                        ManualCVBenchmark, SimpleBenchmark)
-# make classes available upon package import
-from .dataset import Dataset
-from .experiment import CrossValidationExperiment, SimpleExperiment
-from .models import (LinearRegressionModel, NaiveModel, NeuralProphetModel,
-                     ProphetModel, SeasonalNaiveModel)

@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
 
-import pytest
+import logging
 import os
 import pathlib
-import pandas as pd
-import logging
-import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
+import pandas as pd
+
+from tot.benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark
 from tot.dataset import Dataset
-from tot.models import NeuralProphetModel, ProphetModel
-from tot.experiment import SimpleExperiment, CrossValidationExperiment
-from tot.benchmark import SimpleBenchmark, CrossValidationBenchmark
-from tot.benchmark import ManualBenchmark, ManualCVBenchmark
+from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.metrics import ERROR_FUNCTIONS
+from tot.models import NeuralProphetModel, ProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -49,13 +48,29 @@ def test_2_benchmark_simple():
     air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
 
     dataset_list = [
-        Dataset(df=air_passengers_df, name="air_passengers", freq="MS", seasonality_mode="multiplicative"),
-        Dataset(df=peyton_manning_df, name="peyton_manning", freq="D", seasonalities=[7, 365.25]),
+        Dataset(
+            df=air_passengers_df,
+            name="air_passengers",
+            freq="MS",
+            seasonality_mode="multiplicative",
+        ),
+        Dataset(
+            df=peyton_manning_df,
+            name="peyton_manning",
+            freq="D",
+            seasonalities=[7, 365.25],
+        ),
     ]
     model_classes_and_params = [
-        (NeuralProphetModel, {"n_lags": 5, "n_forecasts": 3, "learning_rate": 0.1, "epochs": EPOCHS}),
-        # (NeuralProphetModel, {"seasonality_mode": "multiplicative", "learning_rate": 0.1, "epochs": EPOCHS}),
-        # (ProphetModel, {"seasonality_mode": "multiplicative"}) # needs to be installed
+        (
+            NeuralProphetModel,
+            {
+                "n_lags": 5,
+                "n_forecasts": 3,
+                "learning_rate": 0.1,
+                "epochs": EPOCHS,
+            },
+        ),
     ]
     log.debug("{}".format(model_classes_and_params))
 
@@ -78,7 +93,15 @@ def test_2_benchmark_CV():
         Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
     ]
     model_classes_and_params = [
-        (NeuralProphetModel, {"n_lags": 5, "n_forecasts": 3, "learning_rate": 0.1, "epochs": EPOCHS}),
+        (
+            NeuralProphetModel,
+            {
+                "n_lags": 5,
+                "n_forecasts": 3,
+                "learning_rate": 0.1,
+                "epochs": EPOCHS,
+            },
+        ),
         # (ProphetModel, {}), # needs to be installed
     ]
     log.debug("{}".format(model_classes_and_params))
@@ -100,7 +123,7 @@ def test_2_benchmark_CV():
         # plt_air = air_passengers.plot(x='model', y='RMSE', kind='barh')
         # data plot
         air_passengers = results_summary[results_summary["split"] == "test"]
-        plt_air = air_passengers.plot(x="data", y="MASE", kind="barh")
+        air_passengers.plot(x="data", y="MASE", kind="barh")
         plt.show()
 
 
@@ -110,14 +133,23 @@ def test_2_benchmark_manual():
     experiments = [
         SimpleExperiment(
             model_class=NeuralProphetModel,
-            params={"n_lags": 5, "n_forecasts": 3, "epochs": EPOCHS, "learning_rate": 0.1},
+            params={
+                "n_lags": 5,
+                "n_forecasts": 3,
+                "epochs": EPOCHS,
+                "learning_rate": 0.1,
+            },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=25,
         ),
         SimpleExperiment(
             model_class=NeuralProphetModel,
-            params={"seasonality_mode": "multiplicative", "learning_rate": 0.1, "epochs": EPOCHS},
+            params={
+                "seasonality_mode": "multiplicative",
+                "learning_rate": 0.1,
+                "epochs": EPOCHS,
+            },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=25,
@@ -150,7 +182,12 @@ def test_2_benchmark_manualCV():
     experiments = [
         CrossValidationExperiment(
             model_class=NeuralProphetModel,
-            params={"n_lags": 5, "n_forecasts": 3, "epochs": EPOCHS, "learning_rate": 0.1},
+            params={
+                "n_lags": 5,
+                "n_forecasts": 3,
+                "epochs": EPOCHS,
+                "learning_rate": 0.1,
+            },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=10,
@@ -159,7 +196,11 @@ def test_2_benchmark_manualCV():
         ),
         CrossValidationExperiment(
             model_class=NeuralProphetModel,
-            params={"epochs": EPOCHS, "seasonality_mode": "multiplicative", "learning_rate": 0.1},
+            params={
+                "epochs": EPOCHS,
+                "seasonality_mode": "multiplicative",
+                "learning_rate": 0.1,
+            },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=10,
@@ -194,7 +235,11 @@ def test_manual_benchmark():
     experiments = [
         SimpleExperiment(
             model_class=NeuralProphetModel,
-            params={"seasonality_mode": "multiplicative", "learning_rate": 0.1, "epochs": EPOCHS},
+            params={
+                "seasonality_mode": "multiplicative",
+                "learning_rate": 0.1,
+                "epochs": EPOCHS,
+            },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=25,
@@ -238,12 +283,15 @@ def test_manual_benchmark():
 def test_manual_cv_benchmark():
     log.info("test_manual_cv_benchmark")
     air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
-    peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     metrics = list(ERROR_FUNCTIONS.keys())
     experiments = [
         CrossValidationExperiment(
             model_class=NeuralProphetModel,
-            params={"epochs": EPOCHS, "seasonality_mode": "multiplicative", "learning_rate": 0.1},
+            params={
+                "epochs": EPOCHS,
+                "seasonality_mode": "multiplicative",
+                "learning_rate": 0.1,
+            },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=10,
@@ -253,7 +301,11 @@ def test_manual_cv_benchmark():
         ),
         CrossValidationExperiment(
             model_class=NeuralProphetModel,
-            params={"seasonality_mode": "multiplicative", "epochs": EPOCHS, "learning_rate": 0.1},
+            params={
+                "seasonality_mode": "multiplicative",
+                "epochs": EPOCHS,
+                "learning_rate": 0.1,
+            },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
             test_percentage=10,
@@ -282,7 +334,14 @@ def test_simple_benchmark():
         # Dataset(df = ercot_load_df, name = "ercot_load", freq = "H"),
     ]
     model_classes_and_params = [
-        (NeuralProphetModel, {"epochs": EPOCHS, "seasonality_mode": "multiplicative", "learning_rate": 0.1}),
+        (
+            NeuralProphetModel,
+            {
+                "epochs": EPOCHS,
+                "seasonality_mode": "multiplicative",
+                "learning_rate": 0.1,
+            },
+        ),
         (NeuralProphetModel, {"epochs": EPOCHS, "learning_rate": 0.1}),
         # (ProphetModel, {}),
     ]
@@ -312,7 +371,14 @@ def test_cv_benchmark():
         # Dataset(df = ercot_load_df, name = "ercot_load", freq = "H"),
     ]
     model_classes_and_params = [
-        (NeuralProphetModel, {"epochs": EPOCHS, "learning_rate": 0.1, "seasonality_mode": "multiplicative"}),
+        (
+            NeuralProphetModel,
+            {
+                "epochs": EPOCHS,
+                "learning_rate": 0.1,
+                "seasonality_mode": "multiplicative",
+            },
+        ),
         # (NeuralProphetModel, {"epochs": EPOCHS, "learning_rate": 0.1}),
         # (ProphetModel, {}),
         # (ProphetModel, {"seasonality_mode": "multiplicative"}),

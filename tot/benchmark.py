@@ -2,17 +2,16 @@ import datetime
 import gc
 import logging
 import os
-from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from abc import ABC
+from dataclasses import dataclass
 from multiprocessing.pool import Pool
-from typing import List, Optional, Tuple, Type
+from typing import List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
 
 from tot.dataset import Dataset
-from tot.experiment import (CrossValidationExperiment, Experiment,
-                            SimpleExperiment)
+from tot.experiment import CrossValidationExperiment, Experiment, SimpleExperiment
 from tot.models import Model
 
 log = logging.getLogger("tot.benchmark")
@@ -71,8 +70,14 @@ class Benchmark(ABC):
             results = [results]
         for res in results:
             res_train, res_test = res
-            self.df_metrics_train = pd.concat([self.df_metrics_train, pd.DataFrame([res_train])], ignore_index=True)
-            self.df_metrics_test = pd.concat([self.df_metrics_test, pd.DataFrame([res_test])], ignore_index=True)
+            self.df_metrics_train = pd.concat(
+                [self.df_metrics_train, pd.DataFrame([res_train])],
+                ignore_index=True,
+            )
+            self.df_metrics_test = pd.concat(
+                [self.df_metrics_test, pd.DataFrame([res_test])],
+                ignore_index=True,
+            )
 
     def _log_error(self, error):
         log.error(repr(error))
@@ -93,7 +98,12 @@ class Benchmark(ABC):
                 raise ValueError("can not set multiprocessing in experiments and Benchmark.")
             with Pool(self.num_processes) as pool:
                 args_list = [(exp, verbose, i + 1) for i, exp in enumerate(self.experiments)]
-                pool.map_async(self._run_exp, args_list, callback=self._log_result, error_callback=self._log_error)
+                pool.map_async(
+                    self._run_exp,
+                    args_list,
+                    callback=self._log_result,
+                    error_callback=self._log_error,
+                )
                 pool.close()
                 pool.join()
             gc.collect()
@@ -114,7 +124,10 @@ class CVBenchmark(Benchmark, ABC):
         if not os.path.isdir(save_dir):
             os.makedirs(save_dir)
         models = [
-            "{}-{}".format(e.metadata["model"], "".join(["_{0}_{1}".format(k, v) for k, v in e.params.items()]))
+            "{}-{}".format(
+                e.metadata["model"],
+                "".join(["_{0}_{1}".format(k, v) for k, v in e.params.items()]),
+            )
             for e in self.experiments
         ]
         models = "_".join(list(set(models)))

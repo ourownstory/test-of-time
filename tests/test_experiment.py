@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 
-import pytest
+import logging
 import os
 import pathlib
+
 import pandas as pd
-import logging
+import pytest
 
 from tot.dataset import Dataset
-from tot.models import NeuralProphetModel, ProphetModel
-from tot.experiment import SimpleExperiment, CrossValidationExperiment
-from tot.benchmark import SimpleBenchmark, CrossValidationBenchmark
-from tot.benchmark import ManualBenchmark, ManualCVBenchmark
+from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.metrics import ERROR_FUNCTIONS
+from tot.models import NeuralProphetModel, ProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -47,14 +46,17 @@ def test_simple_experiment():
     log.info("test_simple_experiment")
     air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
     ts = Dataset(df=air_passengers_df, name="air_passengers", freq="MS")
-    params = {"seasonality_mode": "multiplicative", "epochs": EPOCHS, "learning_rate": 0.1}
+    params = {
+        "seasonality_mode": "multiplicative",
+        "epochs": EPOCHS,
+        "learning_rate": 0.1,
+    }
     exp = SimpleExperiment(
         model_class=NeuralProphetModel,
         params=params,
         data=ts,
         metrics=list(ERROR_FUNCTIONS.keys()),
         test_percentage=25,
-        # save_dir=SAVE_DIR,
     )
     result_train, result_val = exp.run()
     log.debug(result_val)
@@ -76,7 +78,6 @@ def test_cv_experiment():
         num_folds=2,
         fold_overlap_pct=0,
         save_dir=SAVE_DIR,
-        # num_processes=1,
     )
     result_train, result_val = exp_cv.run()
     log.debug(result_val)
