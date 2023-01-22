@@ -8,7 +8,7 @@ from typing import List, Optional
 
 import numpy as np
 import pandas as pd
-from neuralprophet import df_utils
+from neuralprophet import df_utils, set_random_seed
 
 from tot.dataset import Dataset
 from tot.metrics import ERROR_FUNCTIONS
@@ -157,6 +157,7 @@ class SimpleExperiment(Experiment):
     """
 
     def run(self):
+        set_random_seed(42)
         model = self.model_class(self.params)
         df = model._handle_missing_data(self.data.df, freq=self.data.freq, predicting=False)
         df_train, df_test = df_utils.split_df(
@@ -195,8 +196,11 @@ class CrossValidationExperiment(Experiment):
     # results_cv_test: dict = field(init=False)
 
     def _run_fold(self, args):
+        set_random_seed(42)
         df_train, df_test, current_fold = args
         model = self.model_class(self.params)
+        df_train = model._handle_missing_data(df_train, freq=self.data.freq, predicting=False)
+        df_test = model._handle_missing_data(df_test, freq=self.data.freq, predicting=False)
         model.fit(df=df_train, freq=self.data.freq)
         result_train, result_test = self._evaluate_model(model, df_train, df_test, current_fold=current_fold)
         del model
