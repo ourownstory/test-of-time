@@ -12,6 +12,7 @@ from .models import NaiveModel  # noqa: F401
 from .models import NeuralProphetModel  # noqa: F401
 from .models import ProphetModel  # noqa: F401
 from .models import SeasonalNaiveModel  # noqa: F401
+from .models import TorchProphetModel  # noqa: F401
 
 # logger handling
 log = logging.getLogger("dv")

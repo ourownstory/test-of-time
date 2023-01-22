@@ -6,7 +6,7 @@ from typing import Type
 
 import numpy as np
 import pandas as pd
-from neuralprophet import NeuralProphet, df_utils
+from neuralprophet import NeuralProphet, TorchProphet, df_utils
 
 from tot.df_utils import reshape_raw_predictions_to_forecast_df
 from tot.utils import _convert_seasonality_to_season_length, _get_seasons, convert_df_to_TimeSeries, convert_to_datetime
@@ -288,6 +288,12 @@ class NeuralProphetModel(Model):
             received_single_time_series_pred,
         )
         return predicted, df
+
+
+@dataclass
+class TorchProphetModel(NeuralProphetModel):
+    model_name: str = "TorchProphet"
+    model_class: Type = TorchProphet
 
 
 @dataclass
