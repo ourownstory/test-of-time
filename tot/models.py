@@ -603,7 +603,6 @@ class LinearRegressionModel(Model):
                 "https://github.com/unit8co/darts/blob/master/INSTALL.md"
             )
 
-        data_params = self.params["_data_params"]
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
         model_params.pop("n_forecasts")
@@ -696,7 +695,7 @@ class LinearRegressionModel(Model):
             name = f"yhat{forecast_lag}"
             fcst_df[name] = yhat
 
-        return fcst_dfq
+        return fcst_df
 
     def __handle_missing_data(self, df, freq, predicting):
         """Checks and normalizes new data
