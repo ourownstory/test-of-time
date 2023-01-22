@@ -7,8 +7,7 @@ from .benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchm
 # make classes available upon package import
 from .dataset import Dataset  # noqa: F401
 from .experiment import SimpleExperiment  # CrossValidationExperiment,  # noqa: F401; noqa: F401; noqa: F401
-from .models import (LinearRegressionModel, NaiveModel, NeuralProphetModel,
-                     ProphetModel, SeasonalNaiveModel)
+from .models import LinearRegressionModel, NaiveModel, NeuralProphetModel, ProphetModel, SeasonalNaiveModel
 
 # logger handling
 log = logging.getLogger("dv")
@@ -33,4 +32,3 @@ if write_log_file:
     f_handler.setFormatter(f_format)
     log.addHandler(f_handler)
     warnings_log.addHandler(f_handler)
-

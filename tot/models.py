@@ -9,8 +9,7 @@ import pandas as pd
 from neuralprophet import NeuralProphet, df_utils
 
 from tot.df_utils import reshape_raw_predictions_to_forecast_df
-from tot.utils import (_convert_seasonality_to_season_length, _get_seasons,
-                       convert_df_to_TimeSeries, convert_to_datetime)
+from tot.utils import _convert_seasonality_to_season_length, _get_seasons, convert_df_to_TimeSeries, convert_to_datetime
 
 # check import of implemented models and consider order of imports
 try:
@@ -542,14 +541,12 @@ class NaiveModel(SeasonalNaiveModel):
 @dataclass
 class LinearRegressionModel(Model):
     """
-     A forecasting model using a linear regression of some of the target series' lags, as well as optionally some
-     covariate series lags in order to obtain a forecast.
+     A forecasting model using a linear regression of  the target series' lags to obtain a forecast.
 
      Parameters
      ----------
          n_lags : int
-             Lagged target values used to predict the next time step. For integers is given the last `lags` past lags
-             are used (from -1 backward).
+             Previous time series steps to include in auto-regression. Aka AR-order
          output_chunk_length : int
              Number of time steps predicted at once by the internal regression model. Does not have to equal the forecast
              horizon `n` used in `predict()`. However, setting `output_chunk_length` equal to the forecast horizon may
@@ -581,30 +578,17 @@ class LinearRegressionModel(Model):
      >>>     num_processes=1,
      >>> )
 
-     Note
-     ----
-     COMMENT
-     Supported capabilities
-     COMMENT
-         * univariate time series
-         * single target
-         * autoregression, n_lags > 1
-         * n_forecats > 1
-         * output_chunk_length > 1
+         Note
+    ----
+        ``Supported capabilities``
+        * univariate time series
+        * n_forecats > 1
+        * autoregression
 
-     COMMENT
-     Not supported capabilities
-     COMMENT
-         * probabilitstic forecast
-         * add_encoders
 
-    COMMENT
-    Planned capabilities
-    COMMENT
-         * multi-target
-         * past covariates
-         * future covariates
-         * frequency check and optional frequency conversion
+        ``Not supported capabilities``
+        * multivariate time series input
+        * frequency check and optional frequency conversion
     """
 
     model_name: str = "LinearRegressionModel"
@@ -618,17 +602,16 @@ class LinearRegressionModel(Model):
                 "https://scikit-learn.org/stable/install.html"
                 "https://github.com/unit8co/darts/blob/master/INSTALL.md"
             )
-        # assign model
+
         data_params = self.params["_data_params"]
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
         model_params.pop("n_forecasts")
         model = LinearRegression(n_jobs=-1)  # n_jobs=-1 indicates to use all processors
-        model_params.update({"model": model})
+        model_params.update({"model": model}) # assign model
         self.model = self.model_class(**model_params)
         self.n_forecasts = self.params["n_forecasts"]
         self.n_lags = model_params["lags"]
-
         # input checks are provided by model itself
 
     def fit(self, df: pd.DataFrame, freq: str):
@@ -664,8 +647,9 @@ class LinearRegressionModel(Model):
         """
         df, received_ID_col, received_single_time_series, _ = df_utils.prep_or_copy_df(df)
         # Receives df with single ID column. Only single time series accepted.
-        assert received_ID_col
-        series = convert_df_to_TimeSeries(df, value_cols=df.columns.values[1:-1].tolist(), freq=self.freq)
+        assert received_single_time_series
+        value_cols = df.columns.values[1:-1].tolist() if received_single_time_series else df.columns.values[1:].tolist()
+        series = convert_df_to_TimeSeries(df, value_cols=value_cols, freq=self.freq)
         predicted_list = self.model.historical_forecasts(
             series,
             start=self.n_lags,
@@ -712,7 +696,7 @@ class LinearRegressionModel(Model):
             name = f"yhat{forecast_lag}"
             fcst_df[name] = yhat
 
-        return fcst_df
+        return fcst_dfq
 
     def __handle_missing_data(self, df, freq, predicting):
         """Checks and normalizes new data
@@ -754,26 +738,6 @@ class LinearRegressionModel(Model):
             if missing_dates > 0:
                 if impute_missing:
                     log.info(f"{missing_dates} missing dates added.")
-                # FIX Issue#52
-                # Comment error raising to allow missing data for autoregression flow.
-                # else:
-                #     raise ValueError(f"{missing_dates} missing dates found. Please preprocess data manually or set impute_missing to True.")
-                # END FIX
-
-        # if self.config_regressors is not None:
-        #     # if future regressors, check that they are not nan at end, else drop
-        #     # we ignore missing events, as those will be filled in with zeros.
-        #     reg_nan_at_end = 0
-        #     for col, regressor in self.config_regressors.items():
-        #         # check for completeness of the regressor values
-        #         col_nan_at_end = 0
-        #         while len(df) > col_nan_at_end and df[col].isnull().iloc[-(1 + col_nan_at_end)]:
-        #             col_nan_at_end += 1
-        #         reg_nan_at_end = max(reg_nan_at_end, col_nan_at_end)
-        #     if reg_nan_at_end > 0:
-        #         # drop rows at end due to missing future regressors
-        #         df = df[:-reg_nan_at_end]
-        #         log.info(f"Dropped {reg_nan_at_end} rows at end due to missing future regressor values.")
 
         df_end_to_append = None
         nan_at_end = 0
@@ -805,21 +769,11 @@ class LinearRegressionModel(Model):
         data_columns = []
         if self.n_lags > 0:
             data_columns.append("y")
-        # if self.config_lagged_regressors is not None:
-        #     data_columns.extend(self.config_lagged_regressors.keys())
-        # if self.config_regressors is not None:
-        #     data_columns.extend(self.config_regressors.keys())
-        # if self.config_events is not None:
-        #     data_columns.extend(self.config_events.keys())
         for column in data_columns:
             sum_na = sum(df[column].isnull())
             if sum_na > 0:
                 log.warning(f"{sum_na} missing values in column {column} were detected in total. ")
                 if impute_missing:
-                    # use 0 substitution for holidays and events missing values
-                    # if self.config_events is not None and column in self.config_events.keys():
-                    #     df[column].fillna(0, inplace=True)
-                    #     remaining_na = 0
                     # else:
                     df.loc[:, column], remaining_na = df_utils.fill_linear_then_rolling_avg(
                         df[column],
@@ -832,13 +786,6 @@ class LinearRegressionModel(Model):
                             f"More than {2 * self.config_missing.impute_linear + self.config_missing.impute_rolling} consecutive missing values encountered in column {column}. "
                             f"{remaining_na} NA remain after auto-imputation. "
                         )
-                # FIX Issue#52
-                # Comment error raising to allow missing data for autoregression flow.
-                # else:  # fail because set to not impute missing
-                #    raise ValueError(
-                #        "Missing values found. " "Please preprocess data manually or set impute_missing to True."
-                #    )
-                # END FIX
         if df_end_to_append is not None:
             df = pd.concat([df, df_end_to_append])
         return df

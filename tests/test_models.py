@@ -6,12 +6,10 @@ import pathlib
 import pandas as pd
 import pytest
 
-
 from tot.benchmark import SimpleBenchmark
 from tot.dataset import Dataset
 from tot.metrics import ERROR_FUNCTIONS
-from tot.models import (LinearRegressionModel, NaiveModel, ProphetModel,
-                        SeasonalNaiveModel)
+from tot.models import LinearRegressionModel, NaiveModel, ProphetModel, SeasonalNaiveModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -265,5 +263,5 @@ def test_linear_regression_model():
         num_processes=1,
     )
     results_train, results_test = benchmark.run()
-    log.info("#### Done with test_simple_benchmark_prophet")
+    log.info("#### test_linear_regression_model")
     print(results_test)
