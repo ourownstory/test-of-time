@@ -608,7 +608,7 @@ class LinearRegressionModel(Model):
         model_params.pop("_data_params")
         model_params.pop("n_forecasts")
         model = LinearRegression(n_jobs=-1)  # n_jobs=-1 indicates to use all processors
-        model_params.update({"model": model}) # assign model
+        model_params.update({"model": model})  # assign model
         self.model = self.model_class(**model_params)
         self.n_forecasts = self.params["n_forecasts"]
         self.n_lags = model_params["lags"]
