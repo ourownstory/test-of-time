@@ -7,13 +7,11 @@ from .benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchm
 # make classes available upon package import
 from .dataset import Dataset  # noqa: F401
 from .experiment import SimpleExperiment  # noqa: F401
-from .models import (
-    LinearRegressionModel,
-    NaiveModel,
-    NeuralProphetModel,
-    ProphetModel,
-    SeasonalNaiveModel,
-)  # noqa: F401
+from .models import LinearRegressionModel  # noqa: F401
+from .models import NaiveModel  # noqa: F401
+from .models import NeuralProphetModel  # noqa: F401
+from .models import ProphetModel  # noqa: F401
+from .models import SeasonalNaiveModel  # noqa: F401
 
 # logger handling
 log = logging.getLogger("dv")
