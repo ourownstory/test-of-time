@@ -6,7 +6,7 @@ from typing import Type
 
 import numpy as np
 import pandas as pd
-from neuralprophet import NeuralProphet, df_utils
+from neuralprophet import NeuralProphet, TorchProphet, df_utils
 
 from tot.df_utils import reshape_raw_predictions_to_forecast_df
 from tot.utils import _convert_seasonality_to_season_length, _get_seasons, convert_df_to_TimeSeries, convert_to_datetime
@@ -288,6 +288,36 @@ class NeuralProphetModel(Model):
             received_single_time_series_pred,
         )
         return predicted, df
+
+
+@dataclass
+class TorchProphetModel(NeuralProphetModel):
+    model_name: str = "TorchProphet"
+    model_class: Type = TorchProphet
+
+    def __post_init__(self):
+        data_params = self.params["_data_params"]
+        custom_seasonalities = None
+        if "seasonalities" in data_params and len(data_params["seasonalities"]) > 0:
+            daily, weekly, yearly, custom_seasonalities = _get_seasons(data_params["seasonalities"])
+            self.params.update({"daily_seasonality": daily})
+            self.params.update({"weekly_seasonality": weekly})
+            self.params.update({"yearly_seasonality": yearly})
+        if "seasonality_mode" in data_params and data_params["seasonality_mode"] is not None:
+            self.params.update({"seasonality_mode": data_params["seasonality_mode"]})
+        model_params = deepcopy(self.params)
+        model_params.pop("_data_params")
+        model_params.update({"interval_width": 0})
+        self.model = self.model_class(**model_params)
+        if custom_seasonalities is not None:
+            for seasonality in custom_seasonalities:
+                self.model.add_seasonality(
+                    name="{}_daily".format(str(seasonality)),
+                    period=seasonality,
+                )
+        self.n_forecasts = self.model.n_forecasts
+        self.n_lags = self.model.n_lags
+        self.season_length = None
 
 
 @dataclass

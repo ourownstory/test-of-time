@@ -9,7 +9,7 @@ import pytest
 from tot.benchmark import SimpleBenchmark
 from tot.dataset import Dataset
 from tot.metrics import ERROR_FUNCTIONS
-from tot.models import LinearRegressionModel, NaiveModel, ProphetModel, SeasonalNaiveModel
+from tot.models import LinearRegressionModel, NaiveModel, ProphetModel, SeasonalNaiveModel, TorchProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -264,4 +264,32 @@ def test_linear_regression_model():
     )
     results_train, results_test = benchmark.run()
     log.info("#### test_linear_regression_model")
+    print(results_test)
+
+
+def test_torch_prophet_model():
+    air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
+    peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
+    dataset_list = [
+        Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
+        Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
+    ]
+    model_classes_and_params = [
+        (
+            TorchProphetModel,
+            {"seasonality_mode": "multiplicative", "interval_width": 0},
+        ),
+    ]
+    log.debug("{}".format(model_classes_and_params))
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    results_train, results_test = benchmark.run()
+    log.info("#### test_torch_prophet_model")
     print(results_test)
