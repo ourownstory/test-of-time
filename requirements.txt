@@ -1,4 +1,0 @@
-numpy>=1.15.4
-pandas>=1.0.4
-dataclasses>=0.6;python_version<'3.7'
-neuralprophet>=0.3.2
