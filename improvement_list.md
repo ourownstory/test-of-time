@@ -6,3 +6,7 @@
 
 ### experiment.py
 * adjust the eperiment name or params description to be less extensive
+
+### models.py
+* rethink clas methods of LinearRegression model
+
