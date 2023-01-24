@@ -8,9 +8,10 @@ from typing import List, Optional
 
 import numpy as np
 import pandas as pd
-from neuralprophet import df_utils, set_random_seed
+from neuralprophet import set_random_seed
 
 from tot.dataset import Dataset
+from tot.df_utils import crossvalidation_split_df, split_df
 from tot.metrics import ERROR_FUNCTIONS
 from tot.models import Model
 
@@ -70,7 +71,6 @@ class Experiment(ABC):
         df.to_csv(os.path.join(self.save_dir, name), encoding="utf-8", index=False)
 
     def _evaluate_model(self, model, df_train, df_test, current_fold=None):
-        df_test = model.maybe_add_first_inputs_to_df(df_train, df_test)
         self.required_past_observations = 0
         if model.n_lags is not None:
             if model.n_lags > 0:
@@ -82,14 +82,8 @@ class Experiment(ABC):
             raise ValueError("Not enough training data to create a single input sample.")
         if self.required_past_observations + model.n_forecasts > len(df_test):
             raise ValueError("Not enough test data to create a single input sample.")
-        fcst_train = model.predict(df_train)
-        fcst_test = model.predict(df_test)
-        # remove added input lags
-        fcst_train, df_train = model.maybe_drop_first_forecasts(fcst_train, df_train)
-        fcst_test, df_test = model.maybe_drop_first_forecasts(fcst_test, df_test)
-        # remove interpolated dates
-        fcst_train, df_train = model.maybe_drop_added_dates(fcst_train, df_train)
-        fcst_test, df_test = model.maybe_drop_added_dates(fcst_test, df_test)
+        fcst_train = model.predict(df=df_train)
+        fcst_test = model.predict(df=df_test, df_historic=df_train)
 
         result_train = self.metadata.copy()
         result_test = self.metadata.copy()
@@ -160,11 +154,9 @@ class SimpleExperiment(Experiment):
         set_random_seed(42)
         model = self.model_class(self.params)
         df = model._handle_missing_data(self.data.df, freq=self.data.freq, predicting=False)
-        df_train, df_test = df_utils.split_df(
+        df_train, df_test = split_df(
             df=df,
-            n_lags=0,
-            n_forecasts=1,
-            valid_p=self.test_percentage / 100.0,
+            test_percentage=self.test_percentage,
         )
         model.fit(df=df_train, freq=self.data.freq)
         result_train, result_test = self._evaluate_model(model, df_train, df_test)
@@ -220,10 +212,11 @@ class CrossValidationExperiment(Experiment):
         log.error(repr(error))
 
     def run(self):
-        folds = df_utils.crossvalidation_split_df(
+        folds = crossvalidation_split_df(
+            n_lags=self.params["n_lags"],
+            n_forecasts=self.params["n_forecasts"],
             df=self.data.df,
-            n_lags=0,
-            n_forecasts=1,
+            freq=self.data.freq,
             k=self.num_folds,
             fold_pct=self.test_percentage / 100.0,
             fold_overlap_pct=self.fold_overlap_pct / 100.0,
@@ -240,6 +233,7 @@ class CrossValidationExperiment(Experiment):
                 args = [(df_train, df_test, current_fold) for current_fold, (df_train, df_test) in enumerate(folds)]
                 pool.map_async(
                     self._run_fold,
+                    model,
                     args,
                     callback=self._log_results,
                     error_callback=self._log_error,

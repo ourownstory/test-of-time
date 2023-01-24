@@ -74,7 +74,7 @@ class Model(ABC):
         pass
 
     @abstractmethod
-    def predict(self, df: pd.DataFrame):
+    def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):
         pass
 
     def _handle_missing_data(self, df, freq, predicting=False):
@@ -139,7 +139,7 @@ class ProphetModel(Model):
         self.freq = freq
         self.model = self.model.fit(df=df)
 
-    def predict(self, df: pd.DataFrame):
+    def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):
         fcst = self.model.predict(df=df)
         fcst_df = pd.DataFrame({"time": fcst.ds, "y": df.y, "yhat1": fcst.yhat})
         return fcst_df
@@ -177,7 +177,9 @@ class NeuralProphetModel(Model):
         self.freq = freq
         _ = self.model.fit(df=df, freq=freq, progress="none", minimal=True)
 
-    def predict(self, df: pd.DataFrame):
+    def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):
+        if df_historic is not None:
+            df = self.maybe_add_first_inputs_to_df(df_historic, df)
         fcst = self.model.predict(df=df)
         (
             fcst,
@@ -194,6 +196,9 @@ class NeuralProphetModel(Model):
             fcst_aux["ID"] = df_name
             fcst_df = pd.concat((fcst_df, fcst_aux), ignore_index=True)
         fcst_df = df_utils.return_df_in_original_format(fcst_df, received_ID_col, received_single_time_series)
+        if df_historic is not None:
+            fcst_df, df = self.maybe_drop_first_forecasts(fcst_df, df)
+        fcst_df, df = self.maybe_drop_added_dates(fcst_df, df)
         return fcst_df
 
     def maybe_add_first_inputs_to_df(self, df_train, df_test):
@@ -391,7 +396,7 @@ class SeasonalNaiveModel(Model):
     def fit(self, df: pd.DataFrame, freq: str):
         pass
 
-    def predict(self, df: pd.DataFrame):
+    def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):
         """Runs the model to make predictions.
         Expects all data to be present in dataframe.
 
@@ -399,6 +404,8 @@ class SeasonalNaiveModel(Model):
         ----------
             df : pd.DataFrame
                 dataframe containing column ``ds``, ``y``, and optionally ``ID`` with data
+            df_historic : pd.DataFrame
+                dataframe containing column ``ds``, ``y``, and optionally ``ID`` with historic data
         Returns
         -------
             pd.DataFrame
@@ -410,6 +417,8 @@ class SeasonalNaiveModel(Model):
                 ----
                  *  raw data is not supported
         """
+        if df_historic is not None:
+            df = self.maybe_add_first_inputs_to_df(df_historic, df)
         (
             df,
             received_ID_col,
@@ -430,6 +439,9 @@ class SeasonalNaiveModel(Model):
                 n_req_future_observations=self.n_forecasts,
             )
         fcst_df = df_utils.return_df_in_original_format(forecast, received_ID_col, received_single_time_series)
+        if df_historic is not None:
+            fcst_df, df = self.maybe_drop_first_forecasts(fcst_df, df)
+        fcst_df, df = self.maybe_drop_added_dates(fcst_df, df)
         return fcst_df
 
     def maybe_add_first_inputs_to_df(self, df_train, df_test):
@@ -657,7 +669,7 @@ class LinearRegressionModel(Model):
         series = convert_df_to_TimeSeries(df, value_cols=df.columns.values[1:-1].tolist(), freq=self.freq)
         self.model = self.model.fit(series)
 
-    def predict(self, df: pd.DataFrame):
+    def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):
         """Runs the model to make predictions.
 
         Expects all data to be present in dataframe.
@@ -666,6 +678,8 @@ class LinearRegressionModel(Model):
         ----------
             df : pd.DataFrame
                 dataframe containing column ``ds``, ``y``, and optionally ``ID`` with data
+            df_historic : pd.DataFrame
+                dataframe containing column ``ds``, ``y``, and optionally ``ID`` with historic data
 
         Returns
         -------
@@ -674,6 +688,8 @@ class LinearRegressionModel(Model):
                 i-step-ahead prediction for this row's datetime, e.g. yhat3 is the prediction for this datetime,
                 predicted 3 steps ago, "3 steps old".
         """
+        if df_historic is not None:
+            df = self.maybe_add_first_inputs_to_df(df_historic, df)
         df, received_ID_col, received_single_time_series, _ = df_utils.prep_or_copy_df(df)
         # Receives df with single ID column. Only single time series accepted.
         assert received_single_time_series
@@ -692,6 +708,9 @@ class LinearRegressionModel(Model):
         predicted_array = np.stack(prediction_series, axis=0).squeeze()
 
         fcst_df = self._reshape_raw_predictions_to_forecst_df(df, predicted_array)
+        if df_historic is not None:
+            fcst_df, df = self.maybe_drop_first_forecasts(fcst_df, df)
+        fcst_df, df = self.maybe_drop_added_dates(fcst_df, df)
         return fcst_df
 
     def _reshape_raw_predictions_to_forecst_df(self, df_i, predicted):  # Todo outsource to df_utils?
@@ -726,6 +745,99 @@ class LinearRegressionModel(Model):
             fcst_df[name] = yhat
 
         return fcst_df
+
+    def maybe_add_first_inputs_to_df(self, df_train, df_test):
+        """Adds last n_lags values from df_train to start of df_test."""
+        if self.n_lags > 0:
+            df_train, _, _, _ = df_utils.prep_or_copy_df(df_train)
+            (
+                df_test,
+                received_ID_col_test,
+                received_single_time_series_test,
+                _,
+            ) = df_utils.prep_or_copy_df(df_test)
+            df_test_new = pd.DataFrame()
+            for df_name, df_test_i in df_test.groupby("ID"):
+                df_train_i = df_train[df_train["ID"] == df_name].copy(deep=True)
+                df_test_i = pd.concat(
+                    [df_train_i.tail(self.n_lags), df_test_i],
+                    ignore_index=True,
+                )
+                df_test_new = pd.concat((df_test_new, df_test_i), ignore_index=True)
+            df_test = df_utils.return_df_in_original_format(
+                df_test_new,
+                received_ID_col_test,
+                received_single_time_series_test,
+            )
+        return df_test
+
+    def maybe_drop_first_forecasts(self, predicted, df):
+        """
+        if Model with lags: removes first n_lags values from predicted and df
+        else (time-features only): returns unchanged df
+        """
+        if self.n_lags > 0:
+            (
+                predicted,
+                received_ID_col_pred,
+                received_single_time_series_pred,
+                _,
+            ) = df_utils.prep_or_copy_df(predicted)
+            (
+                df,
+                received_ID_col_df,
+                received_single_time_series_df,
+                _,
+            ) = df_utils.prep_or_copy_df(df)
+            predicted_new = pd.DataFrame()
+            df_new = pd.DataFrame()
+            for df_name, df_i in df.groupby("ID"):
+                predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
+                predicted_i = predicted_i[self.n_lags :]
+                df_i = df_i[self.n_lags :]
+                df_new = pd.concat((df_new, df_i), ignore_index=True)
+                predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
+            df = df_utils.return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
+            predicted = df_utils.return_df_in_original_format(
+                predicted_new,
+                received_ID_col_pred,
+                received_single_time_series_pred,
+            )
+        return predicted, df
+
+    def maybe_drop_added_dates(self, predicted, df):
+        """if Model imputed any dates: removes any dates in predicted which are not in df_test."""
+        (
+            predicted,
+            received_ID_col_pred,
+            received_single_time_series_pred,
+            _,
+        ) = df_utils.prep_or_copy_df(predicted)
+        (
+            df,
+            received_ID_col_df,
+            received_single_time_series_df,
+            _,
+        ) = df_utils.prep_or_copy_df(df)
+        predicted_new = pd.DataFrame()
+        df_new = pd.DataFrame()
+        for df_name, df_i in df.groupby("ID"):
+            predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
+            df_i["ds"] = convert_to_datetime(df_i["ds"])
+            df_i.set_index("ds", inplace=True)
+            predicted_i.set_index("ds", inplace=True)
+            predicted_i = predicted_i.loc[df_i.index]
+            predicted_i = predicted_i.reset_index()
+            df_i = df_i.reset_index()
+            df_new = pd.concat((df_new, df_i), ignore_index=True)
+            predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
+        df = df_utils.return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
+        predicted = df_utils.return_df_in_original_format(
+            predicted_new,
+            received_ID_col_pred,
+            received_single_time_series_pred,
+        )
+        return predicted, df
 
     def __handle_missing_data(self, df, freq, predicting):
         """Checks and normalizes new data
