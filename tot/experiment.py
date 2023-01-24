@@ -233,7 +233,6 @@ class CrossValidationExperiment(Experiment):
                 args = [(df_train, df_test, current_fold) for current_fold, (df_train, df_test) in enumerate(folds)]
                 pool.map_async(
                     self._run_fold,
-                    model,
                     args,
                     callback=self._log_results,
                     error_callback=self._log_error,
