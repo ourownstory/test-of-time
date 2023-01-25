@@ -84,14 +84,6 @@ class Model(ABC):
         """
         return df
 
-    # def maybe_add_first_inputs_to_df(self, df_train, df_test):
-    #     """
-    #     if historic data is used as input to the model to make prediction: adds number of past observations
-    #     (e.g. n_lags or season_length) values to start of df_test.
-    #     else (time-features only): returns unchanged df_test.
-    #     """
-    #     return df_test.reset_index(drop=True)
-
     def maybe_add_first_inputs_to_df(self, df_train, df_test):
         """Adds last n_lags values from df_train to start of df_test."""
         if self.n_lags > 0:
@@ -116,14 +108,6 @@ class Model(ABC):
                 received_single_time_series_test,
             )
         return df_test
-
-    # def maybe_drop_first_forecasts(self, predicted, df):
-    #     """
-    #     if historic data is used as input to the model to make prediction: removes number of past observations
-    #     (e.g. n_lags or season_length) values from predicted and df_test.
-    #     else (time-features only): returns unchanged df_test.
-    #     """
-    #     return predicted.reset_index(drop=True), df.reset_index(drop=True)
 
     def maybe_drop_first_forecasts(self, predicted, df):
         """
@@ -275,99 +259,6 @@ class NeuralProphetModel(Model):
             fcst_df, df = self.maybe_drop_first_forecasts(fcst_df, df)
         fcst_df, df = self.maybe_drop_added_dates(fcst_df, df)
         return fcst_df
-
-    # def maybe_add_first_inputs_to_df(self, df_train, df_test):
-    #     """Adds last n_lags values from df_train to start of df_test."""
-    #     if self.model.n_lags > 0:
-    #         df_train, _, _, _ = df_utils.prep_or_copy_df(df_train)
-    #         (
-    #             df_test,
-    #             received_ID_col_test,
-    #             received_single_time_series_test,
-    #             _,
-    #         ) = df_utils.prep_or_copy_df(df_test)
-    #         df_test_new = pd.DataFrame()
-    #         for df_name, df_test_i in df_test.groupby("ID"):
-    #             df_train_i = df_train[df_train["ID"] == df_name].copy(deep=True)
-    #             df_test_i = pd.concat(
-    #                 [df_train_i.tail(self.model.n_lags), df_test_i],
-    #                 ignore_index=True,
-    #             )
-    #             df_test_new = pd.concat((df_test_new, df_test_i), ignore_index=True)
-    #         df_test = df_utils.return_df_in_original_format(
-    #             df_test_new,
-    #             received_ID_col_test,
-    #             received_single_time_series_test,
-    #         )
-    #     return df_test
-
-    # def maybe_drop_first_forecasts(self, predicted, df):
-    #     """
-    #     if Model with lags: removes first n_lags values from predicted and df
-    #     else (time-features only): returns unchanged df
-    #     """
-    #     if self.model.n_lags > 0:
-    #         (
-    #             predicted,
-    #             received_ID_col_pred,
-    #             received_single_time_series_pred,
-    #             _,
-    #         ) = df_utils.prep_or_copy_df(predicted)
-    #         (
-    #             df,
-    #             received_ID_col_df,
-    #             received_single_time_series_df,
-    #             _,
-    #         ) = df_utils.prep_or_copy_df(df)
-    #         predicted_new = pd.DataFrame()
-    #         df_new = pd.DataFrame()
-    #         for df_name, df_i in df.groupby("ID"):
-    #             predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
-    #             predicted_i = predicted_i[self.model.n_lags :]
-    #             df_i = df_i[self.model.n_lags :]
-    #             df_new = pd.concat((df_new, df_i), ignore_index=True)
-    #             predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
-    #         df = df_utils.return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
-    #         predicted = df_utils.return_df_in_original_format(
-    #             predicted_new,
-    #             received_ID_col_pred,
-    #             received_single_time_series_pred,
-    #         )
-    #     return predicted, df
-
-    def maybe_drop_added_dates(self, predicted, df):
-        """if Model imputed any dates: removes any dates in predicted which are not in df_test."""
-        (
-            predicted,
-            received_ID_col_pred,
-            received_single_time_series_pred,
-            _,
-        ) = df_utils.prep_or_copy_df(predicted)
-        (
-            df,
-            received_ID_col_df,
-            received_single_time_series_df,
-            _,
-        ) = df_utils.prep_or_copy_df(df)
-        predicted_new = pd.DataFrame()
-        df_new = pd.DataFrame()
-        for df_name, df_i in df.groupby("ID"):
-            predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
-            df_i["ds"] = convert_to_datetime(df_i["ds"])
-            df_i.set_index("ds", inplace=True)
-            predicted_i.set_index("time", inplace=True)
-            predicted_i = predicted_i.loc[df_i.index]
-            predicted_i = predicted_i.reset_index()
-            df_i = df_i.reset_index()
-            df_new = pd.concat((df_new, df_i), ignore_index=True)
-            predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
-        df = df_utils.return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
-        predicted = df_utils.return_df_in_original_format(
-            predicted_new,
-            received_ID_col_pred,
-            received_single_time_series_pred,
-        )
-        return predicted, df
 
 
 @dataclass
@@ -836,99 +727,6 @@ class LinearRegressionModel(Model):
             fcst_df[name] = yhat
 
         return fcst_df
-
-    # def maybe_add_first_inputs_to_df(self, df_train, df_test):
-    #     """Adds last n_lags values from df_train to start of df_test."""
-    #     if self.n_lags > 0:
-    #         df_train, _, _, _ = df_utils.prep_or_copy_df(df_train)
-    #         (
-    #             df_test,
-    #             received_ID_col_test,
-    #             received_single_time_series_test,
-    #             _,
-    #         ) = df_utils.prep_or_copy_df(df_test)
-    #         df_test_new = pd.DataFrame()
-    #         for df_name, df_test_i in df_test.groupby("ID"):
-    #             df_train_i = df_train[df_train["ID"] == df_name].copy(deep=True)
-    #             df_test_i = pd.concat(
-    #                 [df_train_i.tail(self.n_lags), df_test_i],
-    #                 ignore_index=True,
-    #             )
-    #             df_test_new = pd.concat((df_test_new, df_test_i), ignore_index=True)
-    #         df_test = df_utils.return_df_in_original_format(
-    #             df_test_new,
-    #             received_ID_col_test,
-    #             received_single_time_series_test,
-    #         )
-    #     return df_test
-    #
-    # def maybe_drop_first_forecasts(self, predicted, df):
-    #     """
-    #     if Model with lags: removes first n_lags values from predicted and df
-    #     else (time-features only): returns unchanged df
-    #     """
-    #     if self.n_lags > 0:
-    #         (
-    #             predicted,
-    #             received_ID_col_pred,
-    #             received_single_time_series_pred,
-    #             _,
-    #         ) = df_utils.prep_or_copy_df(predicted)
-    #         (
-    #             df,
-    #             received_ID_col_df,
-    #             received_single_time_series_df,
-    #             _,
-    #         ) = df_utils.prep_or_copy_df(df)
-    #         predicted_new = pd.DataFrame()
-    #         df_new = pd.DataFrame()
-    #         for df_name, df_i in df.groupby("ID"):
-    #             predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
-    #             predicted_i = predicted_i[self.n_lags :]
-    #             df_i = df_i[self.n_lags :]
-    #             df_new = pd.concat((df_new, df_i), ignore_index=True)
-    #             predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
-    #         df = df_utils.return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
-    #         predicted = df_utils.return_df_in_original_format(
-    #             predicted_new,
-    #             received_ID_col_pred,
-    #             received_single_time_series_pred,
-    #         )
-    #     return predicted, df
-
-    def maybe_drop_added_dates(self, predicted, df):
-        """if Model imputed any dates: removes any dates in predicted which are not in df_test."""
-        (
-            predicted,
-            received_ID_col_pred,
-            received_single_time_series_pred,
-            _,
-        ) = df_utils.prep_or_copy_df(predicted)
-        (
-            df,
-            received_ID_col_df,
-            received_single_time_series_df,
-            _,
-        ) = df_utils.prep_or_copy_df(df)
-        predicted_new = pd.DataFrame()
-        df_new = pd.DataFrame()
-        for df_name, df_i in df.groupby("ID"):
-            predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
-            df_i["ds"] = convert_to_datetime(df_i["ds"])
-            df_i.set_index("ds", inplace=True)
-            predicted_i.set_index("ds", inplace=True)
-            predicted_i = predicted_i.loc[df_i.index]
-            predicted_i = predicted_i.reset_index()
-            df_i = df_i.reset_index()
-            df_new = pd.concat((df_new, df_i), ignore_index=True)
-            predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
-        df = df_utils.return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
-        predicted = df_utils.return_df_in_original_format(
-            predicted_new,
-            received_ID_col_pred,
-            received_single_time_series_pred,
-        )
-        return predicted, df
 
     def __handle_missing_data(self, df, freq, predicting):
         """Checks and normalizes new data

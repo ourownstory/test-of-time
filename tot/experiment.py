@@ -213,14 +213,11 @@ class CrossValidationExperiment(Experiment):
 
     def run(self):
         folds = crossvalidation_split_df(
-            n_lags=self.params["n_lags"],
-            n_forecasts=self.params["n_forecasts"],
             df=self.data.df,
             freq=self.data.freq,
             k=self.num_folds,
-            fold_pct=self.test_percentage / 100.0,
-            fold_overlap_pct=self.fold_overlap_pct / 100.0,
-            global_model_cv_type=self.global_model_cv_type,
+            fold_pct=self.test_percentage,
+            fold_overlap_pct=self.fold_overlap_pct,
         )
         # init empty dicts with list for fold-wise metrics
         self.results_cv_train = self.metadata.copy()
