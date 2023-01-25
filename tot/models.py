@@ -9,7 +9,7 @@ import pandas as pd
 from neuralprophet import NeuralProphet, TorchProphet, df_utils
 
 from tot.df_utils import reshape_raw_predictions_to_forecast_df
-from tot.utils import _convert_seasonality_to_season_length, _get_seasons, convert_df_to_TimeSeries, convert_to_datetime
+from tot.utils import _convert_seasonality_to_season_length, _get_seasons, convert_df_to_TimeSeries
 
 # check import of implemented models and consider order of imports
 try:
