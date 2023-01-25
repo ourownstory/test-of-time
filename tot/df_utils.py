@@ -267,3 +267,7 @@ def crossvalidation_split_df(df, freq, k=5, fold_pct=0.1, fold_overlap_pct=0.5):
             new_folds.append((df_train, df_val))
         folds = new_folds
     return folds
+
+
+def _check_min_df_len(df, min_len):
+    assert len(df) > min_len, "df has not enough data to create a single input sample."

@@ -8,8 +8,8 @@ import numpy as np
 import pandas as pd
 from neuralprophet import NeuralProphet, TorchProphet, df_utils
 
-from tot.df_utils import reshape_raw_predictions_to_forecast_df
-from tot.utils import _convert_seasonality_to_season_length, _get_seasons, convert_df_to_TimeSeries
+from tot.df_utils import _check_min_df_len, reshape_raw_predictions_to_forecast_df
+from tot.utils import _convert_seasonality_to_season_length, _get_seasons, convert_df_to_TimeSeries, convert_to_datetime
 
 # check import of implemented models and consider order of imports
 try:
@@ -143,9 +143,43 @@ class Model(ABC):
             )
         return predicted, df
 
+    # def maybe_drop_added_dates(self, predicted, df):
+    #     """if Model imputed any dates: removes any dates in predicted which are not in df_test."""
+    #     return predicted.reset_index(drop=True), df.reset_index(drop=True)
+
     def maybe_drop_added_dates(self, predicted, df):
         """if Model imputed any dates: removes any dates in predicted which are not in df_test."""
-        return predicted.reset_index(drop=True), df.reset_index(drop=True)
+        (
+            predicted,
+            received_ID_col_pred,
+            received_single_time_series_pred,
+            _,
+        ) = df_utils.prep_or_copy_df(predicted)
+        (
+            df,
+            received_ID_col_df,
+            received_single_time_series_df,
+            _,
+        ) = df_utils.prep_or_copy_df(df)
+        predicted_new = pd.DataFrame()
+        df_new = pd.DataFrame()
+        for df_name, df_i in df.groupby("ID"):
+            predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
+            df_i["ds"] = convert_to_datetime(df_i["ds"])
+            df_i.set_index("ds", inplace=True)
+            predicted_i.set_index("ds", inplace=True)
+            predicted_i = predicted_i.loc[df_i.index]
+            predicted_i = predicted_i.reset_index()
+            df_i = df_i.reset_index()
+            df_new = pd.concat((df_new, df_i), ignore_index=True)
+            predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
+        df = df_utils.return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
+        predicted = df_utils.return_df_in_original_format(
+            predicted_new,
+            received_ID_col_pred,
+            received_single_time_series_pred,
+        )
+        return predicted, df
 
 
 @dataclass
@@ -177,14 +211,16 @@ class ProphetModel(Model):
         self.season_length = None
 
     def fit(self, df: pd.DataFrame, freq: str):
+        _check_min_df_len(df=df, min_len=self.n_forecasts)
         if "ID" in df.columns and len(df["ID"].unique()) > 1:
             raise NotImplementedError("Prophet does not work with many ts df")
         self.freq = freq
         self.model = self.model.fit(df=df)
 
     def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):
+        _check_min_df_len(df=df, min_len=self.n_forecasts)
         fcst = self.model.predict(df=df)
-        fcst_df = pd.DataFrame({"time": fcst.ds, "y": df.y, "yhat1": fcst.yhat})
+        fcst_df = pd.DataFrame({"ds": fcst.ds, "y": df.y, "yhat1": fcst.yhat})
         return fcst_df
 
     def maybe_add_first_inputs_to_df(self, df_train, df_test):
@@ -233,10 +269,12 @@ class NeuralProphetModel(Model):
         self.season_length = None
 
     def fit(self, df: pd.DataFrame, freq: str):
+        _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
         self.freq = freq
         _ = self.model.fit(df=df, freq=freq, progress="none", minimal=True)
 
     def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):
+        _check_min_df_len(df=df, min_len=self.n_forecasts)
         if df_historic is not None:
             df = self.maybe_add_first_inputs_to_df(df_historic, df)
         fcst = self.model.predict(df=df)
@@ -249,7 +287,7 @@ class NeuralProphetModel(Model):
         fcst_df = pd.DataFrame()
         for df_name, fcst_i in fcst.groupby("ID"):
             y_cols = ["y"] + [col for col in fcst_i.columns if "yhat" in col]
-            fcst_aux = pd.DataFrame({"time": fcst_i.ds})
+            fcst_aux = pd.DataFrame({"ds": fcst_i.ds})
             for y_col in y_cols:
                 fcst_aux[y_col] = fcst_i[y_col]
             fcst_aux["ID"] = df_name
@@ -257,7 +295,6 @@ class NeuralProphetModel(Model):
         fcst_df = df_utils.return_df_in_original_format(fcst_df, received_ID_col, received_single_time_series)
         if df_historic is not None:
             fcst_df, df = self.maybe_drop_first_forecasts(fcst_df, df)
-        fcst_df, df = self.maybe_drop_added_dates(fcst_df, df)
         return fcst_df
 
 
@@ -399,6 +436,9 @@ class SeasonalNaiveModel(Model):
                 ----
                  *  raw data is not supported
         """
+        if not np.issubdtype(df["ds"].dtype, np.datetime64):
+            df["ds"] = pd.to_datetime(df.loc[:, "ds"])
+        _check_min_df_len(df=df, min_len=self.n_forecasts)
         if df_historic is not None:
             df = self.maybe_add_first_inputs_to_df(df_historic, df)
         (
@@ -423,7 +463,6 @@ class SeasonalNaiveModel(Model):
         fcst_df = df_utils.return_df_in_original_format(forecast, received_ID_col, received_single_time_series)
         if df_historic is not None:
             fcst_df, df = self.maybe_drop_first_forecasts(fcst_df, df)
-        fcst_df, df = self.maybe_drop_added_dates(fcst_df, df)
         return fcst_df
 
     def maybe_add_first_inputs_to_df(self, df_train, df_test):
@@ -647,6 +686,7 @@ class LinearRegressionModel(Model):
             freq : str
                 frequency of the input data
         """
+        _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
         self.freq = freq
         series = convert_df_to_TimeSeries(df, value_cols=df.columns.values[1:-1].tolist(), freq=self.freq)
         self.model = self.model.fit(series)
@@ -670,6 +710,7 @@ class LinearRegressionModel(Model):
                 i-step-ahead prediction for this row's datetime, e.g. yhat3 is the prediction for this datetime,
                 predicted 3 steps ago, "3 steps old".
         """
+        _check_min_df_len(df=df, min_len=self.n_forecasts)
         if df_historic is not None:
             df = self.maybe_add_first_inputs_to_df(df_historic, df)
         df, received_ID_col, received_single_time_series, _ = df_utils.prep_or_copy_df(df)
@@ -692,7 +733,6 @@ class LinearRegressionModel(Model):
         fcst_df = self._reshape_raw_predictions_to_forecst_df(df, predicted_array)
         if df_historic is not None:
             fcst_df, df = self.maybe_drop_first_forecasts(fcst_df, df)
-        fcst_df, df = self.maybe_drop_added_dates(fcst_df, df)
         return fcst_df
 
     def _reshape_raw_predictions_to_forecst_df(self, df_i, predicted):  # Todo outsource to df_utils?

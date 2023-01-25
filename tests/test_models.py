@@ -50,7 +50,7 @@ def test_simple_benchmark_prophet():
         model_classes_and_params=model_classes_and_params,  # iterate over this list of tuples
         datasets=dataset_list,  # iterate over this list
         metrics=list(ERROR_FUNCTIONS.keys()),
-        test_percentage=25,
+        test_percentage=0.25,
         save_dir=SAVE_DIR,
         num_processes=1,
     )
@@ -82,7 +82,7 @@ def test_prophet_for_global_modeling():
         model_classes_and_params=model_classes_and_params,  # iterate over this list of tuples
         datasets=dataset_list,  # iterate over this list
         metrics=list(ERROR_FUNCTIONS.keys()),
-        test_percentage=25,
+        test_percentage=0.25,
         save_dir=SAVE_DIR,
         num_processes=1,
     )
@@ -150,7 +150,7 @@ def test_seasonal_naive_model(dataset_input, model_classes_and_params_input):
         model_classes_and_params=model_classes_and_params,
         datasets=dataset_list,
         metrics=list(ERROR_FUNCTIONS.keys()),
-        test_percentage=25,
+        test_percentage=0.25,
         save_dir=SAVE_DIR,
         num_processes=1,
     )
@@ -201,7 +201,7 @@ def test_seasonal_naive_model_invalid_input(dataset_input, model_classes_and_par
         model_classes_and_params=model_classes_and_params,
         datasets=dataset_list,
         metrics=list(ERROR_FUNCTIONS.keys()),
-        test_percentage=25,
+        test_percentage=0.25,
         save_dir=SAVE_DIR,
         num_processes=1,
     )
@@ -230,7 +230,7 @@ def test_naive_model():
         model_classes_and_params=model_classes_and_params,
         datasets=dataset_list,
         metrics=list(ERROR_FUNCTIONS.keys()),
-        test_percentage=25,
+        test_percentage=0.25,
         save_dir=SAVE_DIR,
         num_processes=1,
     )
@@ -258,7 +258,7 @@ def test_linear_regression_model():
         model_classes_and_params=model_classes_and_params,
         datasets=dataset_list,
         metrics=list(ERROR_FUNCTIONS.keys()),
-        test_percentage=25,
+        test_percentage=0.25,
         save_dir=SAVE_DIR,
         num_processes=1,
     )
@@ -286,7 +286,7 @@ def test_torch_prophet_model():
         model_classes_and_params=model_classes_and_params,
         datasets=dataset_list,
         metrics=list(ERROR_FUNCTIONS.keys()),
-        test_percentage=25,
+        test_percentage=0.25,
         save_dir=SAVE_DIR,
         num_processes=1,
     )

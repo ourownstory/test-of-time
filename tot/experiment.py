@@ -71,20 +71,10 @@ class Experiment(ABC):
         df.to_csv(os.path.join(self.save_dir, name), encoding="utf-8", index=False)
 
     def _evaluate_model(self, model, df_train, df_test, current_fold=None):
-        self.required_past_observations = 0
-        if model.n_lags is not None:
-            if model.n_lags > 0:
-                self.required_past_observations = model.n_lags
-        elif model.season_length is not None:
-            if model.season_length > 0:
-                self.required_past_observations = model.season_length
-        if self.required_past_observations + model.n_forecasts > len(df_train):
-            raise ValueError("Not enough training data to create a single input sample.")
-        if self.required_past_observations + model.n_forecasts > len(df_test):
-            raise ValueError("Not enough test data to create a single input sample.")
         fcst_train = model.predict(df=df_train)
         fcst_test = model.predict(df=df_test, df_historic=df_train)
-
+        fcst_train, df_train = model.maybe_drop_added_dates(fcst_train, df_train)
+        fcst_test, df_test = model.maybe_drop_added_dates(fcst_test, df_test)
         result_train = self.metadata.copy()
         result_test = self.metadata.copy()
         for metric in self.metrics:
