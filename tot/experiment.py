@@ -17,7 +17,6 @@ from tot.df_utils import (
     handle_missing_data,
     maybe_drop_added_dates,
     prep_or_copy_df,
-    return_df_in_original_format,
     split_df,
 )
 from tot.metrics import ERROR_FUNCTIONS

@@ -1,6 +1,6 @@
 import logging
 import math
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 import numpy as np
 import pandas as pd
