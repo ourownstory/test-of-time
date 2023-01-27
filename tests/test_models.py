@@ -9,7 +9,9 @@ import pytest
 from tot.benchmark import SimpleBenchmark
 from tot.dataset import Dataset
 from tot.metrics import ERROR_FUNCTIONS
-from tot.models import LinearRegressionModel, NaiveModel, ProphetModel, SeasonalNaiveModel, TorchProphetModel
+from tot.models_naive import NaiveModel, SeasonalNaiveModel
+from tot.models_neuralprophet import TorchProphetModel
+from tot.models_simple import LinearRegressionModel, ProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")

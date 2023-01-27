@@ -11,7 +11,15 @@ import pandas as pd
 from neuralprophet import set_random_seed
 
 from tot.dataset import Dataset
-from tot.df_utils import crossvalidation_split_df, split_df
+from tot.df_utils import (
+    check_dataframe,
+    crossvalidation_split_df,
+    handle_missing_data,
+    maybe_drop_added_dates,
+    prep_or_copy_df,
+    return_df_in_original_format,
+    split_df,
+)
 from tot.metrics import ERROR_FUNCTIONS
 from tot.models import Model
 
@@ -73,8 +81,8 @@ class Experiment(ABC):
     def _evaluate_model(self, model, df_train, df_test, current_fold=None):
         fcst_train = model.predict(df=df_train)
         fcst_test = model.predict(df=df_test, df_historic=df_train)
-        fcst_train, df_train = model.maybe_drop_added_dates(fcst_train, df_train)
-        fcst_test, df_test = model.maybe_drop_added_dates(fcst_test, df_test)
+        fcst_train, df_train = maybe_drop_added_dates(fcst_train, df_train)
+        fcst_test, df_test = maybe_drop_added_dates(fcst_test, df_test)
         result_train = self.metadata.copy()
         result_test = self.metadata.copy()
         for metric in self.metrics:
@@ -142,12 +150,15 @@ class SimpleExperiment(Experiment):
 
     def run(self):
         set_random_seed(42)
-        model = self.model_class(self.params)
-        df = model._handle_missing_data(self.data.df, freq=self.data.freq, predicting=False)
+        df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(self.data.df)
+        df = check_dataframe(df, check_y=True)
+        # add infer frequency
+        df = handle_missing_data(df, freq=self.data.freq)
         df_train, df_test = split_df(
             df=df,
             test_percentage=self.test_percentage,
         )
+        model = self.model_class(self.params)
         model.fit(df=df_train, freq=self.data.freq)
         result_train, result_test = self._evaluate_model(model, df_train, df_test)
         return result_train, result_test
@@ -181,8 +192,6 @@ class CrossValidationExperiment(Experiment):
         set_random_seed(42)
         df_train, df_test, current_fold = args
         model = self.model_class(self.params)
-        df_train = model._handle_missing_data(df_train, freq=self.data.freq, predicting=False)
-        df_test = model._handle_missing_data(df_test, freq=self.data.freq, predicting=False)
         model.fit(df=df_train, freq=self.data.freq)
         result_train, result_test = self._evaluate_model(model, df_train, df_test, current_fold=current_fold)
         del model
@@ -202,6 +211,11 @@ class CrossValidationExperiment(Experiment):
         log.error(repr(error))
 
     def run(self):
+        set_random_seed(42)
+        df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(self.data.df)
+        df = check_dataframe(df, check_y=True)
+        # add infer frequency
+        df = handle_missing_data(df, freq=self.data.freq)
         folds = crossvalidation_split_df(
             df=self.data.df,
             freq=self.data.freq,
