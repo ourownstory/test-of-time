@@ -1,3 +1,7 @@
+### file-independent
+* add pyright
+* add codecov
+
 ### dataset.py
 * implement an easy .load() method
 
