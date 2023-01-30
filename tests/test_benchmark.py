@@ -11,7 +11,8 @@ from tot.benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBen
 from tot.dataset import Dataset
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.metrics import ERROR_FUNCTIONS
-from tot.models import NeuralProphetModel, ProphetModel
+from tot.models_neuralprophet import NeuralProphetModel
+from tot.models_simple import ProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -78,7 +79,7 @@ def test_2_benchmark_simple():
         model_classes_and_params=model_classes_and_params,  # iterate over this list of tuples
         datasets=dataset_list,  # iterate over this list
         metrics=["MAE", "MSE", "MASE", "RMSE"],
-        test_percentage=25,
+        test_percentage=0.25,
     )
     results_train, results_test = benchmark.run()
 
@@ -110,7 +111,7 @@ def test_2_benchmark_CV():
         model_classes_and_params=model_classes_and_params,  # iterate over this list of tuples
         datasets=dataset_list,  # iterate over this list
         metrics=["MASE", "RMSE"],
-        test_percentage=10,
+        test_percentage=0.1,
         num_folds=3,
         fold_overlap_pct=0,
     )
@@ -141,7 +142,7 @@ def test_2_benchmark_manual():
             },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
-            test_percentage=25,
+            test_percentage=0.25,
         ),
         SimpleExperiment(
             model_class=NeuralProphetModel,
@@ -152,7 +153,7 @@ def test_2_benchmark_manual():
             },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
-            test_percentage=25,
+            test_percentage=0.25,
         ),
     ]
     if _prophet_installed:
@@ -164,7 +165,7 @@ def test_2_benchmark_manual():
                 },
                 data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
                 metrics=metrics,
-                test_percentage=25,
+                test_percentage=0.25,
             )
         )
     benchmark = ManualBenchmark(
@@ -190,7 +191,7 @@ def test_2_benchmark_manualCV():
             },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
-            test_percentage=10,
+            test_percentage=0.1,
             num_folds=3,
             fold_overlap_pct=0,
         ),
@@ -203,7 +204,7 @@ def test_2_benchmark_manualCV():
             },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
-            test_percentage=10,
+            test_percentage=0.1,
             num_folds=3,
             fold_overlap_pct=0,
         ),
@@ -242,7 +243,7 @@ def test_manual_benchmark():
             },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
-            test_percentage=25,
+            test_percentage=0.25,
             save_dir=SAVE_DIR,
         ),
         SimpleExperiment(
@@ -250,7 +251,7 @@ def test_manual_benchmark():
             params={"learning_rate": 0.1, "epochs": EPOCHS},
             data=Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
             metrics=metrics,
-            test_percentage=15,
+            test_percentage=0.15,
             save_dir=SAVE_DIR,
         ),
     ]
@@ -260,7 +261,7 @@ def test_manual_benchmark():
             params={"seasonality_mode": "multiplicative"},
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
-            test_percentage=25,
+            test_percentage=0.25,
             save_dir=SAVE_DIR,
         ),
         SimpleExperiment(
@@ -268,7 +269,7 @@ def test_manual_benchmark():
             params={},
             data=Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
             metrics=metrics,
-            test_percentage=15,
+            test_percentage=0.15,
             save_dir=SAVE_DIR,
         ),
     ]
@@ -294,7 +295,7 @@ def test_manual_cv_benchmark():
             },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
-            test_percentage=10,
+            test_percentage=0.10,
             num_folds=2,
             fold_overlap_pct=0,
             save_dir=SAVE_DIR,
@@ -308,7 +309,7 @@ def test_manual_cv_benchmark():
             },
             data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
             metrics=metrics,
-            test_percentage=10,
+            test_percentage=0.10,
             num_folds=1,
             fold_overlap_pct=0,
             save_dir=SAVE_DIR,
@@ -350,7 +351,7 @@ def test_simple_benchmark():
         model_classes_and_params=model_classes_and_params,  # iterate over this list of tuples
         datasets=dataset_list,  # iterate over this list
         metrics=list(ERROR_FUNCTIONS.keys()),
-        test_percentage=25,
+        test_percentage=0.25,
         save_dir=SAVE_DIR,
         num_processes=1,
     )
@@ -388,7 +389,7 @@ def test_cv_benchmark():
         model_classes_and_params=model_classes_and_params,  # iterate over this list of tuples
         datasets=dataset_list,  # iterate over this list
         metrics=list(ERROR_FUNCTIONS.keys()),
-        test_percentage=10,
+        test_percentage=0.10,
         num_folds=3,
         fold_overlap_pct=0,
         save_dir=SAVE_DIR,

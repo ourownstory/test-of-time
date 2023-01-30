@@ -10,7 +10,7 @@ import pytest
 from tot.dataset import Dataset
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.metrics import ERROR_FUNCTIONS
-from tot.models import NeuralProphetModel, ProphetModel
+from tot.models_neuralprophet import NeuralProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -56,7 +56,7 @@ def test_simple_experiment():
         params=params,
         data=ts,
         metrics=list(ERROR_FUNCTIONS.keys()),
-        test_percentage=25,
+        test_percentage=0.25,
     )
     result_train, result_val = exp.run()
     log.debug(result_val)
@@ -74,7 +74,7 @@ def test_cv_experiment():
         params=params,
         data=ts,
         metrics=list(ERROR_FUNCTIONS.keys()),
-        test_percentage=10,
+        test_percentage=0.1,
         num_folds=2,
         fold_overlap_pct=0,
         save_dir=SAVE_DIR,

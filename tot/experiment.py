@@ -8,9 +8,17 @@ from typing import List, Optional
 
 import numpy as np
 import pandas as pd
-from neuralprophet import df_utils, set_random_seed
+from neuralprophet import set_random_seed
 
 from tot.dataset import Dataset
+from tot.df_utils import (
+    check_dataframe,
+    crossvalidation_split_df,
+    handle_missing_data,
+    maybe_drop_added_dates,
+    prep_or_copy_df,
+    split_df,
+)
 from tot.metrics import ERROR_FUNCTIONS
 from tot.models import Model
 
@@ -70,27 +78,10 @@ class Experiment(ABC):
         df.to_csv(os.path.join(self.save_dir, name), encoding="utf-8", index=False)
 
     def _evaluate_model(self, model, df_train, df_test, current_fold=None):
-        df_test = model.maybe_add_first_inputs_to_df(df_train, df_test)
-        self.required_past_observations = 0
-        if model.n_lags is not None:
-            if model.n_lags > 0:
-                self.required_past_observations = model.n_lags
-        elif model.season_length is not None:
-            if model.season_length > 0:
-                self.required_past_observations = model.season_length
-        if self.required_past_observations + model.n_forecasts > len(df_train):
-            raise ValueError("Not enough training data to create a single input sample.")
-        if self.required_past_observations + model.n_forecasts > len(df_test):
-            raise ValueError("Not enough test data to create a single input sample.")
-        fcst_train = model.predict(df_train)
-        fcst_test = model.predict(df_test)
-        # remove added input lags
-        fcst_train, df_train = model.maybe_drop_first_forecasts(fcst_train, df_train)
-        fcst_test, df_test = model.maybe_drop_first_forecasts(fcst_test, df_test)
-        # remove interpolated dates
-        fcst_train, df_train = model.maybe_drop_added_dates(fcst_train, df_train)
-        fcst_test, df_test = model.maybe_drop_added_dates(fcst_test, df_test)
-
+        fcst_train = model.predict(df=df_train)
+        fcst_test = model.predict(df=df_test, df_historic=df_train)
+        fcst_train, df_train = maybe_drop_added_dates(fcst_train, df_train)
+        fcst_test, df_test = maybe_drop_added_dates(fcst_test, df_test)
         result_train = self.metadata.copy()
         result_test = self.metadata.copy()
         for metric in self.metrics:
@@ -158,14 +149,15 @@ class SimpleExperiment(Experiment):
 
     def run(self):
         set_random_seed(42)
-        model = self.model_class(self.params)
-        df = model._handle_missing_data(self.data.df, freq=self.data.freq, predicting=False)
-        df_train, df_test = df_utils.split_df(
+        df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(self.data.df)
+        df = check_dataframe(df, check_y=True)
+        # add infer frequency
+        df = handle_missing_data(df, freq=self.data.freq)
+        df_train, df_test = split_df(
             df=df,
-            n_lags=0,
-            n_forecasts=1,
-            valid_p=self.test_percentage / 100.0,
+            test_percentage=self.test_percentage,
         )
+        model = self.model_class(self.params)
         model.fit(df=df_train, freq=self.data.freq)
         result_train, result_test = self._evaluate_model(model, df_train, df_test)
         return result_train, result_test
@@ -199,8 +191,6 @@ class CrossValidationExperiment(Experiment):
         set_random_seed(42)
         df_train, df_test, current_fold = args
         model = self.model_class(self.params)
-        df_train = model._handle_missing_data(df_train, freq=self.data.freq, predicting=False)
-        df_test = model._handle_missing_data(df_test, freq=self.data.freq, predicting=False)
         model.fit(df=df_train, freq=self.data.freq)
         result_train, result_test = self._evaluate_model(model, df_train, df_test, current_fold=current_fold)
         del model
@@ -220,14 +210,17 @@ class CrossValidationExperiment(Experiment):
         log.error(repr(error))
 
     def run(self):
-        folds = df_utils.crossvalidation_split_df(
+        set_random_seed(42)
+        df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(self.data.df)
+        df = check_dataframe(df, check_y=True)
+        # add infer frequency
+        df = handle_missing_data(df, freq=self.data.freq)
+        folds = crossvalidation_split_df(
             df=self.data.df,
-            n_lags=0,
-            n_forecasts=1,
+            freq=self.data.freq,
             k=self.num_folds,
-            fold_pct=self.test_percentage / 100.0,
-            fold_overlap_pct=self.fold_overlap_pct / 100.0,
-            global_model_cv_type=self.global_model_cv_type,
+            fold_pct=self.test_percentage,
+            fold_overlap_pct=self.fold_overlap_pct,
         )
         # init empty dicts with list for fold-wise metrics
         self.results_cv_train = self.metadata.copy()
