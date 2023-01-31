@@ -55,7 +55,7 @@ class Benchmark(ABC):
             log.info("starting exp {}: {}".format(exp_num, exp.experiment_name))
             log.info("--------------------------------------------------------")
         exp.metrics = self.metrics
-        res_train, res_test = exp.run()
+        fcst_train, fcst_test, res_train, res_test = exp.run()
         if verbose:
             log.info("--------------------------------------------------------")
             log.info("finished exp {}: {}".format(exp_num, exp.experiment_name))
@@ -63,13 +63,13 @@ class Benchmark(ABC):
             log.info("--------------------------------------------------------")
         # del exp
         # gc.collect()
-        return (res_train, res_test)
+        return (fcst_train, fcst_test, res_train, res_test)
 
     def _log_result(self, results):
         if type(results) != list:
             results = [results]
         for res in results:
-            res_train, res_test = res
+            fcst_train, fcst_test, res_train, res_test = res
             self.df_metrics_train = pd.concat(
                 [self.df_metrics_train, pd.DataFrame([res_train])],
                 ignore_index=True,
@@ -78,6 +78,8 @@ class Benchmark(ABC):
                 [self.df_metrics_test, pd.DataFrame([res_test])],
                 ignore_index=True,
             )
+            self.fcst_train.append(fcst_train)
+            self.fcst_test.append(fcst_test)
 
     def _log_error(self, error):
         log.error(repr(error))
@@ -87,6 +89,8 @@ class Benchmark(ABC):
         cols = list(self.experiments[0].metadata.keys()) + self.metrics
         self.df_metrics_train = pd.DataFrame(columns=cols)
         self.df_metrics_test = pd.DataFrame(columns=cols)
+        self.fcst_train = []
+        self.fcst_test = []
 
         if verbose:
             log.info("Experiment list:")
@@ -147,7 +151,9 @@ class CVBenchmark(Benchmark, ABC):
         return df_metrics_summary
 
     def run(self, verbose=True):
-        df_metrics_train, df_metrics_test = super().run(verbose=verbose)
+        self.fcst_train, self.fcst_test, df_metrics_train, df_metrics_test = super().run(verbose=verbose)
+        self.df_metrics_train = df_metrics_train
+        self.df_metrics_test = df_metrics_test
         df_metrics_summary_train = self._summarize_cv_metrics(df_metrics_train)
         df_metrics_summary_train["split"] = "train"
         df_metrics_summary_test = self._summarize_cv_metrics(df_metrics_test)
