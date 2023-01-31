@@ -17,6 +17,9 @@
 * adjust the eperiment name or params description to be less extensive
 * tranforming forecast_df to a class to introduce user friendly class methods
 
+### benchmark.py
+* restructure benchmark output as structured dict
+
 ### models.py
 * rethink clas methods of LinearRegression model
 * Docstring for all model class methods
