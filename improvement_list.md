@@ -15,6 +15,7 @@
 
 ### experiment.py
 * adjust the eperiment name or params description to be less extensive
+* tranforming forecast_df to a class to introduce user friendly class methods
 
 ### models.py
 * rethink clas methods of LinearRegression model
