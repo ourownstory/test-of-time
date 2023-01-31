@@ -1,15 +1,15 @@
 # Contributing to Test-of-Time
 :+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
-Welcome to the NeuralProphet/ Test-of-time community and thank you for your contribution to its continued legacy. 
+Welcome to the Test-of-time community and thank you for your contribution to its continued legacy. 
 We compiled this page with practical instructions and further resources to help you get started.
 
-Please come join us on the NeuralProphet [Slack](https://join.slack.com/t/neuralprophet/shared_invite/zt-sgme2rw3-3dCH3YJ_wgg01IXHoYaeCg), you can message any core dev there.
+Please come join us on the NeuralProphet (our main framework) [Slack](https://join.slack.com/t/neuralprophet/shared_invite/zt-sgme2rw3-3dCH3YJ_wgg01IXHoYaeCg), you can message any core dev there.
 
 ## Get Started On This
 We have a GitHub section tracking all [issues](https://github.com/ourownstory/test-of-time/issues) to be solved. 
 There are some issues marked with the label 'good first issue'. These issues are ideal to get started on for you as a beginner.
-Feel free to assign your self to one on GitHub and have a try solving it. In case you need help, don't hestitate to reach out
+Feel free to assign yourself to one on GitHub and have a try solving it. In case you need help, don't hestitate to reach out
 via the commenting function in GutHub or Slack. 
 
 ## Process
@@ -58,7 +58,7 @@ In case you spot an error in this description, please reach out.
 
 ## Docstring
 
-Docstrings need to be formatted according to [NumPy Style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html#example-numpy) in order to display their API reference correctly using Spinx. 
+Docstrings need to be formatted according to [NumPy Style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html#example-numpy). 
 Please refer to [Pandas Docstring Guide](https://pandas.pydata.org/pandas-docs/stable/development/contributing_docstring.html#) for best practices.
 
 The length of line inside docstrings block must be limited to 80 characters to fit into Jupyter documentation popups.
