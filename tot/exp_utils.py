@@ -8,6 +8,28 @@ log = logging.getLogger("tot.exp_utils")
 
 
 def evaluate_forecast(fcst_train, fcst_test, metrics, metadata=None):
+    """
+    Evaluate forecast performance on training and test data using specified metrics.
+
+    Parameters
+    ----------
+    fcst_train : pandas.DataFrame
+        Forecast data on the training set.
+    fcst_test : pandas.DataFrame
+        Forecast data on the test set.
+    metrics : list
+        List of error metrics to evaluate the forecast.
+    metadata : dict
+        Metadata to be stored in the results.
+
+    Returns
+    -------
+    result_train : pandas.DataFrame
+        Result of evaluation on training set.
+    result_test : pandas.DataFrame
+        Result of evaluation on test set.
+    """
+
     result_train = metadata.copy()
     result_test = metadata.copy()
 
