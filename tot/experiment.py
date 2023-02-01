@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from multiprocessing.pool import Pool
 from typing import List, Optional
 
-import numpy as np
 import pandas as pd
 from neuralprophet import set_random_seed
 
