@@ -67,6 +67,22 @@ class Experiment(ABC):
             }
 
     def write_results_to_csv(self, df, prefix, current_fold=None):
+        """
+        Write evaluation results to a CSV file.
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+            DataFrame containing the results to be written to file.
+        prefix : str
+            Prefix to be added to the filename.
+        current_fold : int, optional
+            Fold number, to be included in the filename if specified.
+
+        Returns
+        -------
+        None
+        """
         # save fcst and create dir if necessary
         if not os.path.isdir(self.save_dir):
             os.makedirs(self.save_dir)
@@ -77,6 +93,27 @@ class Experiment(ABC):
         df.to_csv(os.path.join(self.save_dir, name), encoding="utf-8", index=False)
 
     def _make_forecast(self, model, df_train, df_test, current_fold=None):
+        """
+        Make predictions using the given model on the train and test data.
+
+        Parameters
+        ----------
+        model : object
+            The model to be used for prediction.
+        df_train : pandas.DataFrame
+            The train data.
+        df_test : pandas.DataFrame
+            The test data.
+        current_fold : int, optional
+            Fold number, to be included in the filename if saving results to disk.
+
+        Returns
+        -------
+        fcst_train : pandas.DataFrame
+            Predictions on the train data.
+        fcst_test : pandas.DataFrame
+            Predictions on the test data.
+        """
         fcst_train = model.predict(df=df_train)
         fcst_test = model.predict(df=df_test, df_historic=df_train)
         if self.save_dir is not None:
@@ -88,6 +125,27 @@ class Experiment(ABC):
         return fcst_train, fcst_test
 
     def _evaluate_model(self, fcst_train, fcst_test):
+        """
+        Evaluate a forecast by computing various metrics on both the train and test sets.
+
+        Parameters
+        ----------
+        fcst_train : DataFrame
+            DataFrame of forecast results on the training set.
+        fcst_test : DataFrame
+            DataFrame of forecast results on the test set.
+        metrics : list of str
+            List of metrics to compute, such as 'mse' or 'mae'.
+        metadata : dict-like
+            Metadata to add to the result.
+
+        Returns
+        -------
+        result_train : DataFrame
+            DataFrame of results for the training set.
+        result_test : DataFrame
+            DataFrame of results for the test set.
+        """
 
         metadata = self.metadata.copy()
         metrics = self.metrics
@@ -99,6 +157,9 @@ class Experiment(ABC):
 
     @abstractmethod
     def run(self):
+        """
+        Runs the experiment.
+        """
         pass
 
 
@@ -120,6 +181,12 @@ class SimpleExperiment(Experiment):
     """
 
     def run(self):
+        """
+        Runs the experiment.
+
+        Returns:
+            tuple: (fcst_train, fcst_test, result_train, result_test)
+        """
         # data-specific pre-processing
         set_random_seed(42)
         df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(self.data.df)
@@ -168,6 +235,33 @@ class CrossValidationExperiment(Experiment):
     # results_cv_test: dict = field(init=False)
 
     def _run_fold(self, args):
+        """
+        Function to run a single fold of the cross-validation experiment.
+
+        Parameters
+        ----------
+        args: Tuple
+            A tuple of (df_train, df_test, current_fold).
+            df_train: pandas DataFrame
+                The training data for the current fold.
+            df_test: pandas DataFrame
+                The test data for the current fold.
+            current_fold: int, optional
+                The index of the current fold.
+
+        Returns
+        -------
+        Tuple
+            Tuple of 4 elements: fcst_train, fcst_test, result_train, result_test.
+            fcst_train: pandas DataFrame
+                Forecast values for the training data of the current fold.
+            fcst_test: pandas DataFrame
+                Forecast values for the test data of the current fold.
+            result_train: dict
+                Dictionary containing the evaluation metrics for the training data of the current fold.
+            result_test: dict
+                Dictionary containing the evaluation metrics for the test data of the current fold.
+        """
         set_random_seed(42)
         df_train, df_test, current_fold = args
         # fit model
@@ -187,6 +281,19 @@ class CrossValidationExperiment(Experiment):
         return (fcst_train, fcst_test, result_train, result_test)
 
     def _log_results(self, results):
+        """Log the results of a model's run.
+
+        Parameters
+        ----------
+        results : list of tuple
+            Results of model run, which includes fcst_train, fcst_test,
+            result_train, and result_test.
+
+        Returns
+        -------
+            None
+        """
+
         if type(results) != list:
             results = [results]
         for res in results:
@@ -198,9 +305,19 @@ class CrossValidationExperiment(Experiment):
             self.fcst_test.append(fcst_test)
 
     def _log_error(self, error):
+        """
+        Logs the errors.
+
+        """
         log.error(repr(error))
 
     def run(self):
+        """
+        Runs the experiment.
+
+        Returns:
+            tuple: (fcst_train, fcst_test, results_cv_train, results_cv_test)
+        """
         set_random_seed(42)
         # data-specific pre-processing
         df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(self.data.df)
