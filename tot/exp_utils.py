@@ -30,8 +30,12 @@ def evaluate_forecast(fcst_train, fcst_test, metrics, metadata=None):
         Result of evaluation on test set.
     """
 
-    result_train = metadata.copy()
-    result_test = metadata.copy()
+    if metadata is not None:
+        result_train = metadata.copy()
+        result_test = metadata.copy()
+    else:
+        result_train = {}
+        result_test = {}
 
     for metric in metrics:
         # todo: parallelize
