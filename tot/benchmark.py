@@ -151,7 +151,7 @@ class CVBenchmark(Benchmark, ABC):
         return df_metrics_summary
 
     def run(self, verbose=True):
-        self.fcst_train, self.fcst_test, df_metrics_train, df_metrics_test = super().run(verbose=verbose)
+        df_metrics_train, df_metrics_test = super().run(verbose=verbose)
         self.df_metrics_train = df_metrics_train
         self.df_metrics_test = df_metrics_test
         df_metrics_summary_train = self._summarize_cv_metrics(df_metrics_train)
