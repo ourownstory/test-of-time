@@ -43,7 +43,6 @@ class Experiment(ABC):
     num_processes: int = 1
 
     def __post_init__(self):
-
         data_params = {}
         if len(self.data.seasonalities) > 0:
             data_params["seasonalities"] = self.data.seasonalities
