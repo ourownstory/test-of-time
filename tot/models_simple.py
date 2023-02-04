@@ -7,7 +7,7 @@ import pandas as pd
 
 from tot.df_utils import _check_min_df_len, add_first_inputs_to_df, drop_first_inputs_from_df, prep_or_copy_df
 from tot.models import Model
-from tot.utils import _get_seasons, _predict_linear_regression, convert_df_to_TimeSeries
+from tot.utils import _get_seasons, _predict_darts_model, convert_df_to_TimeSeries
 
 log = logging.getLogger("tot.model")
 
@@ -205,7 +205,9 @@ class LinearRegressionModel(Model):
         if df_historic is not None:
             df = self.maybe_extend_df(df_historic, df)
         df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(df)
-        fcst_df = _predict_linear_regression(model=self, df=df)
+        fcst_df = _predict_darts_model(
+            df=df, model=self, n_req_past_obs=self.n_lags, n_req_future_obs=self.n_forecasts, retrain=False
+        )
 
         if df_historic is not None:
             fcst_df, df = self.maybe_drop_added_values_from_df(fcst_df, df)

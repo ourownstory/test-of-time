@@ -44,6 +44,7 @@ def reshape_raw_predictions_to_forecast_df(df, predicted, n_req_past_obs, n_req_
             where yhat<i> refers to the i-step-ahead prediction for this row's datetime.
             e.g. yhat3 is the prediction for this datetime, predicted 3 steps ago, "3 steps old".
     """
+
     assert len(df["ID"].unique()) == 1
     cols = ["ds", "y", "ID"]  # cols to keep from df
     fcst_df = pd.concat((df[cols],), axis=1)
@@ -248,13 +249,15 @@ def _predict_single_raw_seasonal_naive(df, season_length, n_forecasts):
     last_k_vals = np.stack(last_k_vals_arrays, axis=0)
     # Compute the predictions
     predicted = np.array([last_k_vals[:, i % season_length] for i in range(n_forecasts)]).T
+    if predicted.shape[1] is None:
+        predicted = predicted.reshape(predicted.shape[0], 1)
 
     # No un-scaling and un-normalization needed. Operations not applicable for naive model
     return predicted
 
 
-def _predict_linear_regression(model, df):
-    """Computes forecast-target-wise predictions for linear regression.
+def _predict_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrain):
+    """Computes forecast-target-wise predictions for the passed darts model.
 
     Parameters
     ----------
@@ -262,6 +265,13 @@ def _predict_linear_regression(model, df):
             model to be predicted
         df : pd.DataFrame
             dataframe containing column ``ds``, ``y``, and ``ID`` with all data
+        n_req_past_obs : int
+            number of past observations needed for prediction
+        n_req_future_obs : int
+            number of future samples to be predicted in one step
+        retrain : bool
+            flag specific to darts models that indicates whether the retrain mode is activated
+
     Returns
     -------
         pd.DataFrame
@@ -274,20 +284,22 @@ def _predict_linear_regression(model, df):
     """
     forecast_new = pd.DataFrame()
     for df_name, df_i in df.groupby("ID"):
-        predicted_i = _predict_single_raw_linear_regression(model=model, df=df_i)
+        predicted_i = _predict_single_raw_darts_model(
+            df=df_i, model=model, n_req_past_obs=n_req_past_obs, n_req_future_obs=n_req_future_obs, retrain=retrain
+        )
         forecast_i = reshape_raw_predictions_to_forecast_df(
             df_i,
             predicted_i,
-            n_req_past_obs=model.n_lags,
-            n_req_future_obs=model.n_forecasts,
+            n_req_past_obs=n_req_past_obs,
+            n_req_future_obs=n_req_future_obs,
         )
         forecast_new = pd.concat((forecast_new, forecast_i), ignore_index=True)
 
     return forecast_new
 
 
-def _predict_single_raw_linear_regression(model, df):
-    """Computes forecast-origin-wise predictions for linear regression for single time series.
+def _predict_single_raw_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrain):
+    """Computes forecast-origin-wise predictions for the passed darts model for single time series.
     Predictions are returned in vector format. Predictions are given on a forecast origin basis,
     not on a target basis.
     Parameters
@@ -296,6 +308,13 @@ def _predict_single_raw_linear_regression(model, df):
             model to be predicted
         df : pd.DataFrame
             dataframe containing column ``ds``, ``y``, and optionally``ID`` with all data
+        n_req_past_obs : int
+            number of past observations needed for prediction
+        n_req_future_obs : int
+            number of future samples to be predicted in one step
+        retrain : bool
+            flag specific to darts models that indicates whether the retrain mode is activated
+
     Returns
     -------
         np.array
@@ -308,15 +327,15 @@ def _predict_single_raw_linear_regression(model, df):
     series = convert_df_to_TimeSeries(df, value_cols=value_cols, freq=model.freq)
     predicted_list = model.model.historical_forecasts(
         series,
-        start=model.n_lags,
-        forecast_horizon=model.n_forecasts,
-        retrain=False,
+        start=n_req_past_obs,
+        forecast_horizon=n_req_future_obs,
+        retrain=retrain,
         last_points_only=False,
         verbose=True,
     )
     # convert TimeSeries to np.array
     prediction_series = [prediction_series.values() for i, prediction_series in enumerate(predicted_list)]
-    predicted = np.stack(prediction_series, axis=0).squeeze()
+    predicted = np.stack(prediction_series, axis=0).squeeze(axis=2)
 
     # No un-scaling and un-normalization needed. Operations not applicable for naive model
     return predicted

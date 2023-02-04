@@ -83,7 +83,6 @@ class SeasonalNaiveModel(Model):
         assert (
             self.season_length > 1
         ), "season_length must be >1 for SeasonalNaiveModel. For season_length=1 select NaiveModel instead."
-        self.n_lags = None  # TODO: should not be set to None. Find different solution.
 
     def fit(self, df: pd.DataFrame, freq: str):
         pass
