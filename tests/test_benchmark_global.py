@@ -9,10 +9,10 @@ import pandas as pd
 import pytest
 
 from tot.benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark
-from tot.dataset import Dataset
+from tot.datasets.dataset import Dataset
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
-from tot.models_naive import SeasonalNaiveModel
-from tot.models_neuralprophet import NeuralProphetModel
+from tot.models.models_naive import SeasonalNaiveModel
+from tot.models.models_neuralprophet import NeuralProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")

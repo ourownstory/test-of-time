@@ -10,9 +10,9 @@ from typing import List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
-from tot.dataset import Dataset
+from tot.datasets.dataset import Dataset
 from tot.experiment import CrossValidationExperiment, Experiment, SimpleExperiment
-from tot.models import Model
+from tot.models.models import Model
 
 log = logging.getLogger("tot.benchmark")
 log.info(

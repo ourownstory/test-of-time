@@ -7,10 +7,10 @@ import pathlib
 import pandas as pd
 import pytest
 
-from tot.dataset import Dataset
+from tot.datasets.dataset import Dataset
+from tot.evaluation.metrics import ERROR_FUNCTIONS
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
-from tot.metrics import ERROR_FUNCTIONS
-from tot.models_neuralprophet import NeuralProphetModel
+from tot.models.models_neuralprophet import NeuralProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")

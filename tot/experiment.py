@@ -9,7 +9,7 @@ from typing import List, Optional
 import pandas as pd
 from neuralprophet import set_random_seed
 
-from tot.dataset import Dataset
+from tot.datasets.dataset import Dataset
 from tot.df_utils import (
     check_dataframe,
     crossvalidation_split_df,
@@ -19,7 +19,7 @@ from tot.df_utils import (
     split_df,
 )
 from tot.exp_utils import evaluate_forecast
-from tot.models import Model
+from tot.models.models import Model
 
 log = logging.getLogger("tot.benchmark")
 log.debug(

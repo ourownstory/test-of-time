@@ -7,11 +7,11 @@ import pandas as pd
 import pytest
 
 from tot.benchmark import SimpleBenchmark
-from tot.dataset import Dataset
-from tot.metrics import ERROR_FUNCTIONS
-from tot.models_naive import NaiveModel, SeasonalNaiveModel
-from tot.models_neuralprophet import TorchProphetModel
-from tot.models_simple import LinearRegressionModel, ProphetModel
+from tot.datasets.dataset import Dataset
+from tot.evaluation.metrics import ERROR_FUNCTIONS
+from tot.models.models_naive import NaiveModel, SeasonalNaiveModel
+from tot.models.models_neuralprophet import TorchProphetModel
+from tot.models.models_simple import LinearRegressionModel, ProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")

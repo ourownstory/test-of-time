@@ -8,11 +8,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from tot.benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark
-from tot.dataset import Dataset
+from tot.datasets.dataset import Dataset
+from tot.evaluation.metrics import ERROR_FUNCTIONS
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
-from tot.metrics import ERROR_FUNCTIONS
-from tot.models_neuralprophet import NeuralProphetModel
-from tot.models_simple import ProphetModel
+from tot.models.models_neuralprophet import NeuralProphetModel
+from tot.models.models_simple import ProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
