@@ -105,8 +105,7 @@ class DatasetLoader(ABC):
             with TemporaryDirectory() as temp_dir:
                 temp_path = Path(temp_dir)
 
-                dataset_path = self._download(temp_path)
-                # archive.extractall(path=temp_path)
+                self._download(temp_path)
                 shutil.copy(
                     os.path.join(temp_path, self.metadata.name), os.path.join(self._root_path, self.metadata.name)
                 )
