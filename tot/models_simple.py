@@ -7,7 +7,7 @@ import pandas as pd
 
 from tot.df_utils import _check_min_df_len, add_first_inputs_to_df, drop_first_inputs_from_df, prep_or_copy_df
 from tot.models import Model
-from tot.utils import _get_seasons, _predict_darts_model, convert_df_to_TimeSeries
+from tot.utils import _get_seasons, _predict_darts_model, convert_df_to_DartsTimeSeries
 
 log = logging.getLogger("tot.model")
 
@@ -179,7 +179,7 @@ class LinearRegressionModel(Model):
         """
         _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
         self.freq = freq
-        series = convert_df_to_TimeSeries(df, value_cols=df.columns.values[1:-1].tolist(), freq=self.freq)
+        series = convert_df_to_DartsTimeSeries(df, value_cols=df.columns.values[1:-1].tolist(), freq=self.freq)
         self.model = self.model.fit(series)
 
     def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):

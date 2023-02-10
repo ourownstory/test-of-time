@@ -125,7 +125,7 @@ def _get_seasons(seasonalities: List[float]) -> Tuple[bool, bool, bool, List[flo
     return daily, weekly, yearly, custom
 
 
-def convert_df_to_TimeSeries(df, value_cols, freq) -> TimeSeries:
+def convert_df_to_DartsTimeSeries(df, value_cols, freq) -> TimeSeries:
     """
     Converts pd.Dataframe to TimeSeries (e.g. output of darts).
 
@@ -324,7 +324,7 @@ def _predict_single_raw_darts_model(df, model, n_req_past_obs, n_req_future_obs,
     assert len(df["ID"].unique()) == 1
 
     value_cols = df.columns.values[1:-1].tolist()
-    series = convert_df_to_TimeSeries(df, value_cols=value_cols, freq=model.freq)
+    series = convert_df_to_DartsTimeSeries(df, value_cols=value_cols, freq=model.freq)
     predicted_list = model.model.historical_forecasts(
         series,
         start=n_req_past_obs,
