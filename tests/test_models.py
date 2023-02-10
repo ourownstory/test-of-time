@@ -18,10 +18,10 @@ log.setLevel("WARNING")
 log.parent.setLevel("WARNING")
 
 DIR = pathlib.Path(__file__).parent.parent.absolute()
-DATA_DIR = os.path.join(DIR, "tests", "test-data")
+DATA_DIR = os.path.join(DIR, "datasets")
 PEYTON_FILE = os.path.join(DATA_DIR, "wp_log_peyton_manning.csv")
 AIR_FILE = os.path.join(DATA_DIR, "air_passengers.csv")
-ERCOT_FILE = os.path.join(DATA_DIR, "ercot_load.csv")
+ERCOT_FILE = os.path.join(DATA_DIR, "ercot_load_reduced.csv")
 SAVE_DIR = os.path.join(DIR, "tests", "test-logs")
 if not os.path.isdir(SAVE_DIR):
     os.makedirs(SAVE_DIR)
