@@ -4,7 +4,7 @@ from typing import Tuple, Union
 import numpy as np
 import pandas as pd
 
-from tot.utils import convert_to_datetime
+from tot.models.utils import convert_to_datetime
 
 log = logging.getLogger("tot.df_utils")
 

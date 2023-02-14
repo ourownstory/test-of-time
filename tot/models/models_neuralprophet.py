@@ -13,8 +13,8 @@ from tot.df_utils import (
     prep_or_copy_df,
     return_df_in_original_format,
 )
-from tot.models import Model
-from tot.utils import _get_seasons
+from tot.models.models import Model
+from tot.models.utils import _get_seasons
 
 log = logging.getLogger("tot.model")
 

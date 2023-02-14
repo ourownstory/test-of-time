@@ -7,21 +7,21 @@ import pandas as pd
 import pytest
 
 from tot.benchmark import SimpleBenchmark
-from tot.dataset import Dataset
-from tot.metrics import ERROR_FUNCTIONS
-from tot.models_naive import NaiveModel, SeasonalNaiveModel
-from tot.models_neuralprophet import TorchProphetModel
-from tot.models_simple import LinearRegressionModel, ProphetModel
+from tot.datasets.dataset import Dataset
+from tot.evaluation.metrics import ERROR_FUNCTIONS
+from tot.models.models_naive import NaiveModel, SeasonalNaiveModel
+from tot.models.models_neuralprophet import TorchProphetModel
+from tot.models.models_simple import LinearRegressionModel, ProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
 log.parent.setLevel("WARNING")
 
 DIR = pathlib.Path(__file__).parent.parent.absolute()
-DATA_DIR = os.path.join(DIR, "tests", "test-data")
+DATA_DIR = os.path.join(DIR, "datasets")
 PEYTON_FILE = os.path.join(DATA_DIR, "wp_log_peyton_manning.csv")
 AIR_FILE = os.path.join(DATA_DIR, "air_passengers.csv")
-ERCOT_FILE = os.path.join(DATA_DIR, "ercot_load.csv")
+ERCOT_FILE = os.path.join(DATA_DIR, "ercot_load_reduced.csv")
 SAVE_DIR = os.path.join(DIR, "tests", "test-logs")
 if not os.path.isdir(SAVE_DIR):
     os.makedirs(SAVE_DIR)

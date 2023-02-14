@@ -1,15 +1,16 @@
 import logging
 
 # make version number accessible
-from ._version import __version__  # noqa: F401
-from .benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark  # noqa: F401
+from ._version import __version__  # noqa: F401 to evade flake8
+from .benchmark import (  # noqa: F401 to evade flake8
+    CrossValidationBenchmark,
+    ManualBenchmark,
+    ManualCVBenchmark,
+    SimpleBenchmark,
+)
 
 # make classes available upon package import
-from .dataset import Dataset  # noqa: F401
 from .experiment import SimpleExperiment  # noqa: F401
-from .models_naive import NaiveModel, SeasonalNaiveModel  # noqa: F401
-from .models_neuralprophet import NeuralProphetModel, TorchProphetModel  # noqa: F401
-from .models_simple import LinearRegressionModel, ProphetModel  # noqa: F401
 
 # logger handling
 log = logging.getLogger("dv")

@@ -2,7 +2,7 @@ import logging
 
 import numpy as np
 
-from tot.metrics import ERROR_FUNCTIONS
+from tot.evaluation.metrics import ERROR_FUNCTIONS
 
 log = logging.getLogger("tot.exp_utils")
 

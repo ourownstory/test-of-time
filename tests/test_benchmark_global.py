@@ -9,20 +9,20 @@ import pandas as pd
 import pytest
 
 from tot.benchmark import CrossValidationBenchmark, ManualBenchmark, ManualCVBenchmark, SimpleBenchmark
-from tot.dataset import Dataset
+from tot.datasets.dataset import Dataset
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
-from tot.models_naive import SeasonalNaiveModel
-from tot.models_neuralprophet import NeuralProphetModel
+from tot.models.models_naive import SeasonalNaiveModel
+from tot.models.models_neuralprophet import NeuralProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
 log.parent.setLevel("WARNING")
 
 DIR = pathlib.Path(__file__).parent.parent.absolute()
-DATA_DIR = os.path.join(DIR, "tests", "test-data")
+DATA_DIR = os.path.join(DIR, "datasets")
 PEYTON_FILE = os.path.join(DATA_DIR, "wp_log_peyton_manning.csv")
 AIR_FILE = os.path.join(DATA_DIR, "air_passengers.csv")
-ERCOT_FILE = os.path.join(DATA_DIR, "ercot_load.csv")
+ERCOT_FILE = os.path.join(DATA_DIR, "ercot_load_reduced.csv")
 SAVE_DIR = os.path.join(DIR, "tests", "test-logs")
 if not os.path.isdir(SAVE_DIR):
     os.makedirs(SAVE_DIR)
