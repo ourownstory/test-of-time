@@ -36,9 +36,9 @@ def plot(
             optional, Label name on X-axis
         ylabel : str
             optional, Label name on Y-axis
-        highlight_forecast : int
+        highlight_forecast : Union[int, None]
             optional, i-th step ahead forecast to highlight.
-        figsize : tuple
+        figsize : tuple[int, int]
             optional, Width, height in inches.
         plotting_backend : str
             optional, overwrites the default plotting backend.
