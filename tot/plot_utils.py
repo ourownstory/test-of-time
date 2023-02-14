@@ -3,13 +3,13 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
+import plotly.graph_objs as go
+from plotly_resampler import register_plotly_resampler, unregister_plotly_resampler
 
 from tot.df_utils import prep_or_copy_df
 
 log = logging.getLogger("tot.plot")
 
-import plotly.graph_objs as go
-from plotly_resampler import register_plotly_resampler, unregister_plotly_resampler
 
 # UI Configuration
 prediction_color = "#2d92ff"
