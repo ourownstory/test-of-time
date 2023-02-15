@@ -1,5 +1,5 @@
 import logging
-from typing import Union, Tuple
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -160,7 +160,7 @@ def validate_plotting_backend_input(plotting_backend: str):
         log_value_error_invalid_plotting_backend_input()
 
 
-def validate_highlight_forecast_input(highlight_forecast: int, fcst: pd.DataFrame):
+def validate_highlight_forecast_input(highlight_forecast: Optional[int], fcst: pd.DataFrame):
     """
     Validate the input argument for the highlight_forecast.
 
@@ -189,7 +189,7 @@ def validate_highlight_forecast_input(highlight_forecast: int, fcst: pd.DataFram
         log_value_error_invalid_highlight_forecast_input()
 
 
-def validate_df_name_input(df_name: str, fcst: pd.DataFrame):
+def validate_df_name_input(df_name: Optional[str], fcst: pd.DataFrame):
     """
     Validate the input df_name and returns a dataframe with a single time series and an ID.
 
