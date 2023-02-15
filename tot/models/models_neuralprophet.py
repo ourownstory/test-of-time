@@ -63,18 +63,19 @@ class NeuralProphetModel(Model):
             received_single_time_series,
             _,
         ) = prep_or_copy_df(fcst)
-        fcst_df = pd.DataFrame()
-        for df_name, fcst_i in fcst.groupby("ID"):
-            y_cols = ["y"] + [col for col in fcst_i.columns if "yhat" in col]
-            fcst_aux = pd.DataFrame({"ds": fcst_i.ds})
-            for y_col in y_cols:
-                fcst_aux[y_col] = fcst_i[y_col]
-            fcst_aux["ID"] = df_name
-            fcst_df = pd.concat((fcst_df, fcst_aux), ignore_index=True)
-        fcst_df = return_df_in_original_format(fcst_df, received_ID_col, received_single_time_series)
+        # fcst_df = pd.DataFrame()
+        # TODO: rename ds column
+        # for df_name, fcst_i in fcst.groupby("ID"):
+        #     y_cols = ["y"] + [col for col in fcst_i.columns if "yhat" in col]
+        #     fcst_aux = pd.DataFrame({"ds": fcst_i.ds})
+        #     for y_col in y_cols:
+        #         fcst_aux[y_col] = fcst_i[y_col]
+        #     fcst_aux["ID"] = df_name
+        #     fcst_df = pd.concat((fcst_df, fcst_aux), ignore_index=True)
+        # fcst_df = return_df_in_original_format(fcst_df, received_ID_col, received_single_time_series)
         if df_historic is not None:
-            fcst_df, df = self.maybe_drop_added_values_from_df(fcst_df, df)
-        return fcst_df
+            fcst, df = self.maybe_drop_added_values_from_df(fcst, df)
+        return fcst
 
     def maybe_extend_df(self, df_train, df_test):
         """
