@@ -95,6 +95,8 @@ def test_benchmark_simple_global_modeling():
                 "n_forecasts": 8,
                 "learning_rate": 0.1,
                 "epochs": EPOCHS,
+                "trend_global_local": "global",
+                "season_global_local": "global",
                 "global_normalization": False,
                 "global_time_normalization": False,
             },
