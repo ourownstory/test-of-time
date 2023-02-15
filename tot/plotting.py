@@ -1,7 +1,4 @@
 import logging
-from typing import Optional
-
-import pandas as pd
 
 from tot.plot_utils import (
     _plot_plotly,
@@ -15,12 +12,12 @@ log = logging.getLogger("tot.plot")
 
 
 def plot_plotly(
-    fcst: pd.DataFrame,
+    fcst,
     df_name=None,
     xlabel="ds",
     ylabel="y",
-    highlight_forecast: Optional[int] = None,
-    figsize: tuple[int, int] = (700, 350),
+    highlight_forecast=None,
+    figsize=(700, 350),
     plotting_backend="plotly-auto",
 ):
     """
