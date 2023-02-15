@@ -1,5 +1,5 @@
 import logging
-from typing import Union
+from typing import Union, Tuple
 
 import numpy as np
 import pandas as pd
@@ -226,13 +226,13 @@ def validate_df_name_input(df_name: str, fcst: pd.DataFrame):
 
 
 def _plot_plotly(
-    fcst: pd.DataFrame,
-    quantiles: list = [0.5],
-    xlabel: str = "ds",
-    ylabel: str = "y",
-    highlight_forecast: Union[int, None] = None,
-    figsize: tuple[int, int] = (700, 350),
-    resampler_active: bool = False,
+    fcst,
+    quantiles=[0.5],
+    xlabel="ds",
+    ylabel="y",
+    highlight_forecast=None,
+    figsize=(700, 350),
+    resampler_active=False,
 ):
     """
     Plot the NeuralProphet forecast
