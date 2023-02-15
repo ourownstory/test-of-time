@@ -124,7 +124,7 @@ def test_2_benchmark_CV():
         # plt_air = air_passengers.plot(x='model', y='RMSE', kind='barh')
         # data plot
         air_passengers = results_summary[results_summary["split"] == "test"]
-        air_passengers.plot(x="data", y="MASE", kind="barh")
+        # air_passengers.plot(x="data", y="MASE", kind="barh")
         plt.show()
 
 

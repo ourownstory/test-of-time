@@ -14,7 +14,7 @@ from tot.plot_utils import (
 log = logging.getLogger("tot.plot")
 
 
-def plot(
+def plot_plotly(
     fcst: pd.DataFrame,
     df_name: str = None,
     xlabel: str = "ds",

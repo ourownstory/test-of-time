@@ -12,7 +12,7 @@ from tot.evaluation.metrics import ERROR_FUNCTIONS
 from tot.models.models_naive import NaiveModel, SeasonalNaiveModel
 from tot.models.models_neuralprophet import NeuralProphetModel
 from tot.models.models_simple import LinearRegressionModel, ProphetModel
-from tot.plot import plot
+from tot.plotting import plot_plotly
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -65,7 +65,7 @@ def test_basic_plot(plotting_backend):
 
     results_train, results_test = benchmark.run()
     log.debug(results_test.to_string())
-    fig = plot(benchmark.fcst_test[0], plotting_backend=plotting_backend)
+    fig = plot_plotly(benchmark.fcst_test[0], plotting_backend=plotting_backend)
     if PLOT:
         fig.show()
     log.info("#### Done with test_basic_plot")
