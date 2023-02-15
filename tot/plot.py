@@ -69,5 +69,5 @@ def plot(
         ylabel=ylabel,
         highlight_forecast=highlight_forecast,
         figsize=figsize,
-        resampler_active=plotting_backend == "plotly-resampler",
+        resampler_active=True if plotting_backend == "plotly-resampler" else False,
     )
