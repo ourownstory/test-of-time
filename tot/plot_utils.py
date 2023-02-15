@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -110,7 +109,7 @@ def is_notebook():
     return True
 
 
-def auto_set_plotting_backend(plotting_backend_original: str):
+def auto_set_plotting_backend(plotting_backend_original):
     """
     Automatically set the plotting backend.
 
@@ -135,7 +134,7 @@ def auto_set_plotting_backend(plotting_backend_original: str):
     return plotting_backend_new
 
 
-def validate_plotting_backend_input(plotting_backend: str):
+def validate_plotting_backend_input(plotting_backend):
     """
     Validate the input argument for the plotting backend.
 
@@ -160,7 +159,7 @@ def validate_plotting_backend_input(plotting_backend: str):
         log_value_error_invalid_plotting_backend_input()
 
 
-def validate_highlight_forecast_input(highlight_forecast: Optional[int], fcst: pd.DataFrame):
+def validate_highlight_forecast_input(highlight_forecast, fcst):
     """
     Validate the input argument for the highlight_forecast.
 
@@ -189,7 +188,7 @@ def validate_highlight_forecast_input(highlight_forecast: Optional[int], fcst: p
         log_value_error_invalid_highlight_forecast_input()
 
 
-def validate_df_name_input(df_name: Optional[str], fcst: pd.DataFrame):
+def validate_df_name_input(df_name, fcst):
     """
     Validate the input df_name and returns a dataframe with a single time series and an ID.
 
