@@ -16,12 +16,12 @@ log = logging.getLogger("tot.plot")
 
 def plot_plotly(
     fcst: pd.DataFrame,
-    df_name: Optional[str] = None,
-    xlabel: str = "ds",
-    ylabel: str = "y",
+    df_name=None,
+    xlabel="ds",
+    ylabel="y",
     highlight_forecast: Optional[int] = None,
     figsize: tuple[int, int] = (700, 350),
-    plotting_backend: str = "plotly-auto",
+    plotting_backend="plotly-auto",
 ):
     """
     Plot the NeuralProphet forecast
