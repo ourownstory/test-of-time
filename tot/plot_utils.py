@@ -232,7 +232,7 @@ def _plot_plotly(
     ylabel: str = "y",
     highlight_forecast: Union[int, None] = None,
     figsize: tuple[int, int] = (700, 350),
-    resampler_active=False,
+    resampler_active: bool = False,
 ):
     """
     Plot the NeuralProphet forecast
