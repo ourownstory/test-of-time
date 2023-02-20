@@ -24,3 +24,4 @@
 * rethink clas methods of LinearRegression model
 * Docstring for all model class methods
 * Switch “ds” to “time”
+* delete docstring of imported models 
