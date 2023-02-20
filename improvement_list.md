@@ -1,6 +1,7 @@
 ### file-independent
 * add pyright
 * add codecov
+* investigate omputing time reduction potential, e.g. via multiprocessing, slicing, or .apply
 
 ### dataset.py
 * implement an easy .load() method
