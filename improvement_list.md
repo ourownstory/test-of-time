@@ -16,6 +16,7 @@
 ### experiment.py
 * adjust the eperiment name or params description to be less extensive
 * tranforming forecast_df to a class to introduce user friendly class methods
+* rethink the input mapping (data and model params) for model initialization
 
 ### benchmark.py
 * restructure benchmark output as structured dict
