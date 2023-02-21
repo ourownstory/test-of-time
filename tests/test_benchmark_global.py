@@ -42,7 +42,7 @@ ERCOT_REGIONS = ["NORTH", "EAST", "FAR_WEST"]
 PLOT = False
 
 
-def test_benchmark_simple_global_modeling():
+def test_benchmark_simple_global_modeling_NP():
     # test NeuralProphetModel on all global model configurations
     ercot_df_aux = pd.read_csv(ERCOT_FILE)
     ercot_df = pd.DataFrame()
@@ -65,10 +65,10 @@ def test_benchmark_simple_global_modeling():
                 "n_forecasts": 8,
                 "learning_rate": 0.1,
                 "epochs": EPOCHS,
-                "trend_global_local": "local",
-                "season_global_local": "local",
-                "global_normalization": False,
-                "global_time_normalization": False,
+                "trend_global_local": "local",  # default is "global"
+                "season_global_local": "local",  # default is "global"
+                "global_normalization": False,  # default is False
+                "global_time_normalization": False,  # default is True
             },
         ),
         (
@@ -108,7 +108,7 @@ def test_benchmark_simple_global_modeling():
     print(results_test)
 
 
-def test_benchmark_manual_global_modeling():
+def test_benchmark_manual_global_modeling_NP():
     ercot_df_aux = pd.read_csv(ERCOT_FILE)
     ercot_df = pd.DataFrame()
     for region in ERCOT_REGIONS:
@@ -159,36 +159,4 @@ def test_benchmark_manual_global_modeling():
         save_dir=SAVE_DIR,
     )
     results_train, results_test = benchmark.run()
-    log.debug("{}".format(results_test))
-
-
-def test_benchmark_dict_global_modeling():
-    ercot_df = pd.read_csv(ERCOT_FILE)
-
-    dataset_list = [
-        Dataset(df=ercot_df, name="ercot_load", freq="H"),
-    ]
-    model_classes_and_params = [
-        (
-            NeuralProphetModel,
-            {
-                "n_lags": 24,
-                "n_forecasts": 8,
-                "learning_rate": 0.1,
-                "epochs": EPOCHS,
-                "global_normalization": False,
-                "global_time_normalization": True,
-            },
-        ),
-    ]
-    log.debug("{}".format(model_classes_and_params))
-
-    benchmark = SimpleBenchmark(
-        model_classes_and_params=model_classes_and_params,  # iterate over this list of tuples
-        datasets=dataset_list,  # iterate over this list
-        metrics=["MAE", "MSE", "MASE", "RMSE"],
-        test_percentage=0.25,
-    )
-    results_train, results_test = benchmark.run()
-
     log.debug("{}".format(results_test))

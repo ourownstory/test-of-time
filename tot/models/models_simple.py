@@ -67,6 +67,8 @@ class ProphetModel(Model):
             self.params.update({"yearly_seasonality": yearly})
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
+        if "interval_width" in model_params:
+            raise NotImplementedError("Quantiles not supported for Prophet. Remove interval_width from model input.")
         self.model = self.model_class(**model_params)
         if custom_seasonalities is not None:
             for seasonality in custom_seasonalities:
