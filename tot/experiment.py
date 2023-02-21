@@ -292,19 +292,27 @@ class CrossValidationExperiment(Experiment):
                 Dictionary containing the evaluation metrics for the test data of the current fold.
         """
         set_random_seed(42)
-        df_train, df_test, current_fold = args
+        df_train, df_test, current_fold, received_ID_col, received_single_time_series = args
         # fit model
         model = self.model_class(self.params)
         model.fit(df=df_train, freq=self.data.freq)
         # predict model
         fcst_train, fcst_test = self._make_forecast(
-            model=model, df_train=df_train, df_test=df_test, current_fold=current_fold
+            model=model,
+            df_train=df_train,
+            df_test=df_test,
+            received_ID_col=received_ID_col,
+            received_single_time_series=received_single_time_series,
+            current_fold=current_fold,
         )
         # data-specific post-processing
         fcst_train, df_train = maybe_drop_added_dates(fcst_train, df_train)
         fcst_test, df_test = maybe_drop_added_dates(fcst_test, df_test)
         # evaluation
         result_train, result_test = self._evaluate_model(fcst_train, fcst_test)
+        # reformat
+        fcst_train = return_df_in_original_format(fcst_train, received_ID_col, received_single_time_series)
+        fcst_test = return_df_in_original_format(fcst_test, received_ID_col, received_single_time_series)
         del model
         gc.collect()
         return (fcst_train, fcst_test, result_train, result_test)
@@ -370,7 +378,10 @@ class CrossValidationExperiment(Experiment):
         self.fcst_test = []
         if self.num_processes > 1 and self.num_folds > 1:
             with Pool(self.num_processes) as pool:
-                args = [(df_train, df_test, current_fold) for current_fold, (df_train, df_test) in enumerate(folds)]
+                args = [
+                    (df_train, df_test, current_fold, received_ID_col, received_single_time_series)
+                    for current_fold, (df_train, df_test) in enumerate(folds)
+                ]
                 pool.map_async(
                     self._run_fold,
                     args,
@@ -382,7 +393,7 @@ class CrossValidationExperiment(Experiment):
             gc.collect()
         else:
             for current_fold, (df_train, df_test) in enumerate(folds):
-                args = (df_train, df_test, current_fold)
+                args = (df_train, df_test, current_fold, received_ID_col, received_single_time_series)
                 self._log_results(self._run_fold(args))
 
         if self.save_dir is not None:

@@ -103,7 +103,6 @@ def test_2_benchmark_CV():
                 "epochs": EPOCHS,
             },
         ),
-        # (ProphetModel, {}), # needs to be installed
     ]
     log.debug("{}".format(model_classes_and_params))
 
@@ -114,6 +113,7 @@ def test_2_benchmark_CV():
         test_percentage=0.1,
         num_folds=3,
         fold_overlap_pct=0,
+        num_processes=4,
     )
     results_summary, results_train, results_test = benchmark_cv.run()
     log.debug("{}".format(results_summary))
