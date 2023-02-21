@@ -103,6 +103,7 @@ def split_df(
             df_t, df_v = _split_df(df_i, test_percentage)
             df_train = pd.concat((df_train, df_t.copy(deep=True)), ignore_index=True)
             df_val = pd.concat((df_val, df_v.copy(deep=True)), ignore_index=True)
+
     else:
         if len(df["ID"].unique()) == 1:
             for df_name, df_i in df.groupby("ID"):
