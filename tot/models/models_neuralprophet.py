@@ -11,7 +11,6 @@ from tot.df_utils import (
     add_first_inputs_to_df,
     drop_first_inputs_from_df,
     prep_or_copy_df,
-    return_df_in_original_format,
 )
 from tot.models.models import Model
 from tot.models.utils import _get_seasons
@@ -48,31 +47,62 @@ class NeuralProphetModel(Model):
         self.season_length = None
 
     def fit(self, df: pd.DataFrame, freq: str):
+        """Fits the model.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame with columns "ds" and "y" and optionally "ID"
+        freq : str
+            Frequency of the time series
+
+        Returns
+        -------
+        None
+        """
         _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
         self.freq = freq
         _ = self.model.fit(df=df, freq=freq, progress="none", minimal=True)
 
-    def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):
+    def predict(
+        self,
+        received_ID_col,
+        received_single_time_series,
+        df: pd.DataFrame,
+        df_historic: pd.DataFrame = None,
+    ):
+        """Runs the model to make predictions.
+
+        Expects all data to be present in dataframe.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame with columns "ds" and "y" and optionally "ID"
+        received_ID_col : bool
+            Whether the df has an ID column
+        received_single_time_series : bool
+            Whether the df has only one time series
+        df_historic : pd.DataFrame
+            DataFrame containing column ``ds``, ``y``, and optionally ``ID`` with historic data
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with columns "ds", "y", "yhat1" and "ID"
+        """
         _check_min_df_len(df=df, min_len=self.n_forecasts)
         if df_historic is not None:
             df = self.maybe_extend_df(df_historic, df)
         fcst = self.model.predict(df=df)
+        # add ID again since NP drops it
         (
             fcst,
-            received_ID_col,
-            received_single_time_series,
+            _,
+            _,
             _,
         ) = prep_or_copy_df(fcst)
-        # fcst_df = pd.DataFrame()
-        # TODO: rename ds column
-        # for df_name, fcst_i in fcst.groupby("ID"):
-        #     y_cols = ["y"] + [col for col in fcst_i.columns if "yhat" in col]
-        #     fcst_aux = pd.DataFrame({"ds": fcst_i.ds})
-        #     for y_col in y_cols:
-        #         fcst_aux[y_col] = fcst_i[y_col]
-        #     fcst_aux["ID"] = df_name
-        #     fcst_df = pd.concat((fcst_df, fcst_aux), ignore_index=True)
-        # fcst_df = return_df_in_original_format(fcst_df, received_ID_col, received_single_time_series)
+
         if df_historic is not None:
             fcst, df = self.maybe_drop_added_values_from_df(fcst, df)
         return fcst
@@ -92,6 +122,7 @@ class NeuralProphetModel(Model):
         """
         samples = self.n_lags
         predicted, df = drop_first_inputs_from_df(samples=samples, predicted=predicted, df=df)
+
         return predicted, df
 
 

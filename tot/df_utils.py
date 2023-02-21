@@ -4,9 +4,36 @@ from typing import Tuple, Union
 import numpy as np
 import pandas as pd
 
-from tot.models.utils import convert_to_datetime
-
 log = logging.getLogger("tot.df_utils")
+
+
+def convert_to_datetime(series: pd.Series) -> pd.Series:
+    """Convert input series to datetime format
+
+    Parameters
+    ----------
+        series : pd.Series
+            input series that needs to be converted to datetime format
+
+    Returns
+    -------
+        pd.Series
+            series in datetime format
+
+    Raises
+    ------
+        ValueError
+            if input series contains NaN values or has timezone specified
+    """
+    if series.isnull().any():
+        raise ValueError("Found NaN in column ds.")
+    if series.dtype == np.int64:
+        series = series.astype(str)
+    if not np.issubdtype(series.dtype, np.datetime64):
+        series = pd.to_datetime(series)
+    if series.dt.tz is not None:
+        raise ValueError("Column ds has timezone specified, which is not supported. Remove timezone.")
+    return series
 
 
 def _split_df(df: pd.DataFrame, test_percentage: Union[float, int]) -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -80,6 +107,7 @@ def split_df(
         if len(df["ID"].unique()) == 1:
             for df_name, df_i in df.groupby("ID"):
                 df_train, df_val = _split_df(df_i, test_percentage)
+        # TODO: provide case for multiple time series and split by time threshold
     # df_train and df_val are returned as pd.DataFrames
     return df_train, df_val
 
@@ -200,6 +228,7 @@ def crossvalidation_split_df(df, freq, k=5, fold_pct=0.1, fold_overlap_pct=0.5):
             training data
 
             validation data
+
     See Also
     --------
         split_df : Splits timeseries df into train and validation sets.
@@ -259,6 +288,7 @@ def _check_min_df_len(df, min_len):
         If the dataframe does not have at least `min_len` rows.
     """
     assert len(df) > min_len, "df has not enough data to create a single input sample."
+    # TODO: adapt for multi time series df
 
 
 def add_first_inputs_to_df(samples: int, df_train: pd.DataFrame, df_test: pd.DataFrame) -> pd.DataFrame:
@@ -279,13 +309,6 @@ def add_first_inputs_to_df(samples: int, df_train: pd.DataFrame, df_test: pd.Dat
     df_test: pd.DataFrame
         Dataframe containing testing data with the last `samples` of data from df_train at the start.
     """
-    df_train, _, _, _ = prep_or_copy_df(df_train)
-    (
-        df_test,
-        received_ID_col_test,
-        received_single_time_series_test,
-        _,
-    ) = prep_or_copy_df(df_test)
     df_test_new = pd.DataFrame()
 
     for df_name, df_test_i in df_test.groupby("ID"):
@@ -295,13 +318,7 @@ def add_first_inputs_to_df(samples: int, df_train: pd.DataFrame, df_test: pd.Dat
             ignore_index=True,
         )
         df_test_new = pd.concat((df_test_new, df_test_i), ignore_index=True)
-
-    df_test = return_df_in_original_format(
-        df_test_new,
-        received_ID_col_test,
-        received_single_time_series_test,
-    )
-    return df_test
+    return df_test_new
 
 
 def drop_first_inputs_from_df(
@@ -322,18 +339,6 @@ def drop_first_inputs_from_df(
         Tuple[pd.DataFrame, pd.DataFrame]
             Tuple containing the modified 'predicted' and 'df' dataframes.
     """
-    (
-        predicted,
-        received_ID_col_pred,
-        received_single_time_series_pred,
-        _,
-    ) = prep_or_copy_df(predicted)
-    (
-        df,
-        received_ID_col_df,
-        received_single_time_series_df,
-        _,
-    ) = prep_or_copy_df(df)
     predicted_new = pd.DataFrame()
     df_new = pd.DataFrame()
 
@@ -343,13 +348,7 @@ def drop_first_inputs_from_df(
         df_i = df_i[samples:]
         df_new = pd.concat((df_new, df_i), ignore_index=True)
         predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
-    df = return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
-    predicted = return_df_in_original_format(
-        predicted_new,
-        received_ID_col_pred,
-        received_single_time_series_pred,
-    )
-    return predicted, df
+    return predicted_new, df_new
 
 
 def maybe_drop_added_dates(predicted: pd.DataFrame, df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -370,18 +369,6 @@ def maybe_drop_added_dates(predicted: pd.DataFrame, df: pd.DataFrame) -> Tuple[p
     df: pd.DataFrame
         Dataframe containing the test values
     """
-    (
-        predicted,
-        received_ID_col_pred,
-        received_single_time_series_pred,
-        _,
-    ) = prep_or_copy_df(predicted)
-    (
-        df,
-        received_ID_col_df,
-        received_single_time_series_df,
-        _,
-    ) = prep_or_copy_df(df)
     predicted_new = pd.DataFrame()
     df_new = pd.DataFrame()
     for df_name, df_i in df.groupby("ID"):
@@ -395,12 +382,6 @@ def maybe_drop_added_dates(predicted: pd.DataFrame, df: pd.DataFrame) -> Tuple[p
         df_i = df_i.reset_index()
         df_new = pd.concat((df_new, df_i), ignore_index=True)
         predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
-    df = return_df_in_original_format(df_new, received_ID_col_df, received_single_time_series_df)
-    predicted = return_df_in_original_format(
-        predicted_new,
-        received_ID_col_pred,
-        received_single_time_series_pred,
-    )
     return predicted, df
 
 

@@ -28,7 +28,7 @@ class Model(ABC):
         pass
 
     @abstractmethod
-    def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):
+    def predict(self, df: pd.DataFrame, received_ID_col, received_single_time_series, df_historic: pd.DataFrame = None):
         pass
 
     def maybe_extend_df(self, df_train, df_test):

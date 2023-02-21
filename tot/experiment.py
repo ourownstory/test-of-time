@@ -16,6 +16,7 @@ from tot.df_utils import (
     handle_missing_data,
     maybe_drop_added_dates,
     prep_or_copy_df,
+    return_df_in_original_format,
     split_df,
 )
 from tot.exp_utils import evaluate_forecast
@@ -91,7 +92,15 @@ class Experiment(ABC):
         name = prefix + "_" + name + ".csv"
         df.to_csv(os.path.join(self.save_dir, name), encoding="utf-8", index=False)
 
-    def _make_forecast(self, model, df_train, df_test, current_fold=None):
+    def _make_forecast(
+        self,
+        model,
+        df_train,
+        df_test,
+        received_ID_col,
+        received_single_time_series,
+        current_fold=None,
+    ):
         """
         Make predictions using the given model on the train and test data.
 
@@ -105,6 +114,10 @@ class Experiment(ABC):
             The test data.
         current_fold : int, optional
             Fold number, to be included in the filename if saving results to disk.
+        received_ID_col : bool
+            whether the ID col was present
+        received_single_time_series : bool
+            whether it is a single time series
 
         Returns
         -------
@@ -113,8 +126,15 @@ class Experiment(ABC):
         fcst_test : pandas.DataFrame
             Predictions on the test data.
         """
-        fcst_train = model.predict(df=df_train)
-        fcst_test = model.predict(df=df_test, df_historic=df_train)
+        fcst_train = model.predict(
+            df=df_train, received_ID_col=received_ID_col, received_single_time_series=received_single_time_series
+        )
+        fcst_test = model.predict(
+            df=df_test,
+            df_historic=df_train,
+            received_ID_col=received_ID_col,
+            received_single_time_series=received_single_time_series,
+        )
         if self.save_dir is not None:
             self.write_results_to_csv(fcst_train, prefix="predicted_train", current_fold=current_fold)
             self.write_results_to_csv(fcst_test, prefix="predicted_test", current_fold=current_fold)
@@ -188,6 +208,7 @@ class SimpleExperiment(Experiment):
         """
         # data-specific pre-processing
         set_random_seed(42)
+        # add ID col if not present
         df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(self.data.df)
         df = check_dataframe(df, check_y=True)
         # add infer frequency
@@ -200,12 +221,21 @@ class SimpleExperiment(Experiment):
         model = self.model_class(self.params)
         model.fit(df=df_train, freq=self.data.freq)
         # predict model
-        fcst_train, fcst_test = self._make_forecast(model=model, df_train=df_train, df_test=df_test)
+        fcst_train, fcst_test = self._make_forecast(
+            model=model,
+            df_train=df_train,
+            df_test=df_test,
+            received_ID_col=received_ID_col,
+            received_single_time_series=received_single_time_series,
+        )
         # data-specific post-processing
         fcst_train, df_train = maybe_drop_added_dates(fcst_train, df_train)
         fcst_test, df_test = maybe_drop_added_dates(fcst_test, df_test)
         # evaluation
         result_train, result_test = self._evaluate_model(fcst_train, fcst_test)
+        # remove ID col if not added
+        fcst_train = return_df_in_original_format(fcst_train, received_ID_col, received_single_time_series)
+        fcst_test = return_df_in_original_format(fcst_test, received_ID_col, received_single_time_series)
         return fcst_train, fcst_test, result_train, result_test
 
 
