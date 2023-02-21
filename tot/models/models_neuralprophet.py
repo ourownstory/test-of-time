@@ -6,12 +6,7 @@ from typing import Type
 import pandas as pd
 from neuralprophet import NeuralProphet, TorchProphet
 
-from tot.df_utils import (
-    _check_min_df_len,
-    add_first_inputs_to_df,
-    drop_first_inputs_from_df,
-    prep_or_copy_df,
-)
+from tot.df_utils import _check_min_df_len, add_first_inputs_to_df, drop_first_inputs_from_df, prep_or_copy_df
 from tot.models.models import Model
 from tot.models.utils import _get_seasons
 

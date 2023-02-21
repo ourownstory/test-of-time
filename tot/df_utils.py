@@ -288,8 +288,12 @@ def _check_min_df_len(df, min_len):
     AssertionError
         If the dataframe does not have at least `min_len` rows.
     """
-    assert len(df) > min_len, "df has not enough data to create a single input sample."
-    # TODO: adapt for multi time series df
+    assert (
+        df.groupby("ID").apply(lambda x: len(x) > min_len).all()
+    ), "Input time series has not enough sample to fit an predict the model."
+    # assert (df.groupby("ID").apply(
+    #     lambda x: pd.Series(len(x) > min_len, index=["check"]).all()
+    # )), "Input time series has not enough sample to fit an predict the model."
 
 
 def add_first_inputs_to_df(samples: int, df_train: pd.DataFrame, df_test: pd.DataFrame) -> pd.DataFrame:
