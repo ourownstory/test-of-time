@@ -87,7 +87,7 @@ class SeasonalNaiveModel(Model):
     def fit(self, df: pd.DataFrame, freq: str):
         pass
 
-    def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):
+    def predict(self, df: pd.DataFrame, received_ID_col, received_single_time_series, df_historic: pd.DataFrame = None):
         """Runs the model to make predictions.
         Expects all data to be present in dataframe.
 
@@ -97,6 +97,11 @@ class SeasonalNaiveModel(Model):
                 dataframe containing column ``ds``, ``y``, and optionally ``ID`` with data
             df_historic : pd.DataFrame
                 dataframe containing column ``ds``, ``y``, and optionally ``ID`` with historic data
+            received_ID_col : bool
+                whether the ID col was present
+            received_single_time_series : bool
+                whether it is a single time series
+
         Returns
         -------
             pd.DataFrame
@@ -111,16 +116,9 @@ class SeasonalNaiveModel(Model):
         _check_min_df_len(df=df, min_len=self.n_forecasts)
         if df_historic is not None:
             df = self.maybe_extend_df(df_historic, df)
-        (
-            df,
-            received_ID_col,
-            received_single_time_series,
-            _,
-        ) = prep_or_copy_df(df)
 
-        forecast = _predict_seasonal_naive(df=df, season_length=self.season_length, n_forecasts=self.n_forecasts)
+        fcst_df = _predict_seasonal_naive(df=df, season_length=self.season_length, n_forecasts=self.n_forecasts)
 
-        fcst_df = return_df_in_original_format(forecast, received_ID_col, received_single_time_series)
         if df_historic is not None:
             fcst_df, df = self.maybe_drop_added_values_from_df(fcst_df, df)
         return fcst_df

@@ -79,16 +79,56 @@ class ProphetModel(Model):
         self.season_length = None
 
     def fit(self, df: pd.DataFrame, freq: str):
+        """Fits the model.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame with columns "ds" and "y" and optionally "ID"
+        freq : str
+            Frequency of the time series
+
+        Returns
+        -------
+        None
+        """
         _check_min_df_len(df=df, min_len=self.n_forecasts)
         if "ID" in df.columns and len(df["ID"].unique()) > 1:
             raise NotImplementedError("Prophet does not work with many ts df")
         self.freq = freq
         self.model = self.model.fit(df=df)
 
-    def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):
+    def predict(self, df: pd.DataFrame, received_ID_col, received_single_time_series, df_historic: pd.DataFrame = None):
+        """Runs the model to make predictions.
+
+        Expects all data to be present in dataframe.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame with columns "ds" and "y" and optionally "ID"
+        received_ID_col : bool
+            Whether the df has an ID column
+        received_single_time_series : bool
+            Whether the df has only one time series
+        df_historic : pd.DataFrame
+            DataFrame containing column ``ds``, ``y``, and optionally ``ID`` with historic data
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with columns "ds", "y", "yhat1" and "ID"
+        """
         _check_min_df_len(df=df, min_len=self.n_forecasts)
         fcst = self.model.predict(df=df)
         fcst_df = pd.DataFrame({"ds": fcst.ds, "y": df.y, "yhat1": fcst.yhat})
+        # add ID again since NP drops it
+        (
+            fcst_df,
+            _,
+            _,
+            _,
+        ) = prep_or_copy_df(fcst_df)
         return fcst_df
 
 
@@ -99,10 +139,10 @@ class LinearRegressionModel(Model):
 
      Parameters
      ----------
-         n_lags : int
+         lags : int
              Previous time series steps to include in auto-regression. Aka AR-order
          output_chunk_length : int
-             Number of time steps predicted at once by the internal regression model. Does not have to equal the forecast
+             optional, Number of time steps predicted at once by the internal regression model. Does not have to equal the forecast
              horizon `n` used in `predict()`. However, setting `output_chunk_length` equal to the forecast horizon may
              be useful if the covariates don't extend far enough into the future.
          model : Type
@@ -179,10 +219,10 @@ class LinearRegressionModel(Model):
         """
         _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
         self.freq = freq
-        series = convert_df_to_TimeSeries(df, value_cols=df.columns.values[1:-1].tolist(), freq=self.freq)
+        series = convert_df_to_TimeSeries(df, freq=self.freq)
         self.model = self.model.fit(series)
 
-    def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):
+    def predict(self, df: pd.DataFrame, received_ID_col, received_single_time_series, df_historic: pd.DataFrame = None):
         """Runs the model to make predictions.
 
         Expects all data to be present in dataframe.
@@ -193,6 +233,10 @@ class LinearRegressionModel(Model):
                 dataframe containing column ``ds``, ``y``, and optionally ``ID`` with data
             df_historic : pd.DataFrame
                 dataframe containing column ``ds``, ``y``, and optionally ``ID`` with historic data
+            received_ID_col : bool
+                whether the ID col was present
+            received_single_time_series : bool
+                whether it is a single time series
 
         Returns
         -------
@@ -204,11 +248,15 @@ class LinearRegressionModel(Model):
         _check_min_df_len(df=df, min_len=self.n_forecasts)
         if df_historic is not None:
             df = self.maybe_extend_df(df_historic, df)
-        df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(df)
         fcst_df = _predict_darts_model(
-            df=df, model=self, n_req_past_obs=self.n_lags, n_req_future_obs=self.n_forecasts, retrain=False
+            df=df,
+            model=self,
+            n_req_past_obs=self.n_lags,
+            n_req_future_obs=self.n_forecasts,
+            retrain=False,
+            received_ID_col=received_ID_col,
+            received_single_time_series=received_single_time_series,
         )
-
         if df_historic is not None:
             fcst_df, df = self.maybe_drop_added_values_from_df(fcst_df, df)
         return fcst_df
