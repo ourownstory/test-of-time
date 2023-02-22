@@ -108,7 +108,10 @@ def split_df(
         if len(df["ID"].unique()) == 1:
             for df_name, df_i in df.groupby("ID"):
                 df_train, df_val = _split_df(df_i, test_percentage)
-        # TODO: provide case for multiple time series and split by time threshold
+        else:
+            # Split data according to time threshold defined by the valid_p
+            threshold_time_stamp = find_time_threshold(df, test_percentage)
+            df_train, df_val = split_considering_timestamp(df, threshold_time_stamp)
     # df_train and df_val are returned as pd.DataFrames
     return df_train, df_val
 
