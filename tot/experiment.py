@@ -367,6 +367,7 @@ class CrossValidationExperiment(Experiment):
             fold_pct=self.test_percentage,
             fold_overlap_pct=self.fold_overlap_pct,
             received_single_time_series=received_single_time_series,
+            global_model_cv_type=self.global_model_cv_type,
         )
         # init empty dicts with list for fold-wise metrics
         self.results_cv_train = self.metadata.copy()

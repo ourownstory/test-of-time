@@ -236,7 +236,9 @@ def _crossvalidation_split_df(
     return folds
 
 
-def crossvalidation_split_df(df, received_single_time_series, k=5, fold_pct=0.1, fold_overlap_pct=0.5):
+def crossvalidation_split_df(
+    df, received_single_time_series, global_model_cv_type, k=5, fold_pct=0.1, fold_overlap_pct=0.5
+):
     """Splits timeseries data in k folds for crossvalidation.
 
     Parameters
@@ -256,7 +258,18 @@ def crossvalidation_split_df(df, received_single_time_series, k=5, fold_pct=0.1,
         fold_pct : float
             percentage of overall samples to be in each fold
         fold_overlap_pct : float
-            percentage of overlap between the validation folds.
+            percentage of overlap between the validation folds (default: 0.0)
+        global_model_cv_type : str
+            Type of crossvalidation to apply to the time series.
+
+                options:
+
+                    ``global-time`` (default) crossvalidation is performed according to a time stamp threshold.
+
+                    ``local`` each episode will be crossvalidated locally (may cause time leakage among different episodes)
+
+                    ``intersect`` only the time intersection of all the episodes will be considered. A considerable amount of data may not be used. However, this approach guarantees an equal number of train/test samples for each episode.
+
 
     Returns
     -------
@@ -294,6 +307,7 @@ def crossvalidation_split_df(df, received_single_time_series, k=5, fold_pct=0.1,
         fold_pct=fold_pct,
         fold_overlap_pct=fold_overlap_pct,
         received_single_time_series=received_single_time_series,
+        global_model_cv_type=global_model_cv_type,
     )
     # ID col is kept for further processing
     return folds
