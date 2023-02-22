@@ -216,6 +216,7 @@ class SimpleExperiment(Experiment):
         df_train, df_test = split_df(
             df=df,
             test_percentage=self.test_percentage,
+            local_split=False,
         )
         # fit model
         model = self.model_class(self.params)
