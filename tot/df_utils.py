@@ -156,17 +156,17 @@ def __crossvalidation_split_df(df, k, fold_pct, fold_overlap_pct=0.0):
     return folds
 
 
-def _crossvalidation_split_df(df, k, fold_pct, fold_overlap_pct=0.0):
+def _crossvalidation_split_df(
+    df, received_single_time_series, k, fold_pct, fold_overlap_pct=0.0, global_model_cv_type="global-time"
+):
     """Splits data in k folds for crossvalidation.
 
     Parameters
     ----------
         df : pd.DataFrame
             data
-        n_lags : int
-            identical to NeuralProphet
-        n_forecasts : int
-            identical to NeuralProphet
+        received_single_time_series : bool
+            Whether the data contains a single time series
         k : int
             number of CV folds
         fold_pct : float
@@ -192,29 +192,65 @@ def _crossvalidation_split_df(df, k, fold_pct, fold_overlap_pct=0.0):
 
             validation data
     """
-    if len(df["ID"].unique()) == 1:
-        for df_name, df_i in df.groupby("ID"):
-            folds = __crossvalidation_split_df(df_i, k, fold_pct, fold_overlap_pct)
+    if received_single_time_series:
+        folds = (
+            df.groupby("ID")
+            .apply(lambda x: __crossvalidation_split_df(x, k=k, fold_pct=fold_pct, fold_overlap_pct=fold_overlap_pct))
+            .tolist()[0]
+        )
+
     else:
         # implement procedure for multiple IDs
+        if global_model_cv_type == "global-time" or global_model_cv_type is None:
+            # Use time threshold to perform crossvalidation (the distribution of data of different episodes may not be equivalent)
+            folds = _crossvalidation_with_time_threshold(df, k=k, fold_pct=fold_pct, fold_overlap_pct=fold_overlap_pct)
+        elif global_model_cv_type == "local":
+            # Crossvalidate time series locally (time leakage may be a problem)
+            folds_dict = (
+                df.groupby("ID")
+                .apply(
+                    lambda x: __crossvalidation_split_df(x, k=k, fold_pct=fold_pct, fold_overlap_pct=fold_overlap_pct)
+                )
+                .to_dict()
+            )
+            folds = unfold_dict_of_folds(folds_dict, k)
+
+        elif global_model_cv_type == "intersect":
+            # Use data only from the time period of intersection among time series
+            folds_dict = {}
+            # Check for intersection of time so time leakage does not occur among different time series
+            start_date, end_date = find_valid_time_interval_for_cv(df)
+            for df_name, df_i in df.groupby("ID"):
+                mask = (df_i["ds"] >= start_date) & (df_i["ds"] <= end_date)
+                df_i = df_i[mask].copy(deep=True)
+                folds_dict[df_name] = __crossvalidation_split_df(
+                    df_i, k=k, fold_pct=fold_pct, fold_overlap_pct=fold_overlap_pct
+                )
+            folds = unfold_dict_of_folds(folds_dict, k)
+        else:
+            raise ValueError(
+                "Please choose a valid type of global model crossvalidation (i.e. global-time, local, or intersect)"
+            )
         pass
 
     return folds
 
 
-def crossvalidation_split_df(df, freq, k=5, fold_pct=0.1, fold_overlap_pct=0.5):
+def crossvalidation_split_df(df, received_single_time_series, k=5, fold_pct=0.1, fold_overlap_pct=0.5):
     """Splits timeseries data in k folds for crossvalidation.
 
     Parameters
     ----------
         df : pd.DataFrame
             dataframe containing column ``ds``, ``y``, and optionally``ID`` with all data
-        freq : str
-            data step sizes. Frequency of data recording,
 
             Note
             ----
             Any valid frequency for pd.date_range, such as ``5min``, ``D``, ``MS`` or ``auto`` (default) to automatically set frequency.
+        received_ID_col : bool
+            Whether the data contains an ID column
+        received_single_time_series : bool
+            Whether the data contains a single time series
         k : int
             number of CV folds
         fold_pct : float
@@ -251,25 +287,216 @@ def crossvalidation_split_df(df, freq, k=5, fold_pct=0.1, fold_overlap_pct=0.5):
         8	2022-12-11	8.25
         9	2022-12-12	8.09
     """
-    df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(df)
-    # df = self._check_dataframe(df, check_y=False, exogenous=False) #TODO: add via restructured pipeline
-    # freq = df_utils.infer_frequency(df, n_lags=self.max_lags, freq=freq) #TODO: add via restructured pipeline
-    # df = model._handle_missing_data(df, freq=freq, predicting=False) #TODO: add via restructured pipeline
+
     folds = _crossvalidation_split_df(
         df,
         k=k,
         fold_pct=fold_pct,
         fold_overlap_pct=fold_overlap_pct,
+        received_single_time_series=received_single_time_series,
     )
-    # if not received_ID_col and received_single_time_series:
-    #     # Delete ID column (__df__) of df_train and df_val of all folds in case ID was not previously provided
-    #     new_folds = []
-    #     for i in range(len(folds)):
-    #         df_train = return_df_in_original_format(folds[i][0])
-    #         df_val = return_df_in_original_format(folds[i][1])
-    #         new_folds.append((df_train, df_val))
-    #     folds = new_folds
+    # ID col is kept for further processing
     return folds
+
+
+def _crossvalidation_with_time_threshold(df, k, fold_pct, fold_overlap_pct=0.0):
+    """Splits data in k folds for crossvalidation accordingly to time threshold.
+
+    Parameters
+    ----------
+        df : pd.DataFrame
+            data with column ``ds``, ``y``, and ``ID``
+        k : int
+            number of CV folds
+        fold_pct : float
+            percentage of overall samples to be in each fold
+        fold_overlap_pct : float
+            percentage of overlap between the validation folds (default: 0.0)
+
+    Returns
+    -------
+        list of k tuples [(df_train, df_val), ...]
+
+            training data
+
+            validation data
+    """
+    df_merged = merge_dataframes(df)
+    total_samples = len(df_merged)
+    samples_fold = max(1, int(fold_pct * total_samples))
+    samples_overlap = int(fold_overlap_pct * samples_fold)
+    assert samples_overlap < samples_fold
+    min_train = total_samples - samples_fold - (k - 1) * (samples_fold - samples_overlap)
+    assert (
+        min_train >= samples_fold
+    ), "Test percentage too large. Not enough train samples. Select smaller test percentage. "
+    folds = []
+    df_fold, _, _, _ = prep_or_copy_df(df)
+    for i in range(k, 0, -1):
+        threshold_time_stamp = find_time_threshold(df_fold, samples_fold)
+        df_train, df_val = split_considering_timestamp(df_fold, threshold_time_stamp=threshold_time_stamp)
+        folds.append((df_train, df_val))
+        split_idx = len(df_merged) - samples_fold + samples_overlap
+        df_merged = df_merged[:split_idx].reset_index(drop=True)
+        threshold_time_stamp = df_merged["ds"].iloc[-1]
+        df_fold_aux = pd.DataFrame()
+        for df_name, df_i in df_fold.groupby("ID"):
+            df_aux = (
+                df_i.copy(deep=True).iloc[: len(df_i[df_i["ds"] < threshold_time_stamp]) + 1].reset_index(drop=True)
+            )
+            df_fold_aux = pd.concat((df_fold_aux, df_aux), ignore_index=True)
+        df_fold = df_fold_aux.copy(deep=True)
+    folds = folds[::-1]
+    return folds
+
+
+def _double_crossvalidation_split_df(df, k, valid_pct, test_pct):
+    """Splits data in two sets of k folds for crossvalidation on validation and test data.
+
+    Parameters
+    ----------
+        df : pd.DataFrame
+            data
+        k : int
+            number of CV folds
+        valid_pct : float
+            percentage of overall samples to be in validation
+        test_pct : float
+            percentage of overall samples to be in test
+
+    Returns
+    -------
+        tuple of k tuples [(folds_val, folds_test), …]
+            elements same as :meth:`crossvalidation_split_df` returns
+    """
+    if len(df["ID"].unique()) > 1:
+        raise NotImplementedError("double_crossvalidation_split_df not implemented for df with many time series")
+    fold_pct_test = float(test_pct) / k
+    folds_test = crossvalidation_split_df(df, k, fold_pct=fold_pct_test, fold_overlap_pct=0.0)
+    df_train = folds_test[0][0]
+    fold_pct_val = float(valid_pct) / k / (1.0 - test_pct)
+    folds_val = crossvalidation_split_df(df_train, k, fold_pct=fold_pct_val, fold_overlap_pct=0.0)
+    return folds_val, folds_test
+
+
+def double_crossvalidation_split_df(self, df, k=5, valid_pct=0.10, test_pct=0.10):
+    """Splits timeseries data in two sets of k folds for crossvalidation on training and testing data.
+
+    Parameters
+    ----------
+        df : pd.DataFrame
+            dataframe containing column ``ds``, ``y``, and optionally``ID`` with all data
+
+            Note
+            ----
+            Any valid frequency for pd.date_range, such as ``5min``, ``D``, ``MS`` or ``auto`` (default) to automatically set frequency.
+        k : int
+            number of CV folds
+        valid_pct : float
+            percentage of overall samples to be in validation
+        test_pct : float
+            percentage of overall samples to be in test
+
+    Returns
+    -------
+        tuple of k tuples [(folds_val, folds_test), …]
+            elements same as :meth:`crossvalidation_split_df` returns
+    """
+    folds_val, folds_test = _double_crossvalidation_split_df(
+        df,
+        k=k,
+        valid_pct=valid_pct,
+        test_pct=test_pct,
+    )
+    return folds_val, folds_test
+
+
+def merge_dataframes(df: pd.DataFrame) -> pd.DataFrame:
+    """Join dataframes for procedures such as splitting data, set auto seasonalities, and others.
+
+    Parameters
+    ----------
+        df : pd.DataFrame
+            containing column ``ds``, ``y``, and ``ID`` with data
+
+    Returns
+    -------
+        pd.Dataframe
+            Dataframe with concatenated time series (sorted 'ds', duplicates removed, index reset)
+    """
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError("Can not join other than pd.DataFrames")
+    if "ID" not in df.columns:
+        raise ValueError("df does not contain 'ID' column")
+    df_merged = df.copy(deep=True).drop("ID", axis=1)
+    df_merged = df_merged.sort_values("ds")
+    df_merged = df_merged.drop_duplicates(subset=["ds"])
+    df_merged = df_merged.reset_index(drop=True)
+    return df_merged
+
+
+def find_time_threshold(df, valid_p):
+    """Find time threshold for dividing timeseries into train and validation sets.
+    Prevents overbleed of targets. Overbleed of inputs can be configured.
+
+    Parameters
+    ----------
+        df : pd.DataFrame
+            data with column ``ds``, ``y``, and ``ID``
+        valid_p : float
+            fraction (0,1) of data to use for holdout validation set
+
+    Returns
+    -------
+        str
+            time stamp threshold defines the boundary for the train and validation sets split.
+    """
+    df_merged = merge_dataframes(df)
+    n_samples = len(df_merged)
+    if 0.0 < valid_p < 1.0:
+        n_valid = max(1, int(n_samples * valid_p))
+    else:
+        assert valid_p >= 1
+        assert type(valid_p) == int
+        n_valid = valid_p
+    n_train = n_samples - n_valid
+    threshold_time_stamp = df_merged.loc[n_train, "ds"]
+    log.debug("Time threshold: ", threshold_time_stamp)
+    return threshold_time_stamp
+
+
+def split_considering_timestamp(df, threshold_time_stamp):
+    """Splits timeseries into train and validation sets according to given threshold_time_stamp.
+
+    Parameters
+    ----------
+        df : pd.DataFrame
+            data with column ``ds``, ``y``, and ``ID``
+        threshold_time_stamp : str
+            time stamp boundary that defines splitting of data
+
+    Returns
+    -------
+        pd.DataFrame, dict
+            training data
+        pd.DataFrame, dict
+            validation data
+    """
+    df_train = pd.DataFrame()
+    df_val = pd.DataFrame()
+    for df_name, df_i in df.groupby("ID"):
+        if df[df["ID"] == df_name]["ds"].max() < threshold_time_stamp:
+            df_train = pd.concat((df_train, df_i.copy(deep=True)), ignore_index=True)
+        elif df[df["ID"] == df_name]["ds"].min() > threshold_time_stamp:
+            df_val = pd.concat((df_val, df_i.copy(deep=True)), ignore_index=True)
+        else:
+            df_aux = df_i.copy(deep=True)
+            n_train = len(df_aux[df_aux["ds"] < threshold_time_stamp])
+            split_idx_train = n_train
+            split_idx_val = split_idx_train
+            df_train = pd.concat((df_train, df_aux.iloc[:split_idx_train]), ignore_index=True)
+            df_val = pd.concat((df_val, df_aux.iloc[split_idx_val:]), ignore_index=True)
+    return df_train, df_val
 
 
 def _check_min_df_len(df, min_len):
@@ -291,9 +518,6 @@ def _check_min_df_len(df, min_len):
     assert (
         df.groupby("ID").apply(lambda x: len(x) > min_len).all()
     ), "Input time series has not enough sample to fit an predict the model."
-    # assert (df.groupby("ID").apply(
-    #     lambda x: pd.Series(len(x) > min_len, index=["check"]).all()
-    # )), "Input time series has not enough sample to fit an predict the model."
 
 
 def add_first_inputs_to_df(samples: int, df_train: pd.DataFrame, df_test: pd.DataFrame) -> pd.DataFrame:
@@ -696,3 +920,60 @@ def return_df_in_original_format(df, received_ID_col=False, received_single_time
         new_df.drop("ID", axis=1, inplace=True)
         log.info("Returning df with no ID column")
     return new_df
+
+
+def unfold_dict_of_folds(folds_dict, k):
+    """Convert dict of folds for typical format of folding of train and test data.
+
+    Parameters
+    ----------
+        folds_dict : dict
+            dict of folds
+        k : int
+            number of folds initially set
+
+    Returns
+    -------
+        list of k tuples [(df_train, df_val), ...]
+
+            training data
+
+            validation data
+    """
+    folds = []
+    df_train = pd.DataFrame()
+    df_test = pd.DataFrame()
+    for j in range(0, k):
+        for key in folds_dict:
+            assert k == len(folds_dict[key])
+            df_train = pd.concat((df_train, folds_dict[key][j][0]), ignore_index=True)
+            df_test = pd.concat((df_test, folds_dict[key][j][1]), ignore_index=True)
+        folds.append((df_train, df_test))
+        df_train = pd.DataFrame()
+        df_test = pd.DataFrame()
+    return folds
+
+
+def find_valid_time_interval_for_cv(df):
+    """Find time interval of interception among all the time series from dict.
+
+    Parameters
+    ----------
+        df : pd.DataFrame
+            data with column ``ds``, ``y``, and ``ID``
+
+    Returns
+    -------
+        str
+            time interval start
+        str
+            time interval end
+    """
+    # Creates first time interval based on data from first key
+    time_interval_intersection = df[df["ID"] == df["ID"].iloc[0]]["ds"]
+    for df_name, df_i in df.groupby("ID"):
+        time_interval_intersection = pd.merge(time_interval_intersection, df_i, how="inner", on=["ds"])
+        time_interval_intersection = time_interval_intersection[["ds"]]
+    start_date = time_interval_intersection["ds"].iloc[0]
+    end_date = time_interval_intersection["ds"].iloc[-1]
+    return start_date, end_date
