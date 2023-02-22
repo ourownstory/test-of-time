@@ -362,11 +362,11 @@ class CrossValidationExperiment(Experiment):
         # add infer frequency
         df = handle_missing_data(df, freq=self.data.freq)
         folds = crossvalidation_split_df(
-            df=self.data.df,
-            freq=self.data.freq,
+            df=df,
             k=self.num_folds,
             fold_pct=self.test_percentage,
             fold_overlap_pct=self.fold_overlap_pct,
+            received_single_time_series=received_single_time_series,
         )
         # init empty dicts with list for fold-wise metrics
         self.results_cv_train = self.metadata.copy()
