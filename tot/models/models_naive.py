@@ -11,8 +11,8 @@ from tot.df_utils import (
     prep_or_copy_df,
     return_df_in_original_format,
 )
-from tot.models import Model
-from tot.utils import _convert_seasonality_to_season_length, _get_seasons, _predict_seasonal_naive
+from tot.models.models import Model
+from tot.models.utils import _convert_seasonality_to_season_length, _get_seasons, _predict_seasonal_naive
 
 log = logging.getLogger("tot.model")
 

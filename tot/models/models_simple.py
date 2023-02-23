@@ -6,8 +6,8 @@ from typing import Type
 import pandas as pd
 
 from tot.df_utils import _check_min_df_len, add_first_inputs_to_df, drop_first_inputs_from_df, prep_or_copy_df
-from tot.models import Model
-from tot.utils import _get_seasons, _predict_darts_model, convert_df_to_DartsTimeSeries
+from tot.models.models import Model
+from tot.models.utils import _get_seasons, _predict_darts_model, convert_df_to_DartsTimeSeries
 
 log = logging.getLogger("tot.model")
 
