@@ -96,7 +96,7 @@ class Experiment(ABC):
         if current_fold is not None:
             name = name + "_fold_" + str(current_fold)
         name = prefix + "_" + name + ".csv"
-        df.to_csv(os.path.join(self.save_dir, name)[0:380], encoding="utf-8", index=False)
+        df.to_csv(os.path.join(self.save_dir, name)[0:260], encoding="utf-8", index=False)
 
     def _make_forecast(
         self,
