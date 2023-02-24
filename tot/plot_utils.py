@@ -205,7 +205,7 @@ def validate_df_name_input(df_name, fcst):
 
     Raises
     ------
-    Exception
+    AssertionError
         If the input DataFrame contains more than one time series and the df_name argument is not provided, or if the
         specified df_name is not present in the DataFrame.
 
@@ -213,10 +213,9 @@ def validate_df_name_input(df_name, fcst):
     fcst, received_ID_col, received_single_time_series, _ = prep_or_copy_df(fcst)
     if not received_single_time_series:
         if df_name not in fcst["ID"].unique():
-            assert len(fcst["ID"].unique()) > 1
-            raise Exception(
-                "Many time series are present in the pd.DataFrame (more than one ID). Please, especify ID to be plotted."
-            )
+            assert (
+                len(fcst["ID"].unique()) > 1
+            ), "Many time series are present in the pd.DataFrame (more than one ID). Please, especify ID to be plotted."
         else:
             fcst = fcst[fcst["ID"] == df_name].copy(deep=True)
             log.info(f"Plotting data from ID {df_name}")
