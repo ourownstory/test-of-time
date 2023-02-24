@@ -152,9 +152,7 @@ def validate_plotting_backend_input(plotting_backend):
         None
     """
     valid_plotting_backends = ["plotly", "plotly-auto", "plotly-resampler"]
-    if plotting_backend in valid_plotting_backends:
-        pass
-    else:
+    if plotting_backend not in valid_plotting_backends:
         log_value_error_invalid_plotting_backend_input()
 
 
@@ -179,11 +177,7 @@ def validate_highlight_forecast_input(highlight_forecast, fcst):
     None
     """
     n_yhat = len([col for col in fcst.columns if "yhat" in col])
-    if highlight_forecast is None:
-        pass
-    elif highlight_forecast <= n_yhat:
-        pass
-    else:
+    if highlight_forecast is not None and highlight_forecast > n_yhat:
         log_value_error_invalid_highlight_forecast_input()
 
 
