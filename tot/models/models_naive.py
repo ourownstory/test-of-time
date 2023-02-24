@@ -92,7 +92,7 @@ class SeasonalNaiveModel(Model):
             df_historic : pd.DataFrame
                 dataframe containing column ``ds``, ``y``, and optionally ``ID`` with historic data
             received_ID_col : bool
-                whether the ID col was present
+                whether the ID column was present
             received_single_time_series : bool
                 whether it is a single time series
 
