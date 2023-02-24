@@ -77,7 +77,7 @@ def validate_current_env():
 
     if "google.colab" in str(get_ipython()):
         log_warning_colab_resampler()
-        vaild_env = False
+        return False
     else:
         if is_notebook():
             vaild_env = True
