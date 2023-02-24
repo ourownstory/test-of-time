@@ -36,7 +36,7 @@ ERCOT_REGIONS = ["NORTH", "EAST", "FAR_WEST"]
 PLOT = False
 
 # plot tests cover both plotting backends
-decorator_input = ["plotting_backend", ["plotly-auto", "plotly", "plotly-resampler"]]
+decorator_input = ["plotting_backend", [None, "plotly", "plotly-resampler"]]
 
 
 @pytest.mark.parametrize(*decorator_input)

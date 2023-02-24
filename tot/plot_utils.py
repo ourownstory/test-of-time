@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+import arrow
 import numpy as np
 import plotly.graph_objs as go
 from plotly_resampler import register_plotly_resampler, unregister_plotly_resampler
