@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 import numpy as np
 import plotly.graph_objs as go
@@ -35,18 +36,18 @@ layout_args = {
 }
 
 
-def log_warning_colab_resampler():
-    log.warning(
-        "Warning: plotly-resampler not supported for google colab environment. "
-        "Plotting backend automatically switched to 'plotly' without resampling "
-    )
-
-
-def log_warning_static_env_resampler():
-    log.warning(
-        "Warning: plotly-resampler not supported for this environments. "
-        "Plotting backend automatically switched to 'plotly' without resampling "
-    )
+# def log_warning_colab_resampler():
+#     log.warning(
+#         "Warning: plotly-resampler not supported for google colab environment. "
+#         "Plotting backend automatically switched to 'plotly' without resampling "
+#     )
+#
+#
+# def log_warning_static_env_resampler():
+#     log.warning(
+#         "Warning: plotly-resampler not supported for this environments. "
+#         "Plotting backend automatically switched to 'plotly' without resampling "
+#     )
 
 
 def log_value_error_invalid_plotting_backend_input():
@@ -63,28 +64,81 @@ def log_value_error_invalid_highlight_forecast_input():
     )
 
 
-def validate_current_env():
-    """
-    Validate the current environment to check if it is a valid environment to run the code.
+def log_warning_resampler_invalid_env():
+    log.warning(
+        "Warning: plotly-resampler not supported for the environment you are using. "
+        "Consider switching plotting_backend to 'plotly' or 'matplotlib "
+    )
 
+
+def log_warning_resampler_switch_to_valid_env():
+    log.warning(
+        "Warning: plotly-resampler not supported for the environment you are using. "
+        "Plotting backend automatically switched to 'plotly' without resampling "
+    )
+
+
+# def validate_current_env():
+#     """
+#     Validate the current environment to check if it is a valid environment to run the code.
+#
+#     Returns
+#     -------
+#     bool :
+#         True if the current environment is a valid environment to run the code, False otherwise.
+#
+#     """
+#     from IPython.core.getipython import get_ipython
+#
+#     if "google.colab" in str(get_ipython()):
+#         log_warning_colab_resampler()
+#         return False
+#     else:
+#         if is_notebook():
+#             vaild_env = True
+#         else:
+#             log_warning_static_env_resampler()
+#             vaild_env = False
+#     return vaild_env
+
+
+def validate_current_env_for_resampler(auto: bool = False) -> Optional[bool]:
+    """
+    Validate the current environment to check if it is a valid environment for "plotly-resampler" and if invalid trigger
+    warning message.
+
+    Parameters
+    ----------
+    auto: bool, optional
+        If True, the function will automatically switch to a valid environment if the current environment is not valid.
+        If False, the function will return None if the current environment is not valid.
     Returns
     -------
     bool :
-        True if the current environment is a valid environment to run the code, False otherwise.
-
+        True if the current environment is a valid environment to run the code, False if the current environment is
+        not a valid environment to run the code. None if the current environment is not a valid environment to run
+        the code and the function did not switch to a valid environment.
     """
-    from IPython.core.getipython import get_ipython
+
+    from IPython import get_ipython
 
     if "google.colab" in str(get_ipython()):
-        log_warning_colab_resampler()
-        return False
+        if auto:
+            log_warning_resampler_switch_to_valid_env()
+            return False
+        else:
+            log_warning_resampler_invalid_env()
+            return None
     else:
         if is_notebook():
-            vaild_env = True
+            return True
         else:
-            log_warning_static_env_resampler()
-            vaild_env = False
-    return vaild_env
+            if auto:
+                log_warning_resampler_switch_to_valid_env()
+                return False
+            else:
+                log_warning_resampler_invalid_env()
+                return None
 
 
 def is_notebook():
@@ -99,38 +153,43 @@ def is_notebook():
     try:
         from IPython.core.getipython import get_ipython
 
-        if "IPKernelApp" not in str(get_ipython()):  # pragma: no cover
+        if "ipykernel" not in str(get_ipython()):  # pragma: no cover
             return False
+
     except ImportError:
         return False
     except AttributeError:
         return False
+
     return True
 
 
-def auto_set_plotting_backend(plotting_backend_original):
+def select_plotting_backend(plotting_backend):
     """
-    Automatically set the plotting backend.
+    Automatically select the plotting backend.
 
-    Given `plotting_backend_original`, returns "plotly-resample" if `validate_current_env()`
-    returns `True` and `plotting_backend_original` is "plotly-auto", "plotly" otherwise. If
-    `plotting_backend_original` is not "plotly-auto", returns `plotting_backend_original`.
+    Given `plotting_backend`, returns "plotly-resampler" if `validate_current_env_for_resampler()`
+    returns `True` and `plotting_backend` is None, "plotly" otherwise. If
+    `plotting_backend` is not None, returns `plotting_backend.lower()`.
 
     Parameters
     ----------
-    plotting_backend_original : str
-        Original plotting backend.
+    plotting_backend: str
+        plotting backend given by the user.
 
     Returns
     -------
     str
         The new plotting backend.
     """
-    if plotting_backend_original == "plotly-auto":
-        plotting_backend_new = "plotly-resample" if validate_current_env() else "plotly"
-    else:
-        plotting_backend_new = plotting_backend_original
-    return plotting_backend_new
+    if plotting_backend is None:
+        if validate_current_env_for_resampler(auto=True):
+            plotting_backend = "plotly-resampler"
+        else:
+            plotting_backend = "plotly"
+    elif plotting_backend == "plotly-resampler":
+        validate_current_env_for_resampler()
+    return plotting_backend.lower()
 
 
 def validate_plotting_backend_input(plotting_backend):
@@ -151,7 +210,7 @@ def validate_plotting_backend_input(plotting_backend):
     ----------
         None
     """
-    valid_plotting_backends = ["plotly", "plotly-auto", "plotly-resampler"]
+    valid_plotting_backends = [None, "plotly", "plotly-resampler"]
     if plotting_backend not in valid_plotting_backends:
         log_value_error_invalid_plotting_backend_input()
 
@@ -257,7 +316,7 @@ def _plot_plotly(
 
     fcst = fcst.fillna(value=np.nan)
 
-    ds = fcst["ds"].dt.to_pydatetime()
+    ds = fcst["ds"].apply(lambda x: arrow.get(x).datetime)
     colname = "yhat"
     step = 1
     # all yhat column names, including quantiles
@@ -283,33 +342,19 @@ def _plot_plotly(
     if len(quantiles) > 1:
         for i in range(1, len(quantiles)):
             # skip fill="tonexty" for the first quantile
-            if i == 1:
-                data.append(
-                    go.Scatter(
-                        name=f"{colname}{highlight_forecast if highlight_forecast else step} {round(quantiles[i] * 100, 1)}%",
-                        x=ds,
-                        y=fcst[
-                            f"{colname}{highlight_forecast if highlight_forecast else step} {round(quantiles[i] * 100, 1)}%"
-                        ],
-                        mode="lines",
-                        line=dict(color="rgba(45, 146, 255, 0.2)", width=1),
-                        fillcolor="rgba(45, 146, 255, 0.2)",
-                    )
+            data.append(
+                go.Scatter(
+                    name=f"{colname}{highlight_forecast if highlight_forecast else step} {round(quantiles[i] * 100, 1)}%",
+                    x=ds,
+                    y=fcst[
+                        f"{colname}{highlight_forecast if highlight_forecast else step} {round(quantiles[i] * 100, 1)}%"
+                    ],
+                    mode="lines",
+                    line=dict(color="rgba(45, 146, 255, 0.2)", width=1),
+                    fill="none" if i == 1 else "tonexty",
+                    fillcolor="rgba(45, 146, 255, 0.2)",
                 )
-            else:
-                data.append(
-                    go.Scatter(
-                        name=f"{colname}{highlight_forecast if highlight_forecast else step} {round(quantiles[i] * 100, 1)}%",
-                        x=ds,
-                        y=fcst[
-                            f"{colname}{highlight_forecast if highlight_forecast else step} {round(quantiles[i] * 100, 1)}%"
-                        ],
-                        mode="lines",
-                        line=dict(color="rgba(45, 146, 255, 0.2)", width=1),
-                        fill="tonexty",
-                        fillcolor="rgba(45, 146, 255, 0.2)",
-                    )
-                )
+            )
 
     if highlight_forecast is not None:
         x = ds

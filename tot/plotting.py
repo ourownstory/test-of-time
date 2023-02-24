@@ -2,7 +2,7 @@ import logging
 
 from tot.plot_utils import (
     _plot_plotly,
-    auto_set_plotting_backend,
+    select_plotting_backend,
     validate_df_name_input,
     validate_highlight_forecast_input,
     validate_plotting_backend_input,
@@ -18,7 +18,7 @@ def plot_plotly(
     ylabel="y",
     highlight_forecast=None,
     figsize=(700, 350),
-    plotting_backend="plotly-auto",
+    plotting_backend=None,
 ):
     """
     Plot the NeuralProphet forecast
@@ -46,7 +46,7 @@ def plot_plotly(
                 environments (colab, pycharm interpreter) plotly-resampler might not properly visualize the figures.
                 In this case, consider switching to 'plotly-auto'.
             * ``plotly``: Use the plotly package for plotting
-            * (default) ``plotly-auto``: Use plotly with resampling for jupyterlab notebooks and vscode notebooks.
+            * (default) None: Use plotly with resampling for jupyterlab notebooks and vscode notebooks.
                 Automatically switch to plotly without resampling for all other environments.
 
     Returns
@@ -57,8 +57,8 @@ def plot_plotly(
     fcst = validate_df_name_input(df_name, fcst)
     validate_highlight_forecast_input(highlight_forecast, fcst)
     validate_plotting_backend_input(plotting_backend)
-    # Set internal plotting backend
-    plotting_backend = auto_set_plotting_backend(plotting_backend)
+    # Select internal plotting backend
+    plotting_backend = select_plotting_backend(plotting_backend)
     return _plot_plotly(
         fcst=fcst,
         quantiles=[0.5],  # set default to median quantile
@@ -66,5 +66,5 @@ def plot_plotly(
         ylabel=ylabel,
         highlight_forecast=highlight_forecast,
         figsize=figsize,
-        resampler_active=True if plotting_backend == "plotly-resampler" else False,
+        resampler_active=plotting_backend == "plotly-resampler",
     )
