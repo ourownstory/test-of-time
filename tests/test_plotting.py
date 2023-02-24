@@ -66,6 +66,13 @@ def test_basic_plot(plotting_backend):
     results_train, results_test = benchmark.run()
     log.debug(results_test.to_string())
     fig = plot_plotly(benchmark.fcst_test[0], plotting_backend=plotting_backend)
+
+    with pytest.raises(ValueError):
+        # invalid plotting backend
+        plot_plotly(benchmark.fcst_test[0], plotting_backend="wrong_input")
+        # highlight_forecast out of range
+        plot_plotly(benchmark.fcst_test[0], highlight_forecast=5)
+
     if PLOT:
         fig.show()
     log.info("#### Done with test_basic_plot")
