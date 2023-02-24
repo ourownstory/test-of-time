@@ -210,9 +210,8 @@ def validate_df_name_input(df_name, fcst):
             assert (
                 len(fcst["ID"].unique()) > 1
             ), "Many time series are present in the pd.DataFrame (more than one ID). Please, especify ID to be plotted."
-        else:
-            fcst = fcst[fcst["ID"] == df_name].copy(deep=True)
-            log.info(f"Plotting data from ID {df_name}")
+        fcst = fcst[fcst["ID"] == df_name].copy(deep=True)
+        log.info(f"Plotting data from ID {df_name}")
     return fcst
 
 
