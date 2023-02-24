@@ -37,20 +37,6 @@ layout_args = {
 }
 
 
-# def log_warning_colab_resampler():
-#     log.warning(
-#         "Warning: plotly-resampler not supported for google colab environment. "
-#         "Plotting backend automatically switched to 'plotly' without resampling "
-#     )
-#
-#
-# def log_warning_static_env_resampler():
-#     log.warning(
-#         "Warning: plotly-resampler not supported for this environments. "
-#         "Plotting backend automatically switched to 'plotly' without resampling "
-#     )
-
-
 def log_value_error_invalid_plotting_backend_input():
     raise ValueError(
         "Selected plotting backend invalid. Set plotting backend to one of the "
@@ -77,30 +63,6 @@ def log_warning_resampler_switch_to_valid_env():
         "Warning: plotly-resampler not supported for the environment you are using. "
         "Plotting backend automatically switched to 'plotly' without resampling "
     )
-
-
-# def validate_current_env():
-#     """
-#     Validate the current environment to check if it is a valid environment to run the code.
-#
-#     Returns
-#     -------
-#     bool :
-#         True if the current environment is a valid environment to run the code, False otherwise.
-#
-#     """
-#     from IPython.core.getipython import get_ipython
-#
-#     if "google.colab" in str(get_ipython()):
-#         log_warning_colab_resampler()
-#         return False
-#     else:
-#         if is_notebook():
-#             vaild_env = True
-#         else:
-#             log_warning_static_env_resampler()
-#             vaild_env = False
-#     return vaild_env
 
 
 def validate_current_env_for_resampler(auto: bool = False) -> Optional[bool]:
