@@ -152,9 +152,7 @@ def validate_plotting_backend_input(plotting_backend):
         None
     """
     valid_plotting_backends = ["plotly", "plotly-auto", "plotly-resampler"]
-    if plotting_backend in valid_plotting_backends:
-        pass
-    else:
+    if plotting_backend not in valid_plotting_backends:
         log_value_error_invalid_plotting_backend_input()
 
 
