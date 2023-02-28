@@ -134,54 +134,25 @@ class ProphetModel(Model):
 @dataclass
 class LinearRegressionModel(Model):
     """
-     A forecasting model using a linear regression of  the target series' lags to obtain a forecast.
+    A forecasting model using a linear regression of the target series' lags to obtain a forecast.
 
-     Parameters
-     ----------
-         lags : int
-             Previous time series steps to include in auto-regression. Aka AR-order
-         output_chunk_length : int
-             optional, Number of time steps predicted at once by the internal regression model. Does not have to equal the forecast
-             horizon `n` used in `predict()`. However, setting `output_chunk_length` equal to the forecast horizon may
-             be useful if the covariates don't extend far enough into the future.
-         model : Type
-             Scikit-learn-like model with ``fit()`` and ``predict()`` methods. Also possible to use model that doesn't
-             support multi-output regression for multivariate timeseries, in which case one regressor
-             will be used per component in the multivariate series.
-             If None, defaults to: ``sklearn.linear_model.LinearRegression(n_jobs=-1)``.
-         multi_models : bool
-             If True, a separate model will be trained for each future lag to predict. If False, a single model is
-             trained to predict at step 'output_chunk_length' in the future. Default: True.
-
-     Examples
-     --------
-     >>> model_classes_and_params = [
-     >>>     (
-     >>>         LinearRegressionModel,
-     >>>         {"lags": 12, "output_chunk_length": 4, "n_forecasts": 4},
-     >>>     ),
-     >>> ]
-     >>>
-     >>> benchmark = SimpleBenchmark(
-     >>>     model_classes_and_params=model_classes_and_params,
-     >>>     datasets=dataset_list,
-     >>>     metrics=list(ERROR_FUNCTIONS.keys()),
-     >>>     test_percentage=25,
-     >>>     save_dir=SAVE_DIR,
-     >>>     num_processes=1,
-     >>> )
-
-         Note
-    ----
-        ``Supported capabilities``
-        * univariate time series
-        * n_forecats > 1
-        * autoregression
-
-
-        ``Not supported capabilities``
-        * multivariate time series input
-        * frequency check and optional frequency conversion
+    Examples
+    --------
+    >>> model_classes_and_params = [
+    >>>     (
+    >>>         LinearRegressionModel,
+    >>>         {"lags": 12, "n_forecasts": 4},
+    >>>     ),
+    >>> ]
+    >>>
+    >>> benchmark = SimpleBenchmark(
+    >>>     model_classes_and_params=model_classes_and_params,
+    >>>     datasets=dataset_list,
+    >>>     metrics=list(ERROR_FUNCTIONS.keys()),
+    >>>     test_percentage=25,
+    >>>     save_dir=SAVE_DIR,
+    >>>     num_processes=1,
+    >>> )
     """
 
     model_name: str = "LinearRegressionModel"
@@ -198,7 +169,10 @@ class LinearRegressionModel(Model):
 
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
+        # n_forecasts is not a parameter of the model
         model_params.pop("n_forecasts")
+        # overwrite output_chunk_length with n_forecasts
+        model_params.update({"output_chunk_length": self.params["n_forecasts"]})
         model = LinearRegression(n_jobs=-1)  # n_jobs=-1 indicates to use all processors
         model_params.update({"model": model})  # assign model
         self.model = self.model_class(**model_params)
