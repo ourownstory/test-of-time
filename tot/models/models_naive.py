@@ -109,11 +109,11 @@ class SeasonalNaiveModel(Model):
         if df_historic is not None:
             df = self.maybe_extend_df(df_historic, df)
 
-        fcst_df = _predict_seasonal_naive(df=df, season_length=self.season_length, n_forecasts=self.n_forecasts)
+        fcst = _predict_seasonal_naive(df=df, season_length=self.season_length, n_forecasts=self.n_forecasts)
 
         if df_historic is not None:
-            fcst_df, df = self.maybe_drop_added_values_from_df(fcst_df, df)
-        return fcst_df
+            fcst = self.maybe_drop_added_values_from_df(fcst, df)
+        return fcst
 
     def maybe_extend_df(self, df_train, df_test):
         """
@@ -130,8 +130,8 @@ class SeasonalNaiveModel(Model):
         If model depends on historic values, drop first values of predicted and df_test.
         """
         samples = self.season_length
-        predicted, df = drop_first_inputs_from_df(samples=samples, predicted=predicted, df=df)
-        return predicted, df
+        predicted = drop_first_inputs_from_df(samples=samples, predicted=predicted, df=df)
+        return predicted
 
 
 @dataclass()

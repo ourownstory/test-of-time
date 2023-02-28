@@ -582,19 +582,16 @@ def drop_first_inputs_from_df(
             Dataframe containing the actual values.
 
     Returns:
-        Tuple[pd.DataFrame, pd.DataFrame]
-            Tuple containing the modified 'predicted' and 'df' dataframes.
+        pd.DataFrame,
+            The modified 'predicted' dataframe.
     """
     predicted_new = pd.DataFrame()
-    df_new = pd.DataFrame()
 
     for df_name, df_i in df.groupby("ID"):
         predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
         predicted_i = predicted_i[samples:]
-        df_i = df_i[samples:]
-        df_new = pd.concat((df_new, df_i), ignore_index=True)
         predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
-    return predicted_new, df_new
+    return predicted_new
 
 
 def maybe_drop_added_dates(predicted: pd.DataFrame, df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
