@@ -100,7 +100,7 @@ class ProphetModel(Model):
         self.freq = freq
         self.model = self.model.fit(df=df)
 
-    def predict(self, df: pd.DataFrame, received_ID_col, received_single_time_series, df_historic: pd.DataFrame = None):
+    def predict(self, df: pd.DataFrame, received_single_time_series, df_historic: pd.DataFrame = None):
         """Runs the model to make predictions.
 
         Expects all data to be present in dataframe.
@@ -109,8 +109,6 @@ class ProphetModel(Model):
         ----------
         df : pd.DataFrame
             DataFrame with columns "ds" and "y" and optionally "ID"
-        received_ID_col : bool
-            Whether the df has an ID column
         received_single_time_series : bool
             Whether the df has only one time series
         df_historic : pd.DataFrame
@@ -224,7 +222,7 @@ class LinearRegressionModel(Model):
         series = convert_df_to_TimeSeries(df, freq=self.freq)
         self.model = self.model.fit(series)
 
-    def predict(self, df: pd.DataFrame, received_ID_col, received_single_time_series, df_historic: pd.DataFrame = None):
+    def predict(self, df: pd.DataFrame, received_single_time_series, df_historic: pd.DataFrame = None):
         """Runs the model to make predictions.
 
         Expects all data to be present in dataframe.
@@ -235,8 +233,6 @@ class LinearRegressionModel(Model):
                 dataframe containing column ``ds``, ``y``, and optionally ``ID`` with data
             df_historic : pd.DataFrame
                 dataframe containing column ``ds``, ``y``, and optionally ``ID`` with historic data
-            received_ID_col : bool
-                whether the ID col was present
             received_single_time_series : bool
                 whether it is a single time series
 
@@ -256,7 +252,6 @@ class LinearRegressionModel(Model):
             n_req_past_obs=self.n_lags,
             n_req_future_obs=self.n_forecasts,
             retrain=False,
-            received_ID_col=received_ID_col,
             received_single_time_series=received_single_time_series,
         )
         if df_historic is not None:

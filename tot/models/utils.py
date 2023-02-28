@@ -235,9 +235,7 @@ def _predict_single_raw_seasonal_naive(df, season_length, n_forecasts):
     return predicted
 
 
-def _predict_darts_model(
-    df, model, n_req_past_obs, n_req_future_obs, retrain, received_ID_col, received_single_time_series
-):
+def _predict_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrain, received_single_time_series):
     """Computes forecast-target-wise predictions for the passed darts model.
 
     Parameters
@@ -252,8 +250,6 @@ def _predict_darts_model(
             number of future samples to be predicted in one step
         retrain : bool
             flag specific to darts models that indicates whether the retrain mode is activated
-        received_ID_col : bool
-            whether the ID col was present
         received_single_time_series : bool
             whether it is a single time series
 
