@@ -83,9 +83,9 @@ class NeuralProphetModel(Model):
         pd.DataFrame
             DataFrame with columns "ds", "y", "yhat1" and "ID"
         """
-        _check_min_df_len(df=df, min_len=self.n_forecasts)
         if df_historic is not None:
             df = self.maybe_extend_df(df_historic, df)
+        _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
         fcst = self.model.predict(df=df)
         # add ID again since NP drops it
         (

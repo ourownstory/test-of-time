@@ -105,10 +105,9 @@ class SeasonalNaiveModel(Model):
                 ----
                  *  raw data is not supported
         """
-        _check_min_df_len(df=df, min_len=self.n_forecasts)
         if df_historic is not None:
             df = self.maybe_extend_df(df_historic, df)
-
+        _check_min_df_len(df=df, min_len=self.n_forecasts + self.season_length)
         fcst = _predict_seasonal_naive(df=df, season_length=self.season_length, n_forecasts=self.n_forecasts)
 
         if df_historic is not None:
@@ -155,5 +154,4 @@ class NaiveModel(SeasonalNaiveModel):
         model_params.pop("_data_params")
         self.n_forecasts = model_params["n_forecasts"]
         assert self.n_forecasts >= 1, "Model parameter n_forecasts must be >=1. "
-        self.n_lags = None  # TODO: should not be set to None. Find different solution.
         self.season_length = 1  # season_length=1 for NaiveModel
