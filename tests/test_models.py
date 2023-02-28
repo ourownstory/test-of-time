@@ -297,6 +297,32 @@ def test_torch_prophet_model():
     print(results_test)
 
 
+def test_neuralprophet_model():
+    air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
+    dataset_list = [
+        Dataset(df=air_passengers_dxf, name="air_passengers", freq="MS"),
+    ]
+    model_classes_and_params = [
+        (
+            NeuralProphetModel,
+            {"seasonality_mode": "multiplicative", "n_lags": 4, "n_forecasts": 3, "epochs": 1},
+        ),
+    ]
+    log.debug("{}".format(model_classes_and_params))
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=0.25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    results_train, results_test = benchmark.run()
+    log.info("#### test_neuralprophet_model")
+    print(results_test)
+
+
 def test_check_min_input_len():
     air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
     dataset_list = [
