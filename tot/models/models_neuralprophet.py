@@ -61,7 +61,6 @@ class NeuralProphetModel(Model):
 
     def predict(
         self,
-        received_ID_col,
         received_single_time_series,
         df: pd.DataFrame,
         df_historic: pd.DataFrame = None,
@@ -74,8 +73,6 @@ class NeuralProphetModel(Model):
         ----------
         df : pd.DataFrame
             DataFrame with columns "ds" and "y" and optionally "ID"
-        received_ID_col : bool
-            Whether the df has an ID column
         received_single_time_series : bool
             Whether the df has only one time series
         df_historic : pd.DataFrame

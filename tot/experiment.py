@@ -97,7 +97,6 @@ class Experiment(ABC):
         model,
         df_train,
         df_test,
-        received_ID_col,
         received_single_time_series,
         current_fold=None,
     ):
@@ -114,8 +113,6 @@ class Experiment(ABC):
             The test data.
         current_fold : int, optional
             Fold number, to be included in the filename if saving results to disk.
-        received_ID_col : bool
-            whether the ID col was present
         received_single_time_series : bool
             whether it is a single time series
 
@@ -126,13 +123,10 @@ class Experiment(ABC):
         fcst_test : pandas.DataFrame
             Predictions on the test data.
         """
-        fcst_train = model.predict(
-            df=df_train, received_ID_col=received_ID_col, received_single_time_series=received_single_time_series
-        )
+        fcst_train = model.predict(df=df_train, received_single_time_series=received_single_time_series)
         fcst_test = model.predict(
             df=df_test,
             df_historic=df_train,
-            received_ID_col=received_ID_col,
             received_single_time_series=received_single_time_series,
         )
         if self.save_dir is not None:
@@ -209,7 +203,7 @@ class SimpleExperiment(Experiment):
         # data-specific pre-processing
         set_random_seed(42)
         # add ID col if not present
-        df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(self.data.df)
+        df, received_ID_column, received_single_time_series, _ = prep_or_copy_df(self.data.df)
         df = check_dataframe(df, check_y=True)
         # add infer frequency
         df = handle_missing_data(df, freq=self.data.freq)
@@ -226,7 +220,6 @@ class SimpleExperiment(Experiment):
             model=model,
             df_train=df_train,
             df_test=df_test,
-            received_ID_col=received_ID_col,
             received_single_time_series=received_single_time_series,
         )
         # data-specific post-processing
@@ -235,8 +228,8 @@ class SimpleExperiment(Experiment):
         # evaluation
         result_train, result_test = self._evaluate_model(fcst_train, fcst_test)
         # remove ID col if not added
-        fcst_train = return_df_in_original_format(fcst_train, received_ID_col, received_single_time_series)
-        fcst_test = return_df_in_original_format(fcst_test, received_ID_col, received_single_time_series)
+        fcst_train = return_df_in_original_format(fcst_train, received_ID_column, received_single_time_series)
+        fcst_test = return_df_in_original_format(fcst_test, received_ID_column, received_single_time_series)
         return fcst_train, fcst_test, result_train, result_test
 
 
@@ -278,6 +271,10 @@ class CrossValidationExperiment(Experiment):
                 The test data for the current fold.
             current_fold: int, optional
                 The index of the current fold.
+             received_ID_column : bool
+                whether the input data has an ID column
+             received_single_time_series : bool
+                whether the input data has a single time series
 
         Returns
         -------
@@ -293,7 +290,7 @@ class CrossValidationExperiment(Experiment):
                 Dictionary containing the evaluation metrics for the test data of the current fold.
         """
         set_random_seed(42)
-        df_train, df_test, current_fold, received_ID_col, received_single_time_series = args
+        df_train, df_test, current_fold, received_ID_column, received_single_time_series = args
         # fit model
         model = self.model_class(self.params)
         model.fit(df=df_train, freq=self.data.freq)
@@ -302,7 +299,6 @@ class CrossValidationExperiment(Experiment):
             model=model,
             df_train=df_train,
             df_test=df_test,
-            received_ID_col=received_ID_col,
             received_single_time_series=received_single_time_series,
             current_fold=current_fold,
         )
@@ -312,8 +308,8 @@ class CrossValidationExperiment(Experiment):
         # evaluation
         result_train, result_test = self._evaluate_model(fcst_train, fcst_test)
         # reformat
-        fcst_train = return_df_in_original_format(fcst_train, received_ID_col, received_single_time_series)
-        fcst_test = return_df_in_original_format(fcst_test, received_ID_col, received_single_time_series)
+        fcst_train = return_df_in_original_format(fcst_train, received_ID_column, received_single_time_series)
+        fcst_test = return_df_in_original_format(fcst_test, received_ID_column, received_single_time_series)
         del model
         gc.collect()
         return (fcst_train, fcst_test, result_train, result_test)
@@ -358,7 +354,7 @@ class CrossValidationExperiment(Experiment):
         """
         set_random_seed(42)
         # data-specific pre-processing
-        df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(self.data.df)
+        df, received_ID_column, received_single_time_series, _ = prep_or_copy_df(self.data.df)
         df = check_dataframe(df, check_y=True)
         # add infer frequency
         df = handle_missing_data(df, freq=self.data.freq)
@@ -381,7 +377,7 @@ class CrossValidationExperiment(Experiment):
         if self.num_processes > 1 and self.num_folds > 1:
             with Pool(self.num_processes) as pool:
                 args = [
-                    (df_train, df_test, current_fold, received_ID_col, received_single_time_series)
+                    (df_train, df_test, current_fold, received_ID_column, received_single_time_series)
                     for current_fold, (df_train, df_test) in enumerate(folds)
                 ]
                 pool.map_async(
@@ -395,7 +391,7 @@ class CrossValidationExperiment(Experiment):
             gc.collect()
         else:
             for current_fold, (df_train, df_test) in enumerate(folds):
-                args = (df_train, df_test, current_fold, received_ID_col, received_single_time_series)
+                args = (df_train, df_test, current_fold, received_ID_column, received_single_time_series)
                 self._log_results(self._run_fold(args))
 
         if self.save_dir is not None:
