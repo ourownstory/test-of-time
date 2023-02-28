@@ -78,7 +78,6 @@ class ProphetModel(Model):
                 )
         self.n_forecasts = 1
         self.n_lags = 0
-        self.season_length = None
 
     def fit(self, df: pd.DataFrame, freq: str):
         """Fits the model.
@@ -243,9 +242,9 @@ class LinearRegressionModel(Model):
                 i-step-ahead prediction for this row's datetime, e.g. yhat3 is the prediction for this datetime,
                 predicted 3 steps ago, "3 steps old".
         """
-        _check_min_df_len(df=df, min_len=self.n_forecasts)
         if df_historic is not None:
             df = self.maybe_extend_df(df_historic, df)
+        _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
         fcst = _predict_darts_model(
             df=df,
             model=self,
