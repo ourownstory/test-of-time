@@ -20,7 +20,9 @@ FREQ_TO_SEASON_STEP_MAPPING = {
 }
 
 
-def reshape_raw_predictions_to_forecast_df(df, predicted, n_req_past_obs, n_req_future_obs):
+def reshape_raw_predictions_to_forecast_df(
+    df, predicted, past_observations_per_prediction, future_observations_per_prediction
+):
     """Turns forecast-origin-wise predictions into forecast-target-wise predictions.
 
     Parameters
@@ -29,9 +31,9 @@ def reshape_raw_predictions_to_forecast_df(df, predicted, n_req_past_obs, n_req_
             input dataframe
         predicted : np.array
             Array containing the predictions
-        n_req_past_obs: int
+        past_observations_per_prediction: int
             past observation samples required for one prediction step
-        n_req_future_obs: int
+        future_observations_per_prediction: int
             future observation samples required for one prediction step
 
     Returns
@@ -50,10 +52,10 @@ def reshape_raw_predictions_to_forecast_df(df, predicted, n_req_past_obs, n_req_
     fcst_df = pd.concat((df[cols],), axis=1)
     # create a line for each forecast_lag
     # 'yhat<i>' is the forecast for 'y' at 'ds' from i steps ago.
-    for fcst_sample in range(1, n_req_future_obs + 1):
+    for fcst_sample in range(1, future_observations_per_prediction + 1):
         forecast = predicted[:, fcst_sample - 1]
-        pad_before = n_req_past_obs + fcst_sample - 1
-        pad_after = n_req_future_obs - fcst_sample
+        pad_before = past_observations_per_prediction + fcst_sample - 1
+        pad_after = future_observations_per_prediction - fcst_sample
         yhat = np.concatenate(
             ([np.NaN] * pad_before, forecast, [np.NaN] * pad_after)
         )  # add pad based on n_forecasts and current forecast_lag
@@ -191,8 +193,8 @@ def _predict_seasonal_naive(df, season_length, n_forecasts):
         forecast_i = reshape_raw_predictions_to_forecast_df(
             df_i,
             predicted_i,
-            n_req_past_obs=season_length,
-            n_req_future_obs=n_forecasts,
+            past_observations_per_prediction=season_length,
+            future_observations_per_prediction=n_forecasts,
         )
         forecast_new = pd.concat((forecast_new, forecast_i), ignore_index=True)
 
@@ -235,7 +237,14 @@ def _predict_single_raw_seasonal_naive(df, season_length, n_forecasts):
     return predicted
 
 
-def _predict_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrain, received_single_time_series):
+def _predict_darts_model(
+    df,
+    model,
+    past_observations_per_prediction,
+    future_observations_per_prediction,
+    retrain,
+    received_single_time_series,
+):
     """Computes forecast-target-wise predictions for the passed darts model.
 
     Parameters
@@ -244,9 +253,9 @@ def _predict_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrain, r
             model to be predicted
         df : pd.DataFrame
             dataframe containing column ``ds``, ``y``, and ``ID`` with all data
-        n_req_past_obs : int
+        past_observations_per_prediction : int
             number of past observations needed for prediction
-        n_req_future_obs : int
+        future_observations_per_prediction : int
             number of future samples to be predicted in one step
         retrain : bool
             flag specific to darts models that indicates whether the retrain mode is activated
@@ -266,8 +275,8 @@ def _predict_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrain, r
     predicted = _predict_raw_darts_model(
         df=df,
         model=model,
-        n_req_past_obs=n_req_past_obs,
-        n_req_future_obs=n_req_future_obs,
+        past_observations_per_prediction=past_observations_per_prediction,
+        future_observations_per_prediction=future_observations_per_prediction,
         retrain=retrain,
         received_single_time_series=received_single_time_series,
     )
@@ -275,7 +284,10 @@ def _predict_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrain, r
         df.groupby("ID")
         .apply(
             lambda x: reshape_raw_predictions_to_forecast_df(
-                x, predicted[x.name], n_req_past_obs=n_req_past_obs, n_req_future_obs=n_req_future_obs
+                x,
+                predicted[x.name],
+                past_observations_per_prediction=past_observations_per_prediction,
+                future_observations_per_prediction=future_observations_per_prediction,
             )
         )
         .reset_index(drop=True)
@@ -284,7 +296,14 @@ def _predict_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrain, r
     return fcst_df
 
 
-def _predict_raw_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrain, received_single_time_series):
+def _predict_raw_darts_model(
+    df,
+    model,
+    past_observations_per_prediction,
+    future_observations_per_prediction,
+    retrain,
+    received_single_time_series,
+):
     """Computes forecast-origin-wise predictions for the passed darts model for single time series.
     Predictions are returned in vector format. Predictions are given on a forecast origin basis,
     not on a target basis.
@@ -294,9 +313,9 @@ def _predict_raw_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrai
             model to be predicted
         df : pd.DataFrame
             dataframe containing column ``ds``, ``y``, and optionally``ID`` with all data
-        n_req_past_obs : int
+        past_observations_per_prediction : int
             number of past observations needed for prediction
-        n_req_future_obs : int
+        future_observations_per_prediction : int
             number of future samples to be predicted in one step
         retrain : bool
             flag specific to darts models that indicates whether the retrain mode is activated
@@ -311,8 +330,8 @@ def _predict_raw_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrai
     series = convert_df_to_TimeSeries(df, freq=model.freq)
     predicted_list = model.model.historical_forecasts(
         series,
-        start=n_req_past_obs,
-        forecast_horizon=n_req_future_obs,
+        start=past_observations_per_prediction,
+        forecast_horizon=future_observations_per_prediction,
         retrain=retrain,
         last_points_only=False,
         verbose=True,
