@@ -249,8 +249,8 @@ class LinearRegressionModel(Model):
         fcst_df = _predict_darts_model(
             df=df,
             model=self,
-            n_req_past_obs=self.n_lags,
-            n_req_future_obs=self.n_forecasts,
+            past_observations_per_prediction=self.n_lags,
+            future_observations_per_prediction=self.n_forecasts,
             retrain=False,
             received_single_time_series=received_single_time_series,
         )
