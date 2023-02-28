@@ -23,15 +23,6 @@ class SeasonalNaiveModel(Model):
             seasonal period in number of time steps
         n_forecasts : int
             number of steps ahead of prediction time step to forecast
-    Note
-    ----
-        ``Supported capabilities``
-        * univariate time series
-        * n_forecats > 1
-
-        ``Not supported capabilities``
-        * multivariate time series input
-
     """
 
     model_name: str = "SeasonalNaive"
