@@ -27,3 +27,4 @@
 * Docstring for all model class methods
 * Switch “ds” to “time”
 * delete docstring of imported models 
+* Rethink if we want the predicted df to be added up with Nans for all models (as it is now) or simplify and not add them
