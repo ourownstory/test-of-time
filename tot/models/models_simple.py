@@ -246,7 +246,7 @@ class LinearRegressionModel(Model):
         _check_min_df_len(df=df, min_len=self.n_forecasts)
         if df_historic is not None:
             df = self.maybe_extend_df(df_historic, df)
-        fcst_df = _predict_darts_model(
+        fcst = _predict_darts_model(
             df=df,
             model=self,
             past_observations_per_prediction=self.n_lags,
@@ -255,8 +255,8 @@ class LinearRegressionModel(Model):
             received_single_time_series=received_single_time_series,
         )
         if df_historic is not None:
-            fcst_df, df = self.maybe_drop_added_values_from_df(fcst_df, df)
-        return fcst_df
+            fcst = self.maybe_drop_added_values_from_df(fcst, df)
+        return fcst
 
     def maybe_extend_df(self, df_train, df_test):
         """
@@ -273,5 +273,5 @@ class LinearRegressionModel(Model):
         If model depends on historic values, drop first values of predicted and df_test.
         """
         samples = self.n_lags
-        predicted, df = drop_first_inputs_from_df(samples=samples, predicted=predicted, df=df)
-        return predicted, df
+        predicted = drop_first_inputs_from_df(samples=samples, predicted=predicted, df=df)
+        return predicted

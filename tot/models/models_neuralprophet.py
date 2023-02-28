@@ -96,7 +96,7 @@ class NeuralProphetModel(Model):
         ) = prep_or_copy_df(fcst)
 
         if df_historic is not None:
-            fcst, df = self.maybe_drop_added_values_from_df(fcst, df)
+            fcst = self.maybe_drop_added_values_from_df(fcst, df)
         return fcst
 
     def maybe_extend_df(self, df_train, df_test):
@@ -113,9 +113,9 @@ class NeuralProphetModel(Model):
         If model depends on historic values, drop first values of predicted and df_test.
         """
         samples = self.n_lags
-        predicted, df = drop_first_inputs_from_df(samples=samples, predicted=predicted, df=df)
+        predicted = drop_first_inputs_from_df(samples=samples, predicted=predicted, df=df)
 
-        return predicted, df
+        return predicted
 
 
 @dataclass
@@ -158,4 +158,4 @@ class TorchProphetModel(NeuralProphetModel):
         """
         If model depends on historic values, drop first values of predicted and df_test.
         """
-        return predicted, df
+        return predicted

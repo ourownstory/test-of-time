@@ -300,7 +300,7 @@ def test_torch_prophet_model():
 def test_neuralprophet_model():
     air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
     dataset_list = [
-        Dataset(df=air_passengers_dxf, name="air_passengers", freq="MS"),
+        Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
     ]
     model_classes_and_params = [
         (

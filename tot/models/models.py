@@ -42,4 +42,4 @@ class Model(ABC):
         """
         If model depends on historic values, drop first values of predicted and df_test.
         """
-        return predicted, df
+        return predicted
