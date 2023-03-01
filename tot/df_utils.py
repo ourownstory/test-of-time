@@ -585,12 +585,7 @@ def drop_first_inputs_from_df(
         pd.DataFrame,
             The modified 'predicted' dataframe.
     """
-    predicted_new = pd.DataFrame()
-
-    for df_name, df_i in df.groupby("ID"):
-        predicted_i = predicted[predicted["ID"] == df_name].copy(deep=True)
-        predicted_i = predicted_i[samples:]
-        predicted_new = pd.concat((predicted_new, predicted_i), ignore_index=True)
+    predicted_new = predicted.groupby("ID").apply(lambda x: x[samples:]).reset_index(drop=True)
     return predicted_new
 
 
