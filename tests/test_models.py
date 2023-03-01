@@ -279,7 +279,7 @@ def test_torch_prophet_model():
     model_classes_and_params = [
         (
             TorchProphetModel,
-            {"seasonality_mode": "multiplicative", "interval_width": 0},
+            {"seasonality_mode": "multiplicative"},
         ),
     ]
     log.debug("{}".format(model_classes_and_params))

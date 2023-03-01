@@ -97,7 +97,7 @@ class SeasonalNaiveModel(Model):
                  *  raw data is not supported
         """
         if df_historic is not None:
-            df = self.maybe_extend_df(df_historic, df)
+            df = self.maybe_extend_df(df_train=df_historic, df_test=df)
         _check_min_df_len(df=df, min_len=self.n_forecasts + self.season_length)
         fcst = _predict_seasonal_naive(df=df, season_length=self.season_length, n_forecasts=self.n_forecasts)
 
