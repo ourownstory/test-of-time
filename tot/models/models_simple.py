@@ -68,7 +68,9 @@ class ProphetModel(Model):
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
         if "interval_width" in model_params:
-            raise NotImplementedError("Quantiles not supported for Prophet. Remove interval_width from model input.")
+            raise NotImplementedError(
+                "Quantiles for Prophet not supported in Test-of-Time. Remove interval_width from model input."
+            )
         self.model = self.model_class(**model_params)
         if custom_seasonalities is not None:
             for seasonality in custom_seasonalities:
@@ -120,14 +122,7 @@ class ProphetModel(Model):
         """
         _check_min_df_len(df=df, min_len=self.n_forecasts)
         fcst = self.model.predict(df=df)
-        fcst_df = pd.DataFrame({"ds": fcst.ds, "y": df.y, "yhat1": fcst.yhat})
-        # add ID again since NP drops it
-        (
-            fcst_df,
-            _,
-            _,
-            _,
-        ) = prep_or_copy_df(fcst_df)
+        fcst_df = pd.DataFrame({"ds": fcst.ds, "y": df.y, "yhat1": fcst.yhat, "ID": df.ID})
         return fcst_df
 
 
@@ -217,7 +212,7 @@ class LinearRegressionModel(Model):
                 predicted 3 steps ago, "3 steps old".
         """
         if df_historic is not None:
-            df = self.maybe_extend_df(df_historic, df)
+            df = self.maybe_extend_df(df_train=df_historic, df_test=df)
         _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
         fcst = _predict_darts_model(
             df=df,
