@@ -84,7 +84,7 @@ class NeuralProphetModel(Model):
             DataFrame with columns "ds", "y", "yhat1" and "ID"
         """
         if df_historic is not None:
-            df = self.maybe_extend_df(df_historic, df)
+            df = self.maybe_extend_df(df_train=df_historic, df_test=df)
         _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
         fcst = self.model.predict(df=df)
         # add ID again since NP drops it
@@ -135,7 +135,14 @@ class TorchProphetModel(NeuralProphetModel):
             self.params.update({"seasonality_mode": data_params["seasonality_mode"]})
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
+        # TorchProphet does not support uncertainty
         model_params.update({"interval_width": 0})
+        # TorchProphet does not support n_forecasts>1 and n_lags>0
+        if "n_forecasts" in model_params:
+            assert model_params.n_forecasts == 1, "TorchProphet does not support n_forecasts >1."
+        if "n_lags" in model_params:
+            assert model_params.n_lags == 0, "TorchProphet does not support n_lags >0."
+
         self.model = self.model_class(**model_params)
         if custom_seasonalities is not None:
             for seasonality in custom_seasonalities:
@@ -143,9 +150,9 @@ class TorchProphetModel(NeuralProphetModel):
                     name="{}_daily".format(str(seasonality)),
                     period=seasonality,
                 )
-        self.n_forecasts = self.model.n_forecasts
-        self.n_lags = self.model.n_lags
-        self.season_length = None
+        # set fixed values for parent class methods
+        self.n_forecasts = 1
+        self.n_lags = 0
 
     def maybe_extend_df(self, df_train, df_test):
         """

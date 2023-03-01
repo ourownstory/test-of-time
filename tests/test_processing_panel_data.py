@@ -76,8 +76,6 @@ def test_benchmark_panel_data_input():
         (
             TorchProphetModel,
             {
-                "n_lags": 24,
-                "n_forecasts": 8,
                 "learning_rate": 0.1,
                 "epochs": EPOCHS,
                 "global_normalization": True,
