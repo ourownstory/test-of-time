@@ -47,7 +47,7 @@ def test_lag_reg():
     model_classes_and_params = [
         (
             NeuralProphetModel,
-            {"n_lags": 3, "n_forecasts": 2, "epochs": 3, "lagged_regressors": ["A", "B"]},
+            {"n_lags": 3, "n_forecasts": 2, "epochs": 3, "lagged_regressors": {"A", "B"}},
         ),
         (
             NeuralProphetModel,
@@ -55,8 +55,7 @@ def test_lag_reg():
                 "n_lags": 3,
                 "n_forecasts": 2,
                 "epochs": 3,
-                "lagged_regressors": ["A", "B"],
-                "lagged_regressors_config": {
+                "lagged_regressors": {
                     "A": {"n_lags": 5, "regularization": 0.9, "normalize": False},
                     "B": {"n_lags": 5},
                 },
@@ -123,7 +122,7 @@ def test_future_reg():
                 "n_lags": 3,
                 "n_forecasts": 2,
                 "epochs": 3,
-                "future_regressors": ["A", "B"],
+                "future_regressors": {"A", "B"},
             },
         ),
         (
@@ -132,8 +131,7 @@ def test_future_reg():
                 "n_lags": 3,
                 "n_forecasts": 2,
                 "epochs": 3,
-                "future_regressors": ["A", "B"],
-                "future_regressors_config": {
+                "future_regressors": {
                     "A": {"mode": "multiplicative", "regularization": 0.9, "normalize": "auto"},
                     "B": {"mode": "multiplicative"},
                 },

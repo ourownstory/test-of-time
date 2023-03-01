@@ -32,29 +32,44 @@ class NeuralProphetModel(Model):
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
 
+        # identifiy model_params
         if "lagged_regressors" in model_params.keys():
             model_params.pop("lagged_regressors")
-        if "lagged_regressors_config" in model_params.keys():
-            model_params.pop("lagged_regressors_config")
         if "future_regressors" in model_params.keys():
             model_params.pop("future_regressors")
-        if "future_regressors_config" in model_params.keys():
-            model_params.pop("future_regressors_config")
         self.model = self.model_class(**model_params)
+
+        # map lagged regressors
         lagged_regressors = self.params.get("lagged_regressors", None)
-        lagged_regressors_config = self.params.get("lagged_regressors_config", None)
-        if lagged_regressors is not None:
+        if isinstance(lagged_regressors, dict) is False and lagged_regressors is not None:
+            lagged_regressors_dict = {}
             for lagged_regressor in lagged_regressors:
+                lagged_regressors_dict.update({lagged_regressor: {}})
+            lagged_regressors = lagged_regressors_dict
+        if lagged_regressors is not None:
+            for lagged_regressor in lagged_regressors.keys():
                 self.model.add_lagged_regressor(
-                    names=lagged_regressor, **lagged_regressors_config[lagged_regressor]
-                ) if lagged_regressors_config is not None else self.model.add_lagged_regressor(names=lagged_regressor)
+                    names=lagged_regressor, **lagged_regressors[lagged_regressor]
+                ) if lagged_regressors[lagged_regressor] is not None else self.model.add_lagged_regressor(
+                    names=lagged_regressor
+                )
+
+        # map future regressors
         future_regressors = self.params.get("future_regressors", None)
-        future_regressors_config = self.params.get("future_regressors_config", None)
-        if future_regressors is not None:
+        if isinstance(future_regressors, dict) is False and future_regressors is not None:
+            future_regressors_dict = {}
             for future_regressor in future_regressors:
+                future_regressors_dict.update({future_regressor: {}})
+            future_regressors = future_regressors_dict
+        if future_regressors is not None:
+            for future_regressor in future_regressors.keys():
                 self.model.add_future_regressor(
-                    name=future_regressor, **future_regressors_config[future_regressor]
-                ) if future_regressors_config is not None else self.model.add_future_regressor(name=future_regressor)
+                    name=future_regressor, **future_regressors[future_regressor]
+                ) if future_regressors[future_regressor] is not None else self.model.add_future_regressor(
+                    name=future_regressor
+                )
+
+        # map custom_seasonalities
         if custom_seasonalities is not None:
             for seasonality in custom_seasonalities:
                 self.model.add_seasonality(
