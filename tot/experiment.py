@@ -56,7 +56,13 @@ class Experiment(ABC):
             self.experiment_name = "{}_{}{}".format(
                 self.data.name,
                 self.model_class.model_name,
-                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()]).replace("'", "").replace(":", "_"),
+                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()])
+                .replace("'", "")
+                .replace(":", "_")
+                .replace("{", "_")
+                .replace("}", "_")
+                .replace("[", "_")
+                .replace("]", "_"),
             )
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
@@ -90,7 +96,7 @@ class Experiment(ABC):
         if current_fold is not None:
             name = name + "_fold_" + str(current_fold)
         name = prefix + "_" + name + ".csv"
-        df.to_csv(os.path.join(self.save_dir, name), encoding="utf-8", index=False)
+        df.to_csv(os.path.join(self.save_dir, name)[0:380], encoding="utf-8", index=False)
 
     def _make_forecast(
         self,

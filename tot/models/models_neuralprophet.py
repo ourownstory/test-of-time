@@ -31,12 +31,30 @@ class NeuralProphetModel(Model):
 
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
-        model_params.pop("lagged_regressors")
+
+        if "lagged_regressors" in model_params.keys():
+            model_params.pop("lagged_regressors")
+        if "lagged_regressors_config" in model_params.keys():
+            model_params.pop("lagged_regressors_config")
+        if "future_regressors" in model_params.keys():
+            model_params.pop("future_regressors")
+        if "future_regressors_config" in model_params.keys():
+            model_params.pop("future_regressors_config")
         self.model = self.model_class(**model_params)
-        lagged_regressors = data_params.get("lagged_regressors", None)
+        lagged_regressors = self.params.get("lagged_regressors", None)
+        lagged_regressors_config = self.params.get("lagged_regressors_config", None)
         if lagged_regressors is not None:
             for lagged_regressor in lagged_regressors:
-                self.model.add_lagged_regressor(names=lagged_regressor)
+                self.model.add_lagged_regressor(
+                    names=lagged_regressor, **lagged_regressors_config[lagged_regressor]
+                ) if lagged_regressors_config is not None else self.model.add_lagged_regressor(names=lagged_regressor)
+        future_regressors = self.params.get("future_regressors", None)
+        future_regressors_config = self.params.get("future_regressors_config", None)
+        if future_regressors is not None:
+            for future_regressor in future_regressors:
+                self.model.add_future_regressor(
+                    name=future_regressor, **future_regressors_config[future_regressor]
+                ) if future_regressors_config is not None else self.model.add_future_regressor(name=future_regressor)
         if custom_seasonalities is not None:
             for seasonality in custom_seasonalities:
                 self.model.add_seasonality(
@@ -100,7 +118,6 @@ class NeuralProphetModel(Model):
             _,
             _,
         ) = prep_or_copy_df(fcst)
-
         if df_historic is not None:
             fcst = self.maybe_drop_added_values_from_df(fcst, df)
         return fcst

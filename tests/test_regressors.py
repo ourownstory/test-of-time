@@ -10,7 +10,7 @@ from tot.benchmark import SimpleBenchmark
 from tot.datasets.dataset import Dataset
 from tot.evaluation.metrics import ERROR_FUNCTIONS
 from tot.models.models_naive import NaiveModel, SeasonalNaiveModel
-from tot.models.models_neuralprophet import TorchProphetModel, NeuralProphetModel
+from tot.models.models_neuralprophet import NeuralProphetModel, TorchProphetModel
 from tot.models.models_simple import LinearRegressionModel, ProphetModel
 
 log = logging.getLogger("tot.test")
@@ -47,7 +47,20 @@ def test_lag_reg():
     model_classes_and_params = [
         (
             NeuralProphetModel,
-            {"n_lags": 3, "n_forecasts": 2, "epochs": 3, "lagged_regressors": ["A", "B"],},
+            {"n_lags": 3, "n_forecasts": 2, "epochs": 3, "lagged_regressors": ["A", "B"]},
+        ),
+        (
+            NeuralProphetModel,
+            {
+                "n_lags": 3,
+                "n_forecasts": 2,
+                "epochs": 3,
+                "lagged_regressors": ["A", "B"],
+                "lagged_regressors_config": {
+                    "A": {"n_lags": 5, "regularization": 0.9, "normalize": False},
+                    "B": {"n_lags": 5},
+                },
+            },
         ),
     ]
     log.debug("{}".format(model_classes_and_params))
@@ -61,6 +74,111 @@ def test_lag_reg():
         num_processes=1,
     )
     results_train, results_test = benchmark.run()
-    log.info("#### test_torch_prophet_model")
+
     print(results_test)
 
+    # test for simple panel dataset
+    ercot_df_aux = pd.read_csv(ERCOT_FILE)
+    ercot_df = pd.DataFrame()
+    for region in ERCOT_REGIONS:
+        ercot_df = pd.concat(
+            (
+                ercot_df,
+                ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
+            ),
+            ignore_index=True,
+        )
+    ercot_df["A"] = ercot_df["y"].rolling(7, min_periods=1).mean()
+    ercot_df["B"] = ercot_df["y"].rolling(30, min_periods=1).mean()
+    dataset_list = [
+        Dataset(df=ercot_df, name="ercot_load", freq="H"),
+    ]
+    log.debug("{}".format(model_classes_and_params))
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=0.25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    results_train, results_test = benchmark.run()
+    log.info("#### done with test_lag_reg")
+    print(results_test)
+
+
+def test_future_reg():
+    log.info(f"testing: Add future regressors to models")
+    peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
+    peyton_manning_df["A"] = peyton_manning_df["y"].rolling(7, min_periods=1).mean()
+    peyton_manning_df["B"] = peyton_manning_df["y"].rolling(30, min_periods=1).mean()
+    dataset_list = [
+        Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
+    ]
+    model_classes_and_params = [
+        (
+            NeuralProphetModel,
+            {
+                "n_lags": 3,
+                "n_forecasts": 2,
+                "epochs": 3,
+                "future_regressors": ["A", "B"],
+            },
+        ),
+        (
+            NeuralProphetModel,
+            {
+                "n_lags": 3,
+                "n_forecasts": 2,
+                "epochs": 3,
+                "future_regressors": ["A", "B"],
+                "future_regressors_config": {
+                    "A": {"mode": "multiplicative", "regularization": 0.9, "normalize": "auto"},
+                    "B": {"mode": "multiplicative"},
+                },
+            },
+        ),
+    ]
+    log.debug("{}".format(model_classes_and_params))
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=0.25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    results_train, results_test = benchmark.run()
+    print(results_test)
+
+    # test for simple panel dataset
+    ercot_df_aux = pd.read_csv(ERCOT_FILE)
+    ercot_df = pd.DataFrame()
+    for region in ERCOT_REGIONS:
+        ercot_df = pd.concat(
+            (
+                ercot_df,
+                ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
+            ),
+            ignore_index=True,
+        )
+    ercot_df["A"] = ercot_df["y"].rolling(7, min_periods=1).mean()
+    ercot_df["B"] = ercot_df["y"].rolling(30, min_periods=1).mean()
+    dataset_list = [
+        Dataset(df=ercot_df, name="ercot_load", freq="H"),
+    ]
+    log.debug("{}".format(model_classes_and_params))
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=0.25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    results_train, results_test = benchmark.run()
+    log.info("#### done with test_future_reg")
+    print(results_test)
