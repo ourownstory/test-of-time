@@ -28,9 +28,15 @@ class NeuralProphetModel(Model):
             self.params.update({"yearly_seasonality": yearly})
         if "seasonality_mode" in data_params and data_params["seasonality_mode"] is not None:
             self.params.update({"seasonality_mode": data_params["seasonality_mode"]})
+
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
+        model_params.pop("lagged_regressors")
         self.model = self.model_class(**model_params)
+        lagged_regressors = data_params.get("lagged_regressors", None)
+        if lagged_regressors is not None:
+            for lagged_regressor in lagged_regressors:
+                self.model.add_lagged_regressor(names=lagged_regressor)
         if custom_seasonalities is not None:
             for seasonality in custom_seasonalities:
                 self.model.add_seasonality(
