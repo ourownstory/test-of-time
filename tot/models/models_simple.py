@@ -142,8 +142,7 @@ class LinearRegressionModel(Model):
         If model depends on historic values, extend beginning of df_test with last
         df_train values.
         """
-        samples = self.n_lags
-        df_test = add_first_inputs_to_df(samples=samples, df_train=df_train, df_test=df_test)
+        df_test = add_first_inputs_to_df(samples=self.n_lags, df_train=df_train, df_test=df_test)
 
         return df_test
 
@@ -151,6 +150,5 @@ class LinearRegressionModel(Model):
         """
         If model depends on historic values, drop first values of predicted and df_test.
         """
-        samples = self.n_lags
-        predicted = drop_first_inputs_from_df(samples=samples, predicted=predicted, df=df)
+        predicted = drop_first_inputs_from_df(samples=self.n_lags, predicted=predicted, df=df)
         return predicted
