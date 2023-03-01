@@ -2,6 +2,7 @@
 * add pyright
 * add codecov
 * investigate omputing time reduction potential, e.g. via multiprocessing, slicing, or .apply
+* vectorize all relevant function
 
 ### dataset.py
 * implement an easy .load() method
