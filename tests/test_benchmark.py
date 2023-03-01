@@ -131,7 +131,7 @@ def test_2_benchmark_CV():
     log.info("#### test_2_benchmark_CV")
     if PLOT:
         air_passengers = results_summary[results_summary["split"] == "test"]
-        air_passengers.plot(x="data", y="MASE", kind="barh")
+        # air_passengers.plot(x="data", y="MASE", kind="barh")
         plt.show()
 
 
