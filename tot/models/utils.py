@@ -338,7 +338,7 @@ def _predict_raw_darts_model(
     )
     # Convert (list of) TimeSeries to np.array
     predicted = np.array([prediction_series.values() for prediction_series in predicted_list])
-    prediction_ids = "__df__" if received_single_time_series else predicted_list[0].components
+    prediction_ids = ["__df__"] if received_single_time_series else predicted_list[0].components
     predicted = np.transpose(predicted, (2, 0, 1))
     predicted_dict = {prediction_ids[id]: predicted[id, :, :] for id in range(predicted.shape[0])}
     # Return dict with array per ID

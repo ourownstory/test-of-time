@@ -12,7 +12,7 @@ from tot.datasets.dataset import Dataset
 from tot.evaluation.metrics import ERROR_FUNCTIONS
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.models.models_neuralprophet import NeuralProphetModel
-from tot.models.models_simple import ProphetModel
+from tot.models.models_prophet import ProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
