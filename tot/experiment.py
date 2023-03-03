@@ -19,7 +19,7 @@ from tot.df_utils import (
     return_df_in_original_format,
     split_df,
 )
-from tot.exp_utils import evaluate_forecast
+from tot.evaluation.metric_utils import calc_averaged_metrics_per_experiment
 from tot.models.models import Model
 
 log = logging.getLogger("tot.benchmark")
@@ -168,9 +168,8 @@ class Experiment(ABC):
 
         metadata = self.metadata.copy()
         metrics = self.metrics
-        result_train, result_test = evaluate_forecast(
-            fcst_train=fcst_train, fcst_test=fcst_test, metrics=metrics, metadata=metadata
-        )
+        result_train = calc_averaged_metrics_per_experiment(fcst_df=fcst_train, metrics=metrics, metadata=metadata)
+        result_test = calc_averaged_metrics_per_experiment(fcst_df=fcst_test, metrics=metrics, metadata=metadata)
 
         return result_train, result_test
 
