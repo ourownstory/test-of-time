@@ -19,6 +19,18 @@ FREQ_TO_SEASON_STEP_MAPPING = {
     "5min": {"yearly": 12 * 24 * 356, "weekly": 12 * 24 * 7, "daily": 12 * 24},
 }
 
+FREQ_TO_SEASON_LENGTH = {
+    # maps data frequency str to season length int
+    "MS": 12,
+    "M": 12,
+    "YS": 1,
+    "DS": 7,
+    "D": 7,
+    "HS": 24,
+    "H": 24,
+    "5min": 12 * 24,
+}
+
 
 def reshape_raw_predictions_to_forecast_df(
     df, predicted, past_observations_per_prediction, future_observations_per_prediction

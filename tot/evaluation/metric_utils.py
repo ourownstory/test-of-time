@@ -6,25 +6,33 @@ import pandas as pd
 from tot.evaluation.metrics import ERROR_FUNCTIONS
 
 
-def calc_metrics_for_all_IDs_for_fcst_step(
-    fcst_df: pd.DataFrame, metrics: list, forecast_step_in_focus: Optional[int] = None
+def calculate_metrics_by_ID_for_forecast_step(
+    fcst_df: pd.DataFrame,
+    df_historic: pd.DataFrame = None,
+    metrics: Optional[list] = None,
+    forecast_step_in_focus: Optional[int] = None,
+    freq: Optional[str] = None,
 ) -> pd.DataFrame:
     """
-    Calculates the specified metrics for every ID and for a specific forecast step. If no forecast step is pspecified, it averages over all forecast steps.
+    Calculates the specified metrics for every ID and for a specific forecast step. If no forecast step is specified, calculate average over all forecast steps.
 
     Parameters:
     -----------
     fcst_df : pd.DataFrame
         A DataFrame containing the forecast and an 'ID' column.
+    df_historic : pd.DataFrame
+        A DataFrame containing the historic data and an 'ID' column.
     metrics : list of str
         A list of metrics to calculate.
     forecast_step_in_focus : int or None (default None)
         The specific forecast step to calculate the metrics for. If None, the function
         averages the metrics over all forecast steps.
+    freq : str
+        The frequency of the data.
 
     Returns:
     --------
-    metrics_df_per_forecast_step : pandas DataFrame
+    metrics_df_per_forecast_step : pd.DataFrame
         A DataFrame containing the specified metrics for every ID and for a specific forecast step (if specified).
 
     Examples:
@@ -33,21 +41,26 @@ def calc_metrics_for_all_IDs_for_fcst_step(
     ...                         'y': [10, 20, 30, 40],
     ...                         'yhat1': [12, 22, 32, 42],
     ...                         'yhat2': [11, 21, 31, 41]})
+    >>> df_historic = fcst_df.copy()
     >>> metrics = ['MSE', 'MAE']
-    >>> calc_metrics_for_all_IDs_for_fcst_step(fcst_df, metrics, forecast_step_in_focus=1)
+    >>> calculate_metrics_by_ID_for_forecast_step(fcst_df,df_historic, metrics, forecast_step_in_focus=1, freq='H')
        mse       mae
     ID
     1   4.0       2.0
     2   4.0       4.0
-    >>> calc_metrics_for_all_IDs_for_fcst_step(fcst_df, metrics)
+    >>> calculate_metrics_by_ID_for_forecast_step(fcst_df, metrics)
            mse       mae
     ID
-    1  4.666667  2.666667
-    2  4.666667  4.666667
+    1     2.5        1.5
+    2     2.5        1.5
     """
+    assert metrics is not None, "Please specify a list of metrics to evaluate."
+    assert freq is not None, "Please specify the frequency of the data."
     # calculate the specified metrics for every ID and every forecast step
     metrics_df_all_IDs = fcst_df.groupby("ID").apply(
-        lambda x: _calc_metrics_for_single_ID_and_every_fcst_step(x, metrics)
+        lambda x: _calc_metrics_for_single_ID_and_every_fcst_step(
+            fcst_df=x, df_historic=df_historic, metrics=metrics, freq=freq
+        )
     )
     if forecast_step_in_focus is None:
         # select all metrics for all IDs and average over all forecast steps
@@ -60,7 +73,12 @@ def calc_metrics_for_all_IDs_for_fcst_step(
     return metrics_df_per_forecast_step
 
 
-def _calc_metrics_for_single_ID_and_every_fcst_step(fcst_df: pd.DataFrame, metrics: list) -> pd.DataFrame:
+def _calc_metrics_for_single_ID_and_every_fcst_step(
+    fcst_df: pd.DataFrame,
+    metrics: list,
+    freq: str,
+    df_historic: Optional[pd.DataFrame] = None,
+) -> pd.DataFrame:
     """
     Calculates specified metrics for a single ID and every forecast step.
 
@@ -68,8 +86,12 @@ def _calc_metrics_for_single_ID_and_every_fcst_step(fcst_df: pd.DataFrame, metri
     -----------
     fcst_df : pd.DataFrame
         The input dataframe containing y and yhat columns for a single ID.
+    df_historic : pd.DataFrame
+        The input dataframe containing the historic data for a single ID.
     metrics : list of str
         The list of metric names to be calculated.
+    freq : str
+        The frequency of the data.
 
     Returns:
     --------
@@ -86,7 +108,8 @@ def _calc_metrics_for_single_ID_and_every_fcst_step(fcst_df: pd.DataFrame, metri
                 lambda x: ERROR_FUNCTIONS[metric](
                     predictions=x.values,
                     truth=fcst_df["y"].values,
-                    truth_train=fcst_df["y"].values,
+                    truth_train=df_historic["y"].values if df_historic is not None else None,
+                    freq=freq,
                 )
             )
             for metric in metrics
@@ -98,7 +121,13 @@ def _calc_metrics_for_single_ID_and_every_fcst_step(fcst_df: pd.DataFrame, metri
     return metrics_df
 
 
-def calc_averaged_metrics_per_experiment(fcst_df: pd.DataFrame, metrics: list, metadata: Optional[dict] = None) -> dict:
+def calculate_averaged_metrics_per_experiment(
+    fcst_df: pd.DataFrame,
+    metrics: list,
+    freq: Optional[str] = None,
+    df_historic: Optional[pd.DataFrame] = None,
+    metadata: Optional[dict] = None,
+) -> dict:
     """
     Calculate the average of specified metrics over every ID and every forecast step.
 
@@ -123,7 +152,9 @@ def calc_averaged_metrics_per_experiment(fcst_df: pd.DataFrame, metrics: list, m
         metrics_results = {}
     # calculate the specified metrics for every ID and every forecast step
     metrics_df_all_IDs = fcst_df.groupby("ID").apply(
-        lambda x: _calc_metrics_for_single_ID_and_every_fcst_step(x, metrics)
+        lambda x: _calc_metrics_for_single_ID_and_every_fcst_step(
+            fcst_df=x, df_historic=df_historic, metrics=metrics, freq=freq
+        )
     )
 
     # for each specified metric average here over all IDs and forecast steps
