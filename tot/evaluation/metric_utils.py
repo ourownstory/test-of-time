@@ -37,7 +37,7 @@ def calculate_metrics_by_ID_for_forecast_step(
 
     Examples:
     ---------
-    >>> fcst_df = pd.DataFrame({'ID': ["EAST", "EAST", "NORTH", "NORTH"],
+    >>> fcst_df = pd.DataFrame({'ID': ["EAST", "NORTH"],
     ...                         'y': [10, 20, 30, 40],
     ...                         'yhat1': [12, 22, 32, 42],
     ...                         'yhat2': [11, 21, 31, 41]})
