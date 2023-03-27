@@ -28,7 +28,7 @@ class Model(ABC):
         pass
 
     @abstractmethod
-    def predict(self, df: pd.DataFrame, df_historic: pd.DataFrame = None):
+    def predict(self, df: pd.DataFrame, received_single_time_series, df_historic: pd.DataFrame = None):
         pass
 
     def maybe_extend_df(self, df_train, df_test):
@@ -42,4 +42,4 @@ class Model(ABC):
         """
         If model depends on historic values, drop first values of predicted and df_test.
         """
-        return predicted, df
+        return predicted

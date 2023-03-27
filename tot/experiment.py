@@ -16,6 +16,7 @@ from tot.df_utils import (
     handle_missing_data,
     maybe_drop_added_dates,
     prep_or_copy_df,
+    return_df_in_original_format,
     split_df,
 )
 from tot.exp_utils import evaluate_forecast
@@ -55,7 +56,13 @@ class Experiment(ABC):
             self.experiment_name = "{}_{}{}".format(
                 self.data.name,
                 self.model_class.model_name,
-                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()]).replace("'", "").replace(":", "_"),
+                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()])
+                .replace("'", "")
+                .replace(":", "_")
+                .replace("{", "_")
+                .replace("}", "_")
+                .replace("[", "_")
+                .replace("]", "_"),
             )
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
@@ -89,9 +96,16 @@ class Experiment(ABC):
         if current_fold is not None:
             name = name + "_fold_" + str(current_fold)
         name = prefix + "_" + name + ".csv"
-        df.to_csv(os.path.join(self.save_dir, name), encoding="utf-8", index=False)
+        df.to_csv(os.path.join(self.save_dir, name)[0:260], encoding="utf-8", index=False)
 
-    def _make_forecast(self, model, df_train, df_test, current_fold=None):
+    def _make_forecast(
+        self,
+        model,
+        df_train,
+        df_test,
+        received_single_time_series,
+        current_fold=None,
+    ):
         """
         Make predictions using the given model on the train and test data.
 
@@ -105,6 +119,8 @@ class Experiment(ABC):
             The test data.
         current_fold : int, optional
             Fold number, to be included in the filename if saving results to disk.
+        received_single_time_series : bool
+            whether it is a single time series
 
         Returns
         -------
@@ -113,8 +129,12 @@ class Experiment(ABC):
         fcst_test : pandas.DataFrame
             Predictions on the test data.
         """
-        fcst_train = model.predict(df=df_train)
-        fcst_test = model.predict(df=df_test, df_historic=df_train)
+        fcst_train = model.predict(df=df_train, received_single_time_series=received_single_time_series)
+        fcst_test = model.predict(
+            df=df_test,
+            df_historic=df_train,
+            received_single_time_series=received_single_time_series,
+        )
         if self.save_dir is not None:
             self.write_results_to_csv(fcst_train, prefix="predicted_train", current_fold=current_fold)
             self.write_results_to_csv(fcst_test, prefix="predicted_test", current_fold=current_fold)
@@ -188,24 +208,34 @@ class SimpleExperiment(Experiment):
         """
         # data-specific pre-processing
         set_random_seed(42)
-        df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(self.data.df)
+        # add ID col if not present
+        df, received_ID_column, received_single_time_series, _ = prep_or_copy_df(self.data.df)
         df = check_dataframe(df, check_y=True)
         # add infer frequency
         df = handle_missing_data(df, freq=self.data.freq)
         df_train, df_test = split_df(
             df=df,
             test_percentage=self.test_percentage,
+            local_split=False,
         )
         # fit model
         model = self.model_class(self.params)
         model.fit(df=df_train, freq=self.data.freq)
         # predict model
-        fcst_train, fcst_test = self._make_forecast(model=model, df_train=df_train, df_test=df_test)
+        fcst_train, fcst_test = self._make_forecast(
+            model=model,
+            df_train=df_train,
+            df_test=df_test,
+            received_single_time_series=received_single_time_series,
+        )
         # data-specific post-processing
         fcst_train, df_train = maybe_drop_added_dates(fcst_train, df_train)
         fcst_test, df_test = maybe_drop_added_dates(fcst_test, df_test)
         # evaluation
         result_train, result_test = self._evaluate_model(fcst_train, fcst_test)
+        # remove ID col if not added
+        fcst_train = return_df_in_original_format(fcst_train, received_ID_column, received_single_time_series)
+        fcst_test = return_df_in_original_format(fcst_test, received_ID_column, received_single_time_series)
         return fcst_train, fcst_test, result_train, result_test
 
 
@@ -247,6 +277,10 @@ class CrossValidationExperiment(Experiment):
                 The test data for the current fold.
             current_fold: int, optional
                 The index of the current fold.
+             received_ID_column : bool
+                whether the input data has an ID column
+             received_single_time_series : bool
+                whether the input data has a single time series
 
         Returns
         -------
@@ -262,19 +296,26 @@ class CrossValidationExperiment(Experiment):
                 Dictionary containing the evaluation metrics for the test data of the current fold.
         """
         set_random_seed(42)
-        df_train, df_test, current_fold = args
+        df_train, df_test, current_fold, received_ID_column, received_single_time_series = args
         # fit model
         model = self.model_class(self.params)
         model.fit(df=df_train, freq=self.data.freq)
         # predict model
         fcst_train, fcst_test = self._make_forecast(
-            model=model, df_train=df_train, df_test=df_test, current_fold=current_fold
+            model=model,
+            df_train=df_train,
+            df_test=df_test,
+            received_single_time_series=received_single_time_series,
+            current_fold=current_fold,
         )
         # data-specific post-processing
         fcst_train, df_train = maybe_drop_added_dates(fcst_train, df_train)
         fcst_test, df_test = maybe_drop_added_dates(fcst_test, df_test)
         # evaluation
         result_train, result_test = self._evaluate_model(fcst_train, fcst_test)
+        # reformat
+        fcst_train = return_df_in_original_format(fcst_train, received_ID_column, received_single_time_series)
+        fcst_test = return_df_in_original_format(fcst_test, received_ID_column, received_single_time_series)
         del model
         gc.collect()
         return (fcst_train, fcst_test, result_train, result_test)
@@ -319,16 +360,17 @@ class CrossValidationExperiment(Experiment):
         """
         set_random_seed(42)
         # data-specific pre-processing
-        df, received_ID_col, received_single_time_series, _ = prep_or_copy_df(self.data.df)
+        df, received_ID_column, received_single_time_series, _ = prep_or_copy_df(self.data.df)
         df = check_dataframe(df, check_y=True)
         # add infer frequency
         df = handle_missing_data(df, freq=self.data.freq)
         folds = crossvalidation_split_df(
-            df=self.data.df,
-            freq=self.data.freq,
+            df=df,
             k=self.num_folds,
             fold_pct=self.test_percentage,
             fold_overlap_pct=self.fold_overlap_pct,
+            received_single_time_series=received_single_time_series,
+            global_model_cv_type=self.global_model_cv_type,
         )
         # init empty dicts with list for fold-wise metrics
         self.results_cv_train = self.metadata.copy()
@@ -340,7 +382,10 @@ class CrossValidationExperiment(Experiment):
         self.fcst_test = []
         if self.num_processes > 1 and self.num_folds > 1:
             with Pool(self.num_processes) as pool:
-                args = [(df_train, df_test, current_fold) for current_fold, (df_train, df_test) in enumerate(folds)]
+                args = [
+                    (df_train, df_test, current_fold, received_ID_column, received_single_time_series)
+                    for current_fold, (df_train, df_test) in enumerate(folds)
+                ]
                 pool.map_async(
                     self._run_fold,
                     args,
@@ -352,7 +397,7 @@ class CrossValidationExperiment(Experiment):
             gc.collect()
         else:
             for current_fold, (df_train, df_test) in enumerate(folds):
-                args = (df_train, df_test, current_fold)
+                args = (df_train, df_test, current_fold, received_ID_column, received_single_time_series)
                 self._log_results(self._run_fold(args))
 
         if self.save_dir is not None:

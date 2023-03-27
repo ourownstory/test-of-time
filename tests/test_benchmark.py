@@ -12,7 +12,7 @@ from tot.datasets.dataset import Dataset
 from tot.evaluation.metrics import ERROR_FUNCTIONS
 from tot.experiment import CrossValidationExperiment, SimpleExperiment
 from tot.models.models_neuralprophet import NeuralProphetModel
-from tot.models.models_simple import ProphetModel
+from tot.models.models_prophet import ProphetModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -103,7 +103,6 @@ def test_2_benchmark_CV():
                 "epochs": EPOCHS,
             },
         ),
-        # (ProphetModel, {}), # needs to be installed
     ]
     log.debug("{}".format(model_classes_and_params))
 
@@ -114,17 +113,25 @@ def test_2_benchmark_CV():
         test_percentage=0.1,
         num_folds=3,
         fold_overlap_pct=0,
+        num_processes=1,
     )
     results_summary, results_train, results_test = benchmark_cv.run()
     log.debug("{}".format(results_summary))
+    benchmark_cv_overlap = CrossValidationBenchmark(
+        model_classes_and_params=model_classes_and_params,  # iterate over this list of tuples
+        datasets=dataset_list,  # iterate over this list
+        metrics=["MASE", "RMSE"],
+        test_percentage=0.1,
+        num_folds=3,
+        fold_overlap_pct=0.5,
+        num_processes=3,
+    )
+    results_summary_ol, results_train_ol, results_test_ol = benchmark_cv_overlap.run()
+    log.debug("{}".format(results_summary_ol))
+    log.info("#### test_2_benchmark_CV")
     if PLOT:
-        # model plot
-        # air_passengers = results_summary[results_summary['data'] == 'air_passengers']
-        # air_passengers = air_passengers[air_passengers['split'] == 'test']
-        # plt_air = air_passengers.plot(x='model', y='RMSE', kind='barh')
-        # data plot
         air_passengers = results_summary[results_summary["split"] == "test"]
-        air_passengers.plot(x="data", y="MASE", kind="barh")
+        # air_passengers.plot(x="data", y="MASE", kind="barh")
         plt.show()
 
 
@@ -208,16 +215,6 @@ def test_2_benchmark_manualCV():
             num_folds=3,
             fold_overlap_pct=0,
         ),
-        # needs to be installed
-        # CrossValidationExperiment(
-        #     model_class=ProphetModel,
-        #     params={"seasonality_mode": "multiplicative", },
-        #     data=Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
-        #     metrics=metrics,
-        #     test_percentage=10,
-        #     num_folds=3,
-        #     fold_overlap_pct=0,
-        # ),
     ]
     benchmark_cv = ManualCVBenchmark(
         experiments=experiments,

@@ -20,7 +20,9 @@ FREQ_TO_SEASON_STEP_MAPPING = {
 }
 
 
-def reshape_raw_predictions_to_forecast_df(df, predicted, n_req_past_obs, n_req_future_obs):
+def reshape_raw_predictions_to_forecast_df(
+    df, predicted, past_observations_per_prediction, future_observations_per_prediction
+):
     """Turns forecast-origin-wise predictions into forecast-target-wise predictions.
 
     Parameters
@@ -29,9 +31,9 @@ def reshape_raw_predictions_to_forecast_df(df, predicted, n_req_past_obs, n_req_
             input dataframe
         predicted : np.array
             Array containing the predictions
-        n_req_past_obs: int
+        past_observations_per_prediction: int
             past observation samples required for one prediction step
-        n_req_future_obs: int
+        future_observations_per_prediction: int
             future observation samples required for one prediction step
 
     Returns
@@ -50,10 +52,10 @@ def reshape_raw_predictions_to_forecast_df(df, predicted, n_req_past_obs, n_req_
     fcst_df = pd.concat((df[cols],), axis=1)
     # create a line for each forecast_lag
     # 'yhat<i>' is the forecast for 'y' at 'ds' from i steps ago.
-    for fcst_sample in range(1, n_req_future_obs + 1):
+    for fcst_sample in range(1, future_observations_per_prediction + 1):
         forecast = predicted[:, fcst_sample - 1]
-        pad_before = n_req_past_obs + fcst_sample - 1
-        pad_after = n_req_future_obs - fcst_sample
+        pad_before = past_observations_per_prediction + fcst_sample - 1
+        pad_after = future_observations_per_prediction - fcst_sample
         yhat = np.concatenate(
             ([np.NaN] * pad_before, forecast, [np.NaN] * pad_after)
         )  # add pad based on n_forecasts and current forecast_lag
@@ -61,35 +63,6 @@ def reshape_raw_predictions_to_forecast_df(df, predicted, n_req_past_obs, n_req_
         fcst_df[name] = yhat
 
     return fcst_df
-
-
-def convert_to_datetime(series: pd.Series) -> pd.Series:
-    """Convert input series to datetime format
-
-    Parameters
-    ----------
-        series : pd.Series
-            input series that needs to be converted to datetime format
-
-    Returns
-    -------
-        pd.Series
-            series in datetime format
-
-    Raises
-    ------
-        ValueError
-            if input series contains NaN values or has timezone specified
-    """
-    if series.isnull().any():
-        raise ValueError("Found NaN in column ds.")
-    if series.dtype == np.int64:
-        series = series.astype(str)
-    if not np.issubdtype(series.dtype, np.datetime64):
-        series = pd.to_datetime(series)
-    if series.dt.tz is not None:
-        raise ValueError("Column ds has timezone specified, which is not supported. Remove timezone.")
-    return series
 
 
 def _get_seasons(seasonalities: List[float]) -> Tuple[bool, bool, bool, List[float]]:
@@ -125,7 +98,7 @@ def _get_seasons(seasonalities: List[float]) -> Tuple[bool, bool, bool, List[flo
     return daily, weekly, yearly, custom
 
 
-def convert_df_to_DartsTimeSeries(df, value_cols, freq) -> TimeSeries:
+def convert_df_to_TimeSeries(df, freq) -> TimeSeries:
     """
     Converts pd.Dataframe to TimeSeries (e.g. output of darts).
 
@@ -133,8 +106,6 @@ def convert_df_to_DartsTimeSeries(df, value_cols, freq) -> TimeSeries:
     ----------
         df : pd.Dataframe
             time series to be fitted or predicted
-        value_cols : List
-            A string or list of strings representing the value column(s) to be extracted from the DataFrame.
         freq : str (must ahere to darts format)
             Optionally, a string representing the frequency of the Pandas DateTimeIndex.
 
@@ -144,7 +115,17 @@ def convert_df_to_DartsTimeSeries(df, value_cols, freq) -> TimeSeries:
             time series to be fitted or predicted
 
     """
+    # Receives df with single ID column
+    received_single_ts = len(df["ID"].unique()) == 1
+
+    if not received_single_ts:
+        # pivot the resulting DataFrame to convert multiple time series
+        df = df.pivot(index="ds", columns="ID", values="y").rename_axis(columns=None).reset_index()
+        value_cols = df.columns[1:].tolist()
+    else:
+        value_cols = "y"
     series = TimeSeries.from_dataframe(df=df, time_col="ds", value_cols=value_cols, freq=freq)
+
     return series
 
 
@@ -212,8 +193,8 @@ def _predict_seasonal_naive(df, season_length, n_forecasts):
         forecast_i = reshape_raw_predictions_to_forecast_df(
             df_i,
             predicted_i,
-            n_req_past_obs=season_length,
-            n_req_future_obs=n_forecasts,
+            past_observations_per_prediction=season_length,
+            future_observations_per_prediction=n_forecasts,
         )
         forecast_new = pd.concat((forecast_new, forecast_i), ignore_index=True)
 
@@ -256,7 +237,14 @@ def _predict_single_raw_seasonal_naive(df, season_length, n_forecasts):
     return predicted
 
 
-def _predict_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrain):
+def _predict_darts_model(
+    df,
+    model,
+    past_observations_per_prediction,
+    future_observations_per_prediction,
+    retrain,
+    received_single_time_series,
+):
     """Computes forecast-target-wise predictions for the passed darts model.
 
     Parameters
@@ -265,12 +253,14 @@ def _predict_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrain):
             model to be predicted
         df : pd.DataFrame
             dataframe containing column ``ds``, ``y``, and ``ID`` with all data
-        n_req_past_obs : int
+        past_observations_per_prediction : int
             number of past observations needed for prediction
-        n_req_future_obs : int
+        future_observations_per_prediction : int
             number of future samples to be predicted in one step
         retrain : bool
             flag specific to darts models that indicates whether the retrain mode is activated
+        received_single_time_series : bool
+            whether it is a single time series
 
     Returns
     -------
@@ -282,23 +272,38 @@ def _predict_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrain):
             where yhat<i> refers to the i-step-ahead prediction for this row's datetime.
             e.g. yhat3 is the prediction for this datetime, predicted 3 steps ago, "3 steps old".
     """
-    forecast_new = pd.DataFrame()
-    for df_name, df_i in df.groupby("ID"):
-        predicted_i = _predict_single_raw_darts_model(
-            df=df_i, model=model, n_req_past_obs=n_req_past_obs, n_req_future_obs=n_req_future_obs, retrain=retrain
+    predicted = _predict_raw_darts_model(
+        df=df,
+        model=model,
+        past_observations_per_prediction=past_observations_per_prediction,
+        future_observations_per_prediction=future_observations_per_prediction,
+        retrain=retrain,
+        received_single_time_series=received_single_time_series,
+    )
+    fcst_df = (
+        df.groupby("ID")
+        .apply(
+            lambda x: reshape_raw_predictions_to_forecast_df(
+                x,
+                predicted[x.name],
+                past_observations_per_prediction=past_observations_per_prediction,
+                future_observations_per_prediction=future_observations_per_prediction,
+            )
         )
-        forecast_i = reshape_raw_predictions_to_forecast_df(
-            df_i,
-            predicted_i,
-            n_req_past_obs=n_req_past_obs,
-            n_req_future_obs=n_req_future_obs,
-        )
-        forecast_new = pd.concat((forecast_new, forecast_i), ignore_index=True)
+        .reset_index(drop=True)
+    )
 
-    return forecast_new
+    return fcst_df
 
 
-def _predict_single_raw_darts_model(df, model, n_req_past_obs, n_req_future_obs, retrain):
+def _predict_raw_darts_model(
+    df,
+    model,
+    past_observations_per_prediction,
+    future_observations_per_prediction,
+    retrain,
+    received_single_time_series,
+):
     """Computes forecast-origin-wise predictions for the passed darts model for single time series.
     Predictions are returned in vector format. Predictions are given on a forecast origin basis,
     not on a target basis.
@@ -308,34 +313,33 @@ def _predict_single_raw_darts_model(df, model, n_req_past_obs, n_req_future_obs,
             model to be predicted
         df : pd.DataFrame
             dataframe containing column ``ds``, ``y``, and optionally``ID`` with all data
-        n_req_past_obs : int
+        past_observations_per_prediction : int
             number of past observations needed for prediction
-        n_req_future_obs : int
+        future_observations_per_prediction : int
             number of future samples to be predicted in one step
         retrain : bool
             flag specific to darts models that indicates whether the retrain mode is activated
+        received_single_time_series : bool
+            flag that specific if the dataframe has a single or multiple time series
 
     Returns
     -------
         np.array
             array containing the predictions
     """
-    # Receives df with single ID column
-    assert len(df["ID"].unique()) == 1
-
-    value_cols = df.columns.values[1:-1].tolist()
-    series = convert_df_to_DartsTimeSeries(df, value_cols=value_cols, freq=model.freq)
+    series = convert_df_to_TimeSeries(df, freq=model.freq)
     predicted_list = model.model.historical_forecasts(
         series,
-        start=n_req_past_obs,
-        forecast_horizon=n_req_future_obs,
+        start=past_observations_per_prediction,
+        forecast_horizon=future_observations_per_prediction,
         retrain=retrain,
         last_points_only=False,
         verbose=True,
     )
-    # convert TimeSeries to np.array
-    prediction_series = [prediction_series.values() for i, prediction_series in enumerate(predicted_list)]
-    predicted = np.stack(prediction_series, axis=0).squeeze(axis=2)
-
-    # No un-scaling and un-normalization needed. Operations not applicable for naive model
-    return predicted
+    # Convert (list of) TimeSeries to np.array
+    predicted = np.array([prediction_series.values() for prediction_series in predicted_list])
+    prediction_ids = ["__df__"] if received_single_time_series else predicted_list[0].components
+    predicted = np.transpose(predicted, (2, 0, 1))
+    predicted_dict = {prediction_ids[id]: predicted[id, :, :] for id in range(predicted.shape[0])}
+    # Return dict with array per ID
+    return predicted_dict

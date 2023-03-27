@@ -10,8 +10,9 @@ from tot.benchmark import SimpleBenchmark
 from tot.datasets.dataset import Dataset
 from tot.evaluation.metrics import ERROR_FUNCTIONS
 from tot.models.models_naive import NaiveModel, SeasonalNaiveModel
-from tot.models.models_neuralprophet import TorchProphetModel
-from tot.models.models_simple import LinearRegressionModel, ProphetModel
+from tot.models.models_neuralprophet import NeuralProphetModel, TorchProphetModel
+from tot.models.models_prophet import ProphetModel
+from tot.models.models_simple import LinearRegressionModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -279,7 +280,7 @@ def test_torch_prophet_model():
     model_classes_and_params = [
         (
             TorchProphetModel,
-            {"seasonality_mode": "multiplicative", "interval_width": 0},
+            {"seasonality_mode": "multiplicative"},
         ),
     ]
     log.debug("{}".format(model_classes_and_params))
@@ -295,3 +296,55 @@ def test_torch_prophet_model():
     results_train, results_test = benchmark.run()
     log.info("#### test_torch_prophet_model")
     print(results_test)
+
+
+def test_neuralprophet_model():
+    air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
+    dataset_list = [
+        Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
+    ]
+    model_classes_and_params = [
+        (
+            NeuralProphetModel,
+            {"seasonality_mode": "multiplicative", "n_lags": 4, "n_forecasts": 3, "epochs": 1},
+        ),
+    ]
+    log.debug("{}".format(model_classes_and_params))
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=0.25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    results_train, results_test = benchmark.run()
+    log.info("#### test_neuralprophet_model")
+    print(results_test)
+
+
+def test_check_min_input_len():
+    air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
+    dataset_list = [
+        Dataset(df=air_passengers_df[0:12], name="air_passengers", freq="MS"),
+    ]
+    model_classes_and_params = [
+        (
+            NeuralProphetModel,
+            {"n_lags": 12, "n_forecasts": 6},
+        ),
+    ]
+    log.debug("{}".format(model_classes_and_params))
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=0.25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    with pytest.raises(AssertionError):
+        results_train, results_test = benchmark.run()
+    log.info("#### test_check_min_input_len")
