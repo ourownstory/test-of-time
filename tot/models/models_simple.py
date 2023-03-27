@@ -9,7 +9,6 @@ from tot.df_utils import _check_min_df_len, add_first_inputs_to_df, drop_first_i
 from tot.models.models import Model
 from tot.models.utils import _predict_darts_model, convert_df_to_TimeSeries
 
-
 log = logging.getLogger("tot.model")
 
 # check import of implemented models and consider order of imports
