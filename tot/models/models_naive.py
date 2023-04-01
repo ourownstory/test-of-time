@@ -68,8 +68,9 @@ class SeasonalNaiveModel(Model):
                 "without specified seasonality."
             )
         if self.season_length <= 1:
-            raise ValueError("season_length must be >1 for SeasonalNaiveModel. For season_length=1 select NaiveModel "
-                             "instead.")
+            raise ValueError(
+                "season_length must be >1 for SeasonalNaiveModel. For season_length=1 select NaiveModel " "instead."
+            )
 
     def fit(self, df: pd.DataFrame, freq: str):
         pass

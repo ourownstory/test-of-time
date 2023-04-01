@@ -230,8 +230,10 @@ def validate_df_name_input(df_name, fcst):
     if not received_single_time_series:
         if df_name not in fcst["ID"].unique():
             if len(fcst["ID"].unique()) > 1:
-                raise ValueError("Many time series are present in the pd.DataFrame (more than one ID). Please, "
-                                 "especify ID to be plotted.")
+                raise ValueError(
+                    "Many time series are present in the pd.DataFrame (more than one ID). Please, "
+                    "especify ID to be plotted."
+                )
         fcst = fcst[fcst["ID"] == df_name].copy(deep=True)
         log.info(f"Plotting data from ID {df_name}")
     return fcst
