@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 from darts import TimeSeries
 
+from tot.df_utils import _validate_single_ID_df
+
 log = logging.getLogger("tot.utils")
 
 FREQ_TO_SEASON_STEP_MAPPING = {
@@ -21,7 +23,7 @@ FREQ_TO_SEASON_STEP_MAPPING = {
 
 
 def reshape_raw_predictions_to_forecast_df(
-    df, predicted, past_observations_per_prediction, future_observations_per_prediction
+        df, predicted, past_observations_per_prediction, future_observations_per_prediction
 ):
     """Turns forecast-origin-wise predictions into forecast-target-wise predictions.
 
@@ -47,7 +49,8 @@ def reshape_raw_predictions_to_forecast_df(
             e.g. yhat3 is the prediction for this datetime, predicted 3 steps ago, "3 steps old".
     """
 
-    assert len(df["ID"].unique()) == 1
+    _validate_single_ID_df(df)
+
     cols = ["ds", "y", "ID"]  # cols to keep from df
     fcst_df = pd.concat((df[cols],), axis=1)
     # create a line for each forecast_lag
@@ -222,11 +225,11 @@ def _predict_single_raw_seasonal_naive(df, season_length, n_forecasts):
             array containing the predictions
     """
     # Receives df with single ID column
-    assert len(df["ID"].unique()) == 1
+    _validate_single_ID_df(df)
 
-    dates = df["ds"].iloc[season_length : -n_forecasts + 1].reset_index(drop=True)
+    dates = df["ds"].iloc[season_length: -n_forecasts + 1].reset_index(drop=True)
     # assemble last values based on season_length
-    last_k_vals_arrays = [df["y"].iloc[i : i + season_length].values for i in range(0, dates.shape[0])]
+    last_k_vals_arrays = [df["y"].iloc[i: i + season_length].values for i in range(0, dates.shape[0])]
     last_k_vals = np.stack(last_k_vals_arrays, axis=0)
     # Compute the predictions
     predicted = np.array([last_k_vals[:, i % season_length] for i in range(n_forecasts)]).T
@@ -238,12 +241,12 @@ def _predict_single_raw_seasonal_naive(df, season_length, n_forecasts):
 
 
 def _predict_darts_model(
-    df,
-    model,
-    past_observations_per_prediction,
-    future_observations_per_prediction,
-    retrain,
-    received_single_time_series,
+        df,
+        model,
+        past_observations_per_prediction,
+        future_observations_per_prediction,
+        retrain,
+        received_single_time_series,
 ):
     """Computes forecast-target-wise predictions for the passed darts model.
 
@@ -282,7 +285,7 @@ def _predict_darts_model(
     )
     fcst_df = (
         df.groupby("ID")
-        .apply(
+            .apply(
             lambda x: reshape_raw_predictions_to_forecast_df(
                 x,
                 predicted[x.name],
@@ -290,19 +293,19 @@ def _predict_darts_model(
                 future_observations_per_prediction=future_observations_per_prediction,
             )
         )
-        .reset_index(drop=True)
+            .reset_index(drop=True)
     )
 
     return fcst_df
 
 
 def _predict_raw_darts_model(
-    df,
-    model,
-    past_observations_per_prediction,
-    future_observations_per_prediction,
-    retrain,
-    received_single_time_series,
+        df,
+        model,
+        past_observations_per_prediction,
+        future_observations_per_prediction,
+        retrain,
+        received_single_time_series,
 ):
     """Computes forecast-origin-wise predictions for the passed darts model for single time series.
     Predictions are returned in vector format. Predictions are given on a forecast origin basis,

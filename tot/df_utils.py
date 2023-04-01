@@ -55,17 +55,10 @@ def _split_df(df: pd.DataFrame, test_percentage: Union[float, int]) -> Tuple[pd.
     Tuple[pd.DataFrame, pd.DataFrame]
         A tuple containing the training DataFrame and the validation DataFrame.
     """
-    # Receives df with single ID column
-    assert len(df["ID"].unique()) == 1
+    _validate_single_ID_df(df)
+
     n_samples = len(df)
-    if 0.0 < test_percentage < 1.0:
-        n_valid = max(1, int(n_samples * test_percentage))
-    else:
-        assert test_percentage >= 1
-        assert type(test_percentage) == int
-        n_valid = test_percentage
-    n_train = n_samples - n_valid
-    assert n_train >= 1
+    n_train = _validated_n_train(n_samples, test_percentage)
 
     split_idx_train = n_train
     split_idx_val = split_idx_train
@@ -75,8 +68,59 @@ def _split_df(df: pd.DataFrame, test_percentage: Union[float, int]) -> Tuple[pd.
     return df_train, df_val
 
 
+def _validate_single_ID_df(df: pd.DataFrame) -> None:
+    """
+        Checks if the DataFrame contains single ID column.
+
+        Parameters
+        ----------
+            df : pd.DataFrame
+                DataFrame to be validated.
+
+        Raises
+        -------
+            ValueError
+                If DataFrame contains multiple IDs.
+        """
+    if len(df["ID"].unique()) != 1:
+        raise ValueError("DataFrame should have a single ID column.")
+
+
+def _validated_n_train(n_samples: int, test_size: Union[float, int]) -> int:
+    """
+    Validates the DataFrame split arguments and returns number of train samples.
+
+    Parameters
+    ----------
+        n_samples : int
+            Number of samples in the DataFrame.
+        test_size : float, int
+            The percentage or number of samples to be used for validation.
+            If the value is between 0 and 1, it is interpreted as a percentage of the total number of samples.
+            If the value is greater than or equal to 1, it is interpreted as the number of samples to be used for validation.
+
+    Returns
+    -------
+        int
+            Number of train samples to be used in the split.
+
+    Raises
+    -------
+        ValueError
+            If test size is not a float in range (0.0, 1.0) or an integer < len(df).
+    """
+    if 0.0 < test_size < 1.0:
+        n_valid = max(1, int(n_samples * test_size))
+    else:
+        if type(test_size) != int or not 1 < test_size < n_samples:
+            raise ValueError("Test size should be a float in range (0.0, 1.0) or an integer < len(df)")
+        n_valid = test_size
+
+    return int(n_samples - n_valid)
+
+
 def split_df(
-    df: pd.DataFrame, test_percentage: Union[float, int] = 0.25, local_split: bool = True
+        df: pd.DataFrame, test_percentage: Union[float, int] = 0.25, local_split: bool = True
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Splits timeseries dataframe into train and validation sets.
@@ -122,7 +166,7 @@ def __crossvalidation_split_df(df, k, fold_pct, fold_overlap_pct=0.0):
     Parameters
     ----------
         df : pd.DataFrame
-            data
+            data with single ID columns
         k : int
             number of CV folds
         fold_pct : float
@@ -138,16 +182,8 @@ def __crossvalidation_split_df(df, k, fold_pct, fold_overlap_pct=0.0):
 
             validation data
     """
-    # Receives df with single ID column
-    assert len(df["ID"].unique()) == 1
     total_samples = len(df)
-    samples_fold = max(1, int(fold_pct * total_samples))
-    samples_overlap = int(fold_overlap_pct * samples_fold)
-    assert samples_overlap < samples_fold
-    min_train = total_samples - samples_fold - (k - 1) * (samples_fold - samples_overlap)
-    assert (
-        min_train >= samples_fold
-    ), "Test percentage too large. Not enough train samples. Select smaller test percentage. "
+    samples_fold, samples_overlap = _validated_crossvalidation_args(total_samples, k, fold_pct, fold_overlap_pct)
     folds = []
     df_fold = df.copy(deep=True)
     for i in range(k, 0, -1):
@@ -159,8 +195,48 @@ def __crossvalidation_split_df(df, k, fold_pct, fold_overlap_pct=0.0):
     return folds
 
 
+def _validated_crossvalidation_args(total_samples: int, k: int, fold_pct: float, fold_overlap_pct: float) \
+        -> Tuple[int, int]:
+    """Reruns validates cross validation arguments.
+
+        Parameters
+        ----------
+            total_samples : int
+                number of data samples
+            k : int
+                number of CV folds
+            fold_pct : float
+                percentage of overall samples to be in each fold
+            fold_overlap_pct : float
+                percentage of overlap between the validation folds
+
+        Returns
+        -------
+            tuple (samples_fold, samples_overlap)
+
+                samples fold
+
+                samples overlap
+
+        Raises
+        -------
+            ValueError
+                If samples overlap is bigger than samples fold.
+            ValueError
+                If test percentage too large and there are enough train samples.
+        """
+    samples_fold = max(1, int(fold_pct * total_samples))
+    samples_overlap = int(fold_overlap_pct * samples_fold)
+    if samples_overlap > samples_fold:
+        raise ValueError("Samples overlap is bigger than samples fold")
+    min_train = total_samples - samples_fold - (k - 1) * (samples_fold - samples_overlap)
+    if min_train < samples_fold:
+        raise ValueError("Test percentage too large. Not enough train samples. Select smaller test percentage.")
+    return samples_fold, samples_overlap
+
+
 def _crossvalidation_split_df(
-    df, received_single_time_series, k, fold_pct, fold_overlap_pct=0.0, global_model_cv_type="global-time"
+        df, received_single_time_series, k, fold_pct, fold_overlap_pct=0.0, global_model_cv_type="global-time"
 ):
     """Splits data in k folds for crossvalidation.
 
@@ -194,12 +270,17 @@ def _crossvalidation_split_df(
             training data
 
             validation data
+    Raises
+    -------
+        ValueError
+            If global model crossvalidation is not valid.
     """
     if received_single_time_series:
         folds = (
             df.groupby("ID")
-            .apply(lambda x: __crossvalidation_split_df(x, k=k, fold_pct=fold_pct, fold_overlap_pct=fold_overlap_pct))
-            .tolist()[0]
+                .apply(
+                lambda x: __crossvalidation_split_df(x, k=k, fold_pct=fold_pct, fold_overlap_pct=fold_overlap_pct))
+                .tolist()[0]
         )
 
     else:
@@ -211,10 +292,10 @@ def _crossvalidation_split_df(
             # Crossvalidate time series locally (time leakage may be a problem)
             folds_dict = (
                 df.groupby("ID")
-                .apply(
+                    .apply(
                     lambda x: __crossvalidation_split_df(x, k=k, fold_pct=fold_pct, fold_overlap_pct=fold_overlap_pct)
                 )
-                .to_dict()
+                    .to_dict()
             )
             folds = unfold_dict_of_folds(folds_dict, k)
 
@@ -240,7 +321,7 @@ def _crossvalidation_split_df(
 
 
 def crossvalidation_split_df(
-    df, received_single_time_series, global_model_cv_type, k=5, fold_pct=0.1, fold_overlap_pct=0.5
+        df, received_single_time_series, global_model_cv_type, k=5, fold_pct=0.1, fold_overlap_pct=0.5
 ):
     """Splits timeseries data in k folds for crossvalidation.
 
@@ -339,14 +420,7 @@ def _crossvalidation_with_time_threshold(df, k, fold_pct, fold_overlap_pct=0.0):
             validation data
     """
     df_merged = merge_dataframes(df)
-    total_samples = len(df_merged)
-    samples_fold = max(1, int(fold_pct * total_samples))
-    samples_overlap = int(fold_overlap_pct * samples_fold)
-    assert samples_overlap < samples_fold
-    min_train = total_samples - samples_fold - (k - 1) * (samples_fold - samples_overlap)
-    assert (
-        min_train >= samples_fold
-    ), "Test percentage too large. Not enough train samples. Select smaller test percentage. "
+    samples_fold, samples_overlap = _validated_crossvalidation_args(len(df_merged), k, fold_pct, fold_overlap_pct)
     folds = []
     df_fold, _, _, _ = prep_or_copy_df(df)
     for i in range(k, 0, -1):
@@ -440,6 +514,14 @@ def merge_dataframes(df: pd.DataFrame) -> pd.DataFrame:
     -------
         pd.Dataframe
             Dataframe with concatenated time series (sorted 'ds', duplicates removed, index reset)
+
+    Raises
+    -------
+        ValueError
+            If df is not an instande of pd.DataFrame.
+        ValueError
+            If df does not contain 'ID' column.
+
     """
     if not isinstance(df, pd.DataFrame):
         raise ValueError("Can not join other than pd.DataFrames")
@@ -470,13 +552,8 @@ def find_time_threshold(df, valid_p):
     """
     df_merged = merge_dataframes(df)
     n_samples = len(df_merged)
-    if 0.0 < valid_p < 1.0:
-        n_valid = max(1, int(n_samples * valid_p))
-    else:
-        assert valid_p >= 1
-        assert type(valid_p) == int
-        n_valid = valid_p
-    n_train = n_samples - n_valid
+    n_train = _validated_n_train(n_samples, valid_p)
+
     threshold_time_stamp = df_merged.loc[n_train, "ds"]
     log.debug("Time threshold: ", threshold_time_stamp)
     return threshold_time_stamp
@@ -529,12 +606,11 @@ def _check_min_df_len(df, min_len):
 
     Raises
     ------
-    AssertionError
+    ValueError
         If the dataframe does not have at least `min_len` rows.
     """
-    assert (
-        df.groupby("ID").apply(lambda x: len(x) > min_len).all()
-    ), "Input time series has not enough sample to fit an predict the model."
+    if df.groupby("ID").apply(lambda x: len(x) < min_len).any():
+        raise ValueError("Input time series has not enough sample to fit an predict the model.")
 
 
 def add_first_inputs_to_df(samples: int, df_train: pd.DataFrame, df_test: pd.DataFrame) -> pd.DataFrame:
@@ -568,7 +644,7 @@ def add_first_inputs_to_df(samples: int, df_train: pd.DataFrame, df_test: pd.Dat
 
 
 def drop_first_inputs_from_df(
-    samples: int, predicted: pd.DataFrame, df: pd.DataFrame
+        samples: int, predicted: pd.DataFrame, df: pd.DataFrame
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Drops the first 'samples' number of rows from both 'predicted' and 'df' dataframes for each group of 'ID' column.
@@ -705,7 +781,7 @@ def _handle_missing_data(df, freq):
             preprocessed dataframe
     """
     # Receives df with single ID column
-    assert len(df["ID"].unique()) == 1
+    _validate_single_ID_df(df)
 
     # set imput parameters:
     impute_linear = 10
@@ -796,9 +872,23 @@ def check_single_dataframe(df, check_y):
     Returns
     -------
         pd.DataFrame
+
+    Raises
+    -------
+        ValueError
+            If Dataframe has no rows.
+        ValueError
+            If Dataframe does not have columns "ds" with the dates.
+        ValueError
+            If NaN is found in column 'ds'.
+        ValueError
+            If column 'ds' has timezone specified, which is not supported.
+        ValueError
+            If column 'ds' has duplicate values.
     """
     # Receives df with single ID column
-    assert len(df["ID"].unique()) == 1
+    _validate_single_ID_df(df)
+
     if df.shape[0] == 0:
         raise ValueError("Dataframe has no rows.")
     if "ds" not in df:
@@ -880,6 +970,13 @@ def prep_or_copy_df(df):
             whether the ID col was present
         bool
             wheter it is a single time series
+
+    Raises
+    -------
+        ValueError
+            If df is None.
+        ValueError
+            If df type is invalid.
     """
     received_ID_col = False
     received_single_time_series = True
@@ -925,7 +1022,7 @@ def return_df_in_original_format(df, received_ID_col=False, received_single_time
     """
     new_df = df.copy(deep=True)
     if not received_ID_col and received_single_time_series:
-        assert len(new_df["ID"].unique()) == 1
+        _validate_single_ID_df(df)
         new_df.drop("ID", axis=1, inplace=True)
         log.info("Returning df with no ID column")
     return new_df
@@ -954,7 +1051,6 @@ def unfold_dict_of_folds(folds_dict, k):
     df_test = pd.DataFrame()
     for j in range(0, k):
         for key in folds_dict:
-            assert k == len(folds_dict[key])
             df_train = pd.concat((df_train, folds_dict[key][j][0]), ignore_index=True)
             df_test = pd.concat((df_test, folds_dict[key][j][1]), ignore_index=True)
         folds.append((df_train, df_test))

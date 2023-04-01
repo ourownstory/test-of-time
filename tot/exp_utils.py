@@ -28,6 +28,11 @@ def evaluate_forecast(fcst_train, fcst_test, metrics, metadata=None):
         Result of evaluation on training set.
     result_test : pandas.DataFrame
         Result of evaluation on test set.
+
+    Raises
+    ------
+    ValueError
+        If dimensions of fcst dataframe are faulty.
     """
 
     if metadata is not None:
@@ -44,7 +49,8 @@ def evaluate_forecast(fcst_train, fcst_test, metrics, metadata=None):
         n_yhats_train = len(yhat_train)
         n_yhats_test = len(yhat_test)
 
-        assert n_yhats_train == n_yhats_test, "Dimensions of fcst dataframe faulty."
+        if n_yhats_train != n_yhats_test:
+            raise ValueError("Dimensions of fcst dataframe are faulty.")
 
         metric_train_list = []
         metric_test_list = []

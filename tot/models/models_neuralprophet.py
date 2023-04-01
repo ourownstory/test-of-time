@@ -175,9 +175,11 @@ class TorchProphetModel(NeuralProphetModel):
         model_params.update({"interval_width": 0})
         # TorchProphet does not support n_forecasts>1 and n_lags>0
         if "n_forecasts" in model_params:
-            assert model_params.n_forecasts == 1, "TorchProphet does not support n_forecasts >1."
+            if model_params.n_forecasts > 1:
+                raise ValueError("TorchProphet does not support n_forecasts >1.")
         if "n_lags" in model_params:
-            assert model_params.n_lags == 0, "TorchProphet does not support n_lags >0."
+            if model_params.n_lags > 0:
+                raise ValueError("TorchProphet does not support n_lags >0.")
 
         self.model = self.model_class(**model_params)
         if custom_seasonalities is not None:
