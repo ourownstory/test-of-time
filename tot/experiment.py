@@ -53,18 +53,11 @@ class Experiment(ABC):
             data_params["freq"] = self.data.freq
         self.params.update({"_data_params": data_params})
         if not hasattr(self, "experiment_name") or self.experiment_name is None:
-            # 1. Reduce and abbreviate df name (3 chars max)
             data_name = self.data.name[:3] if len(self.data.name) > 3 else self.data.name
-            
-            # 2. Extract model name and abbreviate (first 2 chars from capitalized)
             model_name = self.model_class.model_name
-            abbreviated_name = ""
-            for i in range(len(model_name)):
-                if model_name[i].isupper():
-                    abbreviated_name += model_name[i]+model_name[i+1]
-            abbreviated_name += "M" # for 'Model'
+            abbreviated_name = ''.join([char for char in model_name if char.isupper()])
+            abbreviated_name += "M"
             
-            # 3. params (dictionary with abbreviations)
             d = {'seasonality_mode': 'SM',
                  'additive': 'add',
                  'learning_rate': 'LR',
@@ -394,7 +387,7 @@ class CrossValidationExperiment(Experiment):
         Returns:
             tuple: (fcst_train, fcst_test, results_cv_train, results_cv_test)
         """
-        set_random_seed(42)
+ #       set_random_seed(42)
         # data-specific pre-processing
         df, received_ID_column, received_single_time_series, _ = prep_or_copy_df(self.data.df)
         df = check_dataframe(df, check_y=True)
