@@ -118,7 +118,6 @@ def convert_df_to_TimeSeries(df, freq) -> TimeSeries:
             time series to be fitted or predicted
 
     """
-    # Receives df with single ID column
     received_single_ts = len(df["ID"].unique()) == 1
 
     if not received_single_ts:
@@ -224,7 +223,6 @@ def _predict_single_raw_seasonal_naive(df, season_length, n_forecasts):
         np.array
             array containing the predictions
     """
-    # Receives df with single ID column
     _validate_single_ID_df(df)
 
     dates = df["ds"].iloc[season_length : -n_forecasts + 1].reset_index(drop=True)

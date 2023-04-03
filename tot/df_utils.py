@@ -58,7 +58,7 @@ def _split_df(df: pd.DataFrame, test_percentage: Union[float, int]) -> Tuple[pd.
     _validate_single_ID_df(df)
 
     n_samples = len(df)
-    n_train = _validated_n_train(n_samples, test_percentage)
+    n_train = _calculate_n_train(n_samples, test_percentage)
 
     split_idx_train = n_train
     split_idx_val = split_idx_train
@@ -82,11 +82,11 @@ def _validate_single_ID_df(df: pd.DataFrame) -> None:
             If DataFrame contains multiple IDs.
     """
     if len(df["ID"].unique()) != 1:
-        raise ValueError("DataFrame should have a single ID column.")
+        raise ValueError("DataFrame must have a single ID column.")
 
 
-def _validated_n_train(n_samples: int, test_size: Union[float, int]) -> int:
-    """Validate the DataFrame split arguments and return the number of train samples.
+def _calculate_n_train(n_samples: int, test_size: Union[float, int]) -> int:
+    """Calculate the number of train samples.
 
     Parameters
     ----------
@@ -181,21 +181,19 @@ def __crossvalidation_split_df(df, k, fold_pct, fold_overlap_pct=0.0):
             validation data
     """
     total_samples = len(df)
-    samples_fold, samples_overlap = _validated_crossvalidation_args(total_samples, k, fold_pct, fold_overlap_pct)
+    samples_per_fold, samples_overlap = _calculate_cv_params(total_samples, k, fold_pct, fold_overlap_pct)
     folds = []
     df_fold = df.copy(deep=True)
     for i in range(k, 0, -1):
-        df_train, df_val = split_df(df_fold, test_percentage=samples_fold)
+        df_train, df_val = split_df(df_fold, test_percentage=samples_per_fold)
         folds.append((df_train, df_val))
-        split_idx = len(df_fold) - samples_fold + samples_overlap
+        split_idx = len(df_fold) - samples_per_fold + samples_overlap
         df_fold = df_fold.iloc[:split_idx].reset_index(drop=True)
     folds = folds[::-1]
     return folds
 
 
-def _validated_crossvalidation_args(
-    total_samples: int, k: int, fold_pct: float, fold_overlap_pct: float
-) -> Tuple[int, int]:
+def _calculate_cv_params(total_samples: int, k: int, fold_pct: float, fold_overlap_pct: float) -> Tuple[int, int]:
     """Return validated cross validation arguments.
 
     Parameters
@@ -211,7 +209,7 @@ def _validated_crossvalidation_args(
 
     Returns
     -------
-        tuple (samples_fold, samples_overlap)
+        tuple (samples_per_fold, samples_overlap)
 
             samples fold
 
@@ -224,14 +222,14 @@ def _validated_crossvalidation_args(
         ValueError
             If test percentage too large and there are not enough train samples.
     """
-    samples_fold = max(1, int(fold_pct * total_samples))
-    samples_overlap = int(fold_overlap_pct * samples_fold)
-    if samples_overlap > samples_fold:
+    samples_per_fold = max(1, int(fold_pct * total_samples))
+    samples_overlap = int(fold_overlap_pct * samples_per_fold)
+    if samples_overlap > samples_per_fold:
         raise ValueError("Samples overlap is bigger than samples fold")
-    min_train = total_samples - samples_fold - (k - 1) * (samples_fold - samples_overlap)
-    if min_train < samples_fold:
+    min_train = total_samples - samples_per_fold - (k - 1) * (samples_per_fold - samples_overlap)
+    if min_train < samples_per_fold:
         raise ValueError("Test percentage too large. Not enough train samples. Select smaller test percentage.")
-    return samples_fold, samples_overlap
+    return samples_per_fold, samples_overlap
 
 
 def _crossvalidation_split_df(
@@ -272,7 +270,7 @@ def _crossvalidation_split_df(
     Raises
     -------
         ValueError
-            If global model crossvalidation is not valid.
+            If invalid type of crossvalidation is selected.
     """
     if received_single_time_series:
         folds = (
@@ -418,14 +416,14 @@ def _crossvalidation_with_time_threshold(df, k, fold_pct, fold_overlap_pct=0.0):
             validation data
     """
     df_merged = merge_dataframes(df)
-    samples_fold, samples_overlap = _validated_crossvalidation_args(len(df_merged), k, fold_pct, fold_overlap_pct)
+    samples_per_fold, samples_overlap = _calculate_cv_params(len(df_merged), k, fold_pct, fold_overlap_pct)
     folds = []
     df_fold, _, _, _ = prep_or_copy_df(df)
     for i in range(k, 0, -1):
-        threshold_time_stamp = find_time_threshold(df_fold, samples_fold)
+        threshold_time_stamp = find_time_threshold(df_fold, samples_per_fold)
         df_train, df_val = split_considering_timestamp(df_fold, threshold_time_stamp=threshold_time_stamp)
         folds.append((df_train, df_val))
-        split_idx = len(df_merged) - samples_fold + samples_overlap
+        split_idx = len(df_merged) - samples_per_fold + samples_overlap
         df_merged = df_merged[:split_idx].reset_index(drop=True)
         threshold_time_stamp = df_merged["ds"].iloc[-1]
         df_fold_aux = pd.DataFrame()
@@ -550,7 +548,7 @@ def find_time_threshold(df, valid_p):
     """
     df_merged = merge_dataframes(df)
     n_samples = len(df_merged)
-    n_train = _validated_n_train(n_samples, valid_p)
+    n_train = _calculate_n_train(n_samples, valid_p)
 
     threshold_time_stamp = df_merged.loc[n_train, "ds"]
     log.debug("Time threshold: ", threshold_time_stamp)
@@ -778,7 +776,6 @@ def _handle_missing_data(df, freq):
         pd.DataFrame
             preprocessed dataframe
     """
-    # Receives df with single ID column
     _validate_single_ID_df(df)
 
     # set imput parameters:
@@ -884,7 +881,6 @@ def check_single_dataframe(df, check_y):
         ValueError
             If column 'ds' has duplicate values.
     """
-    # Receives df with single ID column
     _validate_single_ID_df(df)
 
     if df.shape[0] == 0:
