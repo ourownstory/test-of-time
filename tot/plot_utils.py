@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 import arrow
 import numpy as np
@@ -7,9 +6,9 @@ import plotly.graph_objs as go
 from plotly_resampler import register_plotly_resampler, unregister_plotly_resampler
 
 from tot.df_utils import prep_or_copy_df
+from tot.error_utils import raise_if
 
 log = logging.getLogger("tot.plot")
-
 
 # UI Configuration
 prediction_color = "#2d92ff"
@@ -37,74 +36,7 @@ layout_args = {
 }
 
 
-def log_value_error_invalid_plotting_backend_input():
-    raise ValueError(
-        "Selected plotting backend invalid. Set plotting backend to one of the "
-        "valid options 'plotly','plotly-auto','plotly-resampler'."
-    )
-
-
-def log_value_error_invalid_highlight_forecast_input():
-    raise ValueError(
-        "input for highlight_forecast invalid. Set highlight_forecast step equal to"
-        " or smaller than the prediction horizon"
-    )
-
-
-def log_warning_resampler_invalid_env():
-    log.warning(
-        "Warning: plotly-resampler not supported for the environment you are using. "
-        "Consider switching plotting_backend to 'plotly' or 'matplotlib "
-    )
-
-
-def log_warning_resampler_switch_to_valid_env():
-    log.warning(
-        "Warning: plotly-resampler not supported for the environment you are using. "
-        "Plotting backend automatically switched to 'plotly' without resampling "
-    )
-
-
-def validate_current_env_for_resampler(auto: bool = False) -> Optional[bool]:
-    """
-    Validate the current environment to check if it is a valid environment for "plotly-resampler" and if invalid trigger
-    warning message.
-
-    Parameters
-    ----------
-    auto: bool, optional
-        If True, the function will automatically switch to a valid environment if the current environment is not valid.
-        If False, the function will return None if the current environment is not valid.
-    Returns
-    -------
-    bool :
-        True if the current environment is a valid environment to run the code, False if the current environment is
-        not a valid environment to run the code. None if the current environment is not a valid environment to run
-        the code and the function did not switch to a valid environment.
-    """
-
-    from IPython import get_ipython
-
-    if "google.colab" in str(get_ipython()):
-        if auto:
-            log_warning_resampler_switch_to_valid_env()
-            return False
-        else:
-            log_warning_resampler_invalid_env()
-            return None
-    else:
-        if is_notebook():
-            return True
-        else:
-            if auto:
-                log_warning_resampler_switch_to_valid_env()
-                return False
-            else:
-                log_warning_resampler_invalid_env()
-                return None
-
-
-def is_notebook():
+def is_jupyter_notebook():
     """
     Determine if the code is being executed in a Jupyter notebook environment.
 
@@ -113,18 +45,18 @@ def is_notebook():
     bool :
         True if the code is being executed in a Jupyter notebook, False otherwise.
     """
+    from IPython import get_ipython
+
+    if "google.colab" in str(get_ipython()):
+        return False
+
     try:
         from IPython.core.getipython import get_ipython
 
-        if "ipykernel" not in str(get_ipython()):  # pragma: no cover
-            return False
+        return "ipykernel" in str(get_ipython())  # pragma: no cover
 
-    except ImportError:
+    except [ImportError, AttributeError]:
         return False
-    except AttributeError:
-        return False
-
-    return True
 
 
 def select_plotting_backend(plotting_backend):
@@ -146,12 +78,20 @@ def select_plotting_backend(plotting_backend):
         The new plotting backend.
     """
     if plotting_backend is None:
-        if validate_current_env_for_resampler(auto=True):
+        if is_jupyter_notebook():
             plotting_backend = "plotly-resampler"
         else:
+            log.warning(
+                "Warning: plotly-resampler not supported for the environment you are using. "
+                "Plotting backend is set to 'plotly' without resampling "
+            )
             plotting_backend = "plotly"
     elif plotting_backend == "plotly-resampler":
-        validate_current_env_for_resampler()
+        if not is_jupyter_notebook():
+            log.warning(
+                "Warning: plotly-resampler not supported for the environment you are using. "
+                "Consider switching plotting_backend to 'plotly' or 'matplotlib "
+            )
     return plotting_backend.lower()
 
 
@@ -174,8 +114,11 @@ def validate_plotting_backend_input(plotting_backend):
         None
     """
     valid_plotting_backends = [None, "plotly", "plotly-resampler"]
-    if plotting_backend not in valid_plotting_backends:
-        log_value_error_invalid_plotting_backend_input()
+    raise_if(
+        plotting_backend not in valid_plotting_backends,
+        "Selected plotting backend invalid. Set plotting backend to one of the "
+        "valid options 'plotly','plotly-auto','plotly-resampler'.",
+    )
 
 
 def validate_highlight_forecast_input(highlight_forecast, fcst):
@@ -199,8 +142,13 @@ def validate_highlight_forecast_input(highlight_forecast, fcst):
     None
     """
     n_yhat = len([col for col in fcst.columns if "yhat" in col])
-    if highlight_forecast is not None and highlight_forecast > n_yhat:
-        log_value_error_invalid_highlight_forecast_input()
+    is_highlight_forecast_valid = highlight_forecast is None or highlight_forecast < n_yhat
+    raise_if(
+        not is_highlight_forecast_valid,
+        "Input for highlight_forecast invalid. "
+        "Set highlight_forecast step equal to "
+        " or smaller than the prediction horizon",
+    )
 
 
 def validate_df_name_input(df_name, fcst):
@@ -229,11 +177,12 @@ def validate_df_name_input(df_name, fcst):
     fcst, received_ID_col, received_single_time_series, _ = prep_or_copy_df(fcst)
     if not received_single_time_series:
         if df_name not in fcst["ID"].unique():
-            if len(fcst["ID"].unique()) > 1:
-                raise ValueError(
-                    "Many time series are present in the pd.DataFrame (more than one ID). Please, "
-                    "especify ID to be plotted."
-                )
+            raise_if(
+                len(fcst["ID"].unique()) > 1,
+                "Many time series are present in the pd.DataFrame (more than one "
+                "ID). Please, "
+                "especify ID to be plotted.",
+            )
         fcst = fcst[fcst["ID"] == df_name].copy(deep=True)
         log.info(f"Plotting data from ID {df_name}")
     return fcst

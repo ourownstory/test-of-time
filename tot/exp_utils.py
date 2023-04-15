@@ -2,6 +2,7 @@ import logging
 
 import numpy as np
 
+from tot.error_utils import raise_if
 from tot.evaluation.metrics import ERROR_FUNCTIONS
 
 log = logging.getLogger("tot.exp_utils")
@@ -49,8 +50,7 @@ def evaluate_forecast(fcst_train, fcst_test, metrics, metadata=None):
         n_yhats_train = len(yhat_train)
         n_yhats_test = len(yhat_test)
 
-        if n_yhats_train != n_yhats_test:
-            raise ValueError("Dimensions of fcst dataframe are faulty.")
+        raise_if(n_yhats_train != n_yhats_test, "Dimensions of fcst dataframe are faulty.")
 
         metric_train_list = []
         metric_test_list = []

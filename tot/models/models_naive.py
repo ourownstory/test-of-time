@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import pandas as pd
 
 from tot.df_utils import _check_min_df_len, add_first_inputs_to_df, drop_first_inputs_from_df
+from tot.error_utils import raise_if
 from tot.models.models import Model
 from tot.models.utils import _convert_seasonality_to_season_length, _get_seasons, _predict_seasonal_naive
 
@@ -46,8 +47,7 @@ class SeasonalNaiveModel(Model):
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
         self.n_forecasts = model_params["n_forecasts"]
-        if self.n_forecasts < 1:
-            raise ValueError("Model parameter n_forecasts must be >=1.")
+        raise_if(self.n_forecasts < 1, "Model parameter n_forecasts must be >=1.")
 
         self.season_length = None
         # always select seasonality provided by dataset first
@@ -61,16 +61,17 @@ class SeasonalNaiveModel(Model):
             )
         elif "season_length" in model_params:
             self.season_length = model_params["season_length"]  # for seasonal naive season_length is input parameter
-        if self.season_length is None:
-            raise ValueError(
-                "Dataset does not provide a seasonality. Assign a seasonality to each of the datasets "
-                "OR input desired season_length as model parameter to be used for all datasets "
-                "without specified seasonality."
-            )
-        if self.season_length <= 1:
-            raise ValueError(
-                "season_length must be >1 for SeasonalNaiveModel. For season_length=1 select NaiveModel " "instead."
-            )
+
+        raise_if(
+            self.season_length is None,
+            "Dataset does not provide a seasonality. Assign a seasonality to each of the datasets "
+            "OR input desired season_length as model parameter to be used for all datasets "
+            "without specified seasonality.",
+        )
+        raise_if(
+            self.season_length <= 1,
+            "season_length must be >1 for SeasonalNaiveModel. For season_length=1 select NaiveModel " "instead.",
+        )
 
     def fit(self, df: pd.DataFrame, freq: str):
         pass
@@ -151,6 +152,5 @@ class NaiveModel(SeasonalNaiveModel):
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
         self.n_forecasts = model_params["n_forecasts"]
-        if self.n_forecasts < 1:
-            raise ValueError("Model parameter n_forecasts must be >=1.")
+        raise_if(self.n_forecasts < 1, "Model parameter n_forecasts must be >=1.")
         self.season_length = 1  # season_length=1 for NaiveModel

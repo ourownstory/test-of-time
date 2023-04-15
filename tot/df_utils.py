@@ -4,6 +4,8 @@ from typing import Tuple, Union
 import numpy as np
 import pandas as pd
 
+from tot.error_utils import raise_if
+
 log = logging.getLogger("tot.df_utils")
 
 
@@ -25,14 +27,12 @@ def convert_to_datetime(series: pd.Series) -> pd.Series:
         ValueError
             if input series contains NaN values or has timezone specified
     """
-    if series.isnull().any():
-        raise ValueError("Found NaN in column ds.")
+    raise_if(series.isnull().any(), "Found NaN in column ds.")
     if series.dtype == np.int64:
         series = series.astype(str)
     if not np.issubdtype(series.dtype, np.datetime64):
         series = pd.to_datetime(series)
-    if series.dt.tz is not None:
-        raise ValueError("Column ds has timezone specified, which is not supported. Remove timezone.")
+    raise_if(series.dt.tz is not None, "Column ds has timezone specified, which is not supported. Remove timezone.")
     return series
 
 
@@ -81,8 +81,7 @@ def _validate_single_ID_df(df: pd.DataFrame) -> None:
         ValueError
             If DataFrame contains multiple IDs.
     """
-    if len(df["ID"].unique()) != 1:
-        raise ValueError("DataFrame must have a single ID column.")
+    raise_if(len(df["ID"].unique()) != 1, "DataFrame must have a single ID column.")
 
 
 def _calculate_n_train(n_samples: int, test_size: Union[float, int]) -> int:
@@ -110,8 +109,10 @@ def _calculate_n_train(n_samples: int, test_size: Union[float, int]) -> int:
     if 0.0 < test_size < 1.0:
         n_valid = max(1, int(n_samples * test_size))
     else:
-        if type(test_size) != int or not 1 < test_size < n_samples:
-            raise ValueError("Test size should be a float in range (0.0, 1.0) or an integer < len(df)")
+        raise_if(
+            type(test_size) != int or not 1 < test_size < n_samples,
+            "Test size should be a float in range (0.0, " "1.0) or an integer < len(df)",
+        )
         n_valid = test_size
 
     return int(n_samples - n_valid)
@@ -224,11 +225,13 @@ def _calculate_cv_params(total_samples: int, k: int, fold_pct: float, fold_overl
     """
     samples_per_fold = max(1, int(fold_pct * total_samples))
     samples_overlap = int(fold_overlap_pct * samples_per_fold)
-    if samples_overlap > samples_per_fold:
-        raise ValueError("Samples overlap is bigger than samples fold")
+    raise_if(samples_overlap > samples_per_fold, "Samples overlap is bigger than samples fold")
+
     min_train = total_samples - samples_per_fold - (k - 1) * (samples_per_fold - samples_overlap)
-    if min_train < samples_per_fold:
-        raise ValueError("Test percentage too large. Not enough train samples. Select smaller test percentage.")
+    raise_if(
+        min_train < samples_per_fold,
+        "Test percentage too large. Not enough train samples. Select smaller test " "percentage.",
+    )
     return samples_per_fold, samples_overlap
 
 
@@ -519,10 +522,9 @@ def merge_dataframes(df: pd.DataFrame) -> pd.DataFrame:
             If df does not contain 'ID' column.
 
     """
-    if not isinstance(df, pd.DataFrame):
-        raise ValueError("Can not join other than pd.DataFrames")
-    if "ID" not in df.columns:
-        raise ValueError("df does not contain 'ID' column")
+    raise_if(not isinstance(df, pd.DataFrame), "Can not join other than pd.DataFrames")
+    raise_if("ID" not in df.columns, "df does not contain 'ID' column")
+
     df_merged = df.copy(deep=True).drop("ID", axis=1)
     df_merged = df_merged.sort_values("ds")
     df_merged = df_merged.drop_duplicates(subset=["ds"])
@@ -605,8 +607,10 @@ def _check_min_df_len(df, min_len):
     ValueError
         If the dataframe does not have at least `min_len` rows.
     """
-    if df.groupby("ID").apply(lambda x: len(x) < min_len).any():
-        raise ValueError("Input time series has not enough sample to fit an predict the model.")
+    raise_if(
+        df.groupby("ID").apply(lambda x: len(x) < min_len).any(),
+        "Input time series has not enough sample to " "fit an predict the model.",
+    )
 
 
 def add_first_inputs_to_df(samples: int, df_train: pd.DataFrame, df_test: pd.DataFrame) -> pd.DataFrame:
@@ -883,38 +887,32 @@ def check_single_dataframe(df, check_y):
     """
     _validate_single_ID_df(df)
 
-    if df.shape[0] == 0:
-        raise ValueError("Dataframe has no rows.")
-    if "ds" not in df:
-        raise ValueError('Dataframe must have columns "ds" with the dates.')
-    if df.loc[:, "ds"].isnull().any():
-        raise ValueError("Found NaN in column ds.")
+    raise_if(df.shape[0] == 0, "Dataframe has no rows.")
+    raise_if("ds" not in df, 'Dataframe must have columns "ds" with the dates.')
+    raise_if(df.loc[:, "ds"].isnull().any(), "Found NaN in column ds.")
+
     if df["ds"].dtype == np.int64:
         df["ds"] = df.loc[:, "ds"].astype(str)
     if pd.api.types.is_string_dtype(df["ds"]):
         df["ds"] = pd.to_datetime(df.loc[:, "ds"])
     if not np.issubdtype(df["ds"].dtype, np.datetime64):
         df["ds"] = pd.to_datetime(df.loc[:, "ds"])
-    if df["ds"].dt.tz is not None:
-        raise ValueError("Column ds has timezone specified, which is not supported. Remove timezone.")
-    if len(df.ds.unique()) != len(df.ds):
-        raise ValueError("Column ds has duplicate values. Please remove duplicates.")
+
+    raise_if(df["ds"].dt.tz is not None, "Column ds has timezone specified, which is not supported. Remove timezone.")
+    raise_if(len(df.ds.unique()) != len(df.ds), "Column ds has duplicate values. Please remove duplicates.")
 
     columns = []
     if check_y:
         columns.append("y")
 
     for name in columns:
-        if name not in df:
-            raise ValueError(f"Column {name!r} missing from dataframe")
-        if df.loc[df.loc[:, name].notnull()].shape[0] < 1:
-            raise ValueError(f"Dataframe column {name!r} only has NaN rows.")
+        raise_if(name not in df, f"Column {name!r} missing from dataframe")
+        raise_if(df.loc[df.loc[:, name].notnull()].shape[0] < 1, f"Dataframe column {name!r} only has NaN rows.")
         if not np.issubdtype(df[name].dtype, np.number):
             df.loc[:, name] = pd.to_numeric(df.loc[:, name])
         if np.isinf(df.loc[:, name].values).any():
             df.loc[:, name] = df[name].replace([np.inf, -np.inf], np.nan)
-        if df.loc[df.loc[:, name].notnull()].shape[0] < 1:
-            raise ValueError(f"Dataframe column {name!r} only has NaN rows.")
+        raise_if(df.loc[df.loc[:, name].notnull()].shape[0] < 1, f"Dataframe column {name!r} only has NaN rows.")
 
     if df.index.name == "ds":
         df.index.name = None
@@ -958,12 +956,12 @@ def prep_or_copy_df(df):
             df or dict containing data
     Returns
     -------
-        pd.DataFrames
+        pd.DataFrame
             df with ID col
         bool
             whether the ID col was present
         bool
-            wheter it is a single time series
+            whether it is a single time series
 
     Raises
     -------
@@ -1049,8 +1047,7 @@ def unfold_dict_of_folds(folds_dict, k):
     df_test = pd.DataFrame()
     for j in range(0, k):
         for key in folds_dict:
-            if k != len(folds_dict[key]):
-                raise ValueError("Number of folds in folds_dict does not correspond to k")
+            raise_if(k != len(folds_dict[key]), "Number of folds in folds_dict does not correspond to k")
             df_train = pd.concat((df_train, folds_dict[key][j][0]), ignore_index=True)
             df_test = pd.concat((df_test, folds_dict[key][j][1]), ignore_index=True)
         folds.append((df_train, df_test))

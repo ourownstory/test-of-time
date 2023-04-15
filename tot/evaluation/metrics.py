@@ -52,9 +52,6 @@ def _calc_mase(
         ValueError
             If size of truth_train is less than 1.
     """
-    if len(truth_train) <= 1:
-        raise ValueError("Size of truth_train should be more than 1.")
-
     mae = _calc_mae(predictions, truth)
     naive_mae = _calc_mae(np.array(truth_train[:-1]), np.array(truth_train[1:]))
     return np.divide(mae, 1e-9 + naive_mae)
@@ -77,9 +74,6 @@ def _calc_rmsse(
         ValueError
             If size of truth_train is less than 1.
     """
-    if len(truth_train) <= 1:
-        raise ValueError("Size of truth_train should be more than 1.")
-
     rmse = _calc_rmse(predictions, truth)
     naive_rmse = _calc_rmse(np.array(truth_train[:-1]), np.array(truth_train[1:]))
     return np.divide(rmse, 1e-9 + naive_rmse)

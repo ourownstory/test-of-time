@@ -7,6 +7,7 @@ import pandas as pd
 from neuralprophet import NeuralProphet, TorchProphet
 
 from tot.df_utils import _check_min_df_len, add_first_inputs_to_df, drop_first_inputs_from_df, prep_or_copy_df
+from tot.error_utils import raise_if
 from tot.models.models import Model
 from tot.models.utils import _get_seasons
 
@@ -174,12 +175,11 @@ class TorchProphetModel(NeuralProphetModel):
         # TorchProphet does not support uncertainty
         model_params.update({"interval_width": 0})
         # TorchProphet does not support n_forecasts>1 and n_lags>0
-        if "n_forecasts" in model_params:
-            if model_params.n_forecasts > 1:
-                raise ValueError("TorchProphet does not support n_forecasts >1.")
-        if "n_lags" in model_params:
-            if model_params.n_lags > 0:
-                raise ValueError("TorchProphet does not support n_lags >0.")
+        raise_if(
+            "n_forecasts" in model_params and model_params["n_forecasts"] > 1,
+            "TorchProphet does not support " "n_forecasts >1.",
+        )
+        raise_if("n_lags" in model_params and model_params["n_lags"] > 0, "TorchProphet does not support n_lags >0.")
 
         self.model = self.model_class(**model_params)
         if custom_seasonalities is not None:
