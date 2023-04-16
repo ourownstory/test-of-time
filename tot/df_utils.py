@@ -4,7 +4,7 @@ from typing import Tuple, Union
 import numpy as np
 import pandas as pd
 
-from tot.error_utils import raise_if
+from tot.error_utils import raise_data_validation_error_if, raise_if
 
 log = logging.getLogger("tot.df_utils")
 
@@ -1039,7 +1039,7 @@ def unfold_dict_of_folds(folds_dict, k):
             validation data
     Raises
     -------
-        ValueError
+        DataValidationError
             If number of folds in folds_dict does not correspond to k.
     """
     folds = []
@@ -1047,7 +1047,9 @@ def unfold_dict_of_folds(folds_dict, k):
     df_test = pd.DataFrame()
     for j in range(0, k):
         for key in folds_dict:
-            raise_if(k != len(folds_dict[key]), "Number of folds in folds_dict does not correspond to k")
+            raise_data_validation_error_if(
+                k != len(folds_dict[key]), "Number of folds in folds_dict does not " "correspond to k"
+            )
             df_train = pd.concat((df_train, folds_dict[key][j][0]), ignore_index=True)
             df_test = pd.concat((df_test, folds_dict[key][j][1]), ignore_index=True)
         folds.append((df_train, df_test))
