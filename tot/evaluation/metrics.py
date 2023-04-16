@@ -54,11 +54,6 @@ def _calc_mase(
         MASE = MAE / NaiveMAE,
     where: MAE = mean(|actual - forecast|)
     where: NaiveMAE = mean(|actual_[i] - actual_[i-1]|)
-
-    Raises
-    -------
-        ValueError
-            If size of truth_train is less than 1.
     """
     mae = _calc_mae(predictions, truth)
     naive_mae = _calc_mae(np.array(truth_train[:-1]), np.array(truth_train[1:]))
@@ -77,11 +72,6 @@ def _calc_rmsse(
     MSSE = RMSE / NaiveRMSE,
     where: RMSE = sqrt(mean((actual - forecast)^2))
     where: NaiveMSE = sqrt(mean((actual_[i] - actual_[i-1])^2))
-
-    Raises
-    -------
-        ValueError
-            If size of truth_train is less than 1.
     """
     rmse = _calc_rmse(predictions, truth)
     naive_rmse = _calc_rmse(np.array(truth_train[:-1]), np.array(truth_train[1:]))
