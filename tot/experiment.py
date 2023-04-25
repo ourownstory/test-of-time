@@ -7,10 +7,9 @@ from multiprocessing.pool import Pool
 from typing import List, Optional
 
 import pandas as pd
-import numpy as np
 from neuralprophet import set_random_seed
-from sklearn.preprocessing import StandardScaler
 
+from tot.data_processing.scaler import Scaler
 from tot.datasets.dataset import Dataset
 from tot.df_utils import (
     check_dataframe,
@@ -44,6 +43,7 @@ class Experiment(ABC):
     metadata: Optional[dict] = None
     save_dir: Optional[str] = None
     num_processes: int = 1
+    scaler: Scaler = None
 
     def __post_init__(self):
         data_params = {}
@@ -73,7 +73,10 @@ class Experiment(ABC):
                 "params": str(self.params),
                 "experiment": self.experiment_name,
             }
-        self.scale = self.params.pop("scale", False)
+
+        scaler = self.params.pop("scaler", None)
+        if scaler is not None:
+            self.scaler = Scaler(transformer=scaler)
 
     def write_results_to_csv(self, df, prefix, current_fold=None):
         """
@@ -180,49 +183,6 @@ class Experiment(ABC):
 
         return result_train, result_test
 
-    def _scale(self, df, create_new_scaler=True):
-        array = []
-        for df_name, df_i in df.groupby("ID"):
-            aux = df_i.copy(deep=True)
-            array.append(aux["y"])
-
-        array = np.transpose(array)
-        if create_new_scaler:
-            self.transformer = StandardScaler()
-            self.transformer.fit(array)
-        array_transformed = np.transpose(self.transformer.transform(array))
-
-        result = pd.DataFrame()
-        for d, row in zip(df.groupby("ID"), array_transformed):
-            df_name, df_i = d
-            r = df_i.copy(deep=True)
-            r.loc[:, "y"] = row
-            result = pd.concat((result, r))
-
-        return result
-
-    def _descale(self, df):
-        array_pred = []
-        array_true = []
-        for df_name, df_i in df.groupby("ID"):
-            array_pred.append(df_i["yhat1"])
-            array_true.append(df_i["y"])
-
-        array_pred = np.transpose(array_pred)
-        array_pred_transformed = np.transpose(self.transformer.inverse_transform(array_pred))
-        array_true = np.transpose(array_true)
-        array_true_transformed = np.transpose(self.transformer.inverse_transform(array_true))
-
-        result = pd.DataFrame()
-        for d, row_pred, row_true in zip(df.groupby("ID"), array_pred_transformed, array_true_transformed):
-            df_name, df_i = d
-            r = df_i.copy(deep=True)
-            r.loc[:, "yhat1"] = row_pred
-            r.loc[:, "y"] = row_true
-            result = pd.concat((result, r))
-
-        return result
-
     @abstractmethod
     def run(self):
         """
@@ -268,9 +228,8 @@ class SimpleExperiment(Experiment):
             local_split=False,
         )
 
-        if self.scale:
-            df_train = self._scale(df_train)
-            df_test = self._scale(df_test, create_new_scaler=False)
+        if self.scaler is not None:
+            df_train, df_test = self.scaler.transform(df_train, df_test)
 
         # fit model
         model = self.model_class(self.params)
@@ -283,9 +242,8 @@ class SimpleExperiment(Experiment):
             received_single_time_series=received_single_time_series,
         )
 
-        if self.scale:
-            fcst_train = self._descale(fcst_train)
-            fcst_test = self._descale(fcst_test)
+        if self.scaler is not None:
+            fcst_train, fcst_test = self.scaler.inverse_transform(fcst_train, fcst_test)
 
         # data-specific post-processing
         fcst_train, df_train = maybe_drop_added_dates(fcst_train, df_train)
