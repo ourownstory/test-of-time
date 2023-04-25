@@ -19,6 +19,7 @@ try:
     _sklearn_installed = True
 except ImportError:
     LinearRegression = None
+    RandomForestRegressor = None
     _sklearn_installed = False
     raise ImportError(
         "The LinearRegression model could not be imported."
@@ -33,7 +34,7 @@ except ImportError:
     RegressionModel = None
     _darts_installed = False
     raise ImportError(
-        "The darts model could not be imported."
+        "The RegressionModel could not be imported."
         "Check for proper installation of darts: https://github.com/unit8co/darts/blob/master/INSTALL.md"
     )
 
