@@ -13,6 +13,7 @@ log = logging.getLogger("tot.model")
 
 # check import of implemented models and consider order of imports
 try:
+    from sklearn.ensemble import RandomForestRegressor
     from sklearn.linear_model import LinearRegression
 
     _sklearn_installed = True
@@ -32,37 +33,18 @@ except ImportError:
     RegressionModel = None
     _darts_installed = False
     raise ImportError(
-        "The RegressionModel could not be imported."
+        "The darts model could not be imported."
         "Check for proper installation of darts: https://github.com/unit8co/darts/blob/master/INSTALL.md"
     )
 
 
-@dataclass
-class LinearRegressionModel(Model):
+class DartsRegressionModel(Model):
     """
-    A forecasting model using a linear regression of the target series' lags to obtain a forecast.
-
-    Examples
-    --------
-    >>> model_classes_and_params = [
-    >>>     (
-    >>>         LinearRegressionModel,
-    >>>         {"lags": 12, "n_forecasts": 4},
-    >>>     ),
-    >>> ]
-    >>>
-    >>> benchmark = SimpleBenchmark(
-    >>>     model_classes_and_params=model_classes_and_params,
-    >>>     datasets=dataset_list,
-    >>>     metrics=list(ERROR_FUNCTIONS.keys()),
-    >>>     test_percentage=25,
-    >>>     save_dir=SAVE_DIR,
-    >>>     num_processes=1,
-    >>> )
+    A forecasting model using a regression model from the darts library.
     """
 
-    model_name: str = "LinearRegressionModel"
     model_class: Type = RegressionModel
+    regression_class: Type
 
     def __post_init__(self):
         # check if installed
@@ -79,7 +61,7 @@ class LinearRegressionModel(Model):
         model_params.pop("n_forecasts")
         # overwrite output_chunk_length with n_forecasts
         model_params.update({"output_chunk_length": self.params["n_forecasts"]})
-        model = LinearRegression(n_jobs=-1)  # n_jobs=-1 indicates to use all processors
+        model = self.regression_class(n_jobs=-1)  # n_jobs=-1 indicates to use all processors
         model_params.update({"model": model})  # assign model
         self.model = self.model_class(**model_params)
         self.n_forecasts = self.params["n_forecasts"]
@@ -152,3 +134,59 @@ class LinearRegressionModel(Model):
         """
         predicted = drop_first_inputs_from_df(samples=self.n_lags, predicted=predicted, df=df)
         return predicted
+
+
+@dataclass
+class LinearRegressionModel(DartsRegressionModel):
+    """
+    A forecasting model using a linear regression of the target series' lags to obtain a forecast.
+
+    Examples
+    --------
+    >>> model_classes_and_params = [
+    >>>     (
+    >>>         LinearRegressionModel,
+    >>>         {"lags": 12, "n_forecasts": 4},
+    >>>     ),
+    >>> ]
+    >>>
+    >>> benchmark = SimpleBenchmark(
+    >>>     model_classes_and_params=model_classes_and_params,
+    >>>     datasets=dataset_list,
+    >>>     metrics=list(ERROR_FUNCTIONS.keys()),
+    >>>     test_percentage=25,
+    >>>     save_dir=SAVE_DIR,
+    >>>     num_processes=1,
+    >>> )
+    """
+
+    model_name: str = "LinearRegressionModel"
+    regression_class: Type = LinearRegression
+
+
+@dataclass
+class RandomForestModel(DartsRegressionModel):
+    """
+    A forecasting model using a random forest to obtain a forecast.
+
+    Examples
+    --------
+    >>> model_classes_and_params = [
+    >>>     (
+    >>>         RandomForestModel,
+    >>>         {"lags": 12, "n_forecasts": 4},
+    >>>     ),
+    >>> ]
+    >>>
+    >>> benchmark = SimpleBenchmark(
+    >>>     model_classes_and_params=model_classes_and_params,
+    >>>     datasets=dataset_list,
+    >>>     metrics=list(ERROR_FUNCTIONS.keys()),
+    >>>     test_percentage=25,
+    >>>     save_dir=SAVE_DIR,
+    >>>     num_processes=1,
+    >>> )
+    """
+
+    model_name: str = "RandomForestModel"
+    regression_class: Type = RandomForestRegressor
