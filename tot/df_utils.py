@@ -4,6 +4,8 @@ from typing import Tuple, Union
 import numpy as np
 import pandas as pd
 
+from tot.error_utils import raise_data_validation_error_if, raise_if
+
 log = logging.getLogger("tot.df_utils")
 
 
@@ -25,14 +27,12 @@ def convert_to_datetime(series: pd.Series) -> pd.Series:
         ValueError
             if input series contains NaN values or has timezone specified
     """
-    if series.isnull().any():
-        raise ValueError("Found NaN in column ds.")
+    raise_if(series.isnull().any(), "Found NaN in column ds.")
     if series.dtype == np.int64:
         series = series.astype(str)
     if not np.issubdtype(series.dtype, np.datetime64):
         series = pd.to_datetime(series)
-    if series.dt.tz is not None:
-        raise ValueError("Column ds has timezone specified, which is not supported. Remove timezone.")
+    raise_if(series.dt.tz is not None, "Column ds has timezone specified, which is not supported. Remove timezone.")
     return series
 
 
@@ -55,17 +55,10 @@ def _split_df(df: pd.DataFrame, test_percentage: Union[float, int]) -> Tuple[pd.
     Tuple[pd.DataFrame, pd.DataFrame]
         A tuple containing the training DataFrame and the validation DataFrame.
     """
-    # Receives df with single ID column
-    assert len(df["ID"].unique()) == 1
+    _validate_single_ID_df(df)
+
     n_samples = len(df)
-    if 0.0 < test_percentage < 1.0:
-        n_valid = max(1, int(n_samples * test_percentage))
-    else:
-        assert test_percentage >= 1
-        assert type(test_percentage) == int
-        n_valid = test_percentage
-    n_train = n_samples - n_valid
-    assert n_train >= 1
+    n_train = _calculate_n_train(n_samples, test_percentage)
 
     split_idx_train = n_train
     split_idx_val = split_idx_train
@@ -73,6 +66,56 @@ def _split_df(df: pd.DataFrame, test_percentage: Union[float, int]) -> Tuple[pd.
     df_val = df.copy(deep=True).iloc[split_idx_val:].reset_index(drop=True)
     log.debug(f"{n_train} n_train, {n_samples - n_train} n_eval")
     return df_train, df_val
+
+
+def _validate_single_ID_df(df: pd.DataFrame) -> None:
+    """Check if the DataFrame contains single ID column.
+
+    Parameters
+    ----------
+        df : pd.DataFrame
+            DataFrame to be validated.
+
+    Raises
+    -------
+        ValueError
+            If DataFrame contains multiple IDs.
+    """
+    raise_if(len(df["ID"].unique()) != 1, "DataFrame must have a single ID column.")
+
+
+def _calculate_n_train(n_samples: int, test_size: Union[float, int]) -> int:
+    """Calculate the number of train samples.
+
+    Parameters
+    ----------
+        n_samples : int
+            Number of samples in the DataFrame.
+        test_size : float, int
+            The percentage or number of samples to be used for validation.
+            If the value is between 0 and 1, it is interpreted as a percentage of the total number of samples.
+            If the value is greater than or equal to 1, it is interpreted as the number of samples to be used for validation.
+
+    Returns
+    -------
+        int
+            Number of train samples to be used in the split.
+
+    Raises
+    -------
+        ValueError
+            If test size is not a float in range (0.0, 1.0) or an integer < len(df).
+    """
+    if 0.0 < test_size < 1.0:
+        n_valid = max(1, int(n_samples * test_size))
+    else:
+        raise_if(
+            type(test_size) != int or not 1 < test_size < n_samples,
+            "Test size should be a float in range (0.0, " "1.0) or an integer < len(df)",
+        )
+        n_valid = test_size
+
+    return int(n_samples - n_valid)
 
 
 def split_df(
@@ -122,7 +165,7 @@ def __crossvalidation_split_df(df, k, fold_pct, fold_overlap_pct=0.0):
     Parameters
     ----------
         df : pd.DataFrame
-            data
+            data with single ID columns
         k : int
             number of CV folds
         fold_pct : float
@@ -138,25 +181,58 @@ def __crossvalidation_split_df(df, k, fold_pct, fold_overlap_pct=0.0):
 
             validation data
     """
-    # Receives df with single ID column
-    assert len(df["ID"].unique()) == 1
     total_samples = len(df)
-    samples_fold = max(1, int(fold_pct * total_samples))
-    samples_overlap = int(fold_overlap_pct * samples_fold)
-    assert samples_overlap < samples_fold
-    min_train = total_samples - samples_fold - (k - 1) * (samples_fold - samples_overlap)
-    assert (
-        min_train >= samples_fold
-    ), "Test percentage too large. Not enough train samples. Select smaller test percentage. "
+    samples_per_fold, samples_overlap = _calculate_cv_params(total_samples, k, fold_pct, fold_overlap_pct)
     folds = []
     df_fold = df.copy(deep=True)
     for i in range(k, 0, -1):
-        df_train, df_val = split_df(df_fold, test_percentage=samples_fold)
+        df_train, df_val = split_df(df_fold, test_percentage=samples_per_fold)
         folds.append((df_train, df_val))
-        split_idx = len(df_fold) - samples_fold + samples_overlap
+        split_idx = len(df_fold) - samples_per_fold + samples_overlap
         df_fold = df_fold.iloc[:split_idx].reset_index(drop=True)
     folds = folds[::-1]
     return folds
+
+
+def _calculate_cv_params(total_samples: int, k: int, fold_pct: float, fold_overlap_pct: float) -> Tuple[int, int]:
+    """Return validated cross validation arguments.
+
+    Parameters
+    ----------
+        total_samples : int
+            number of data samples
+        k : int
+            number of CV folds
+        fold_pct : float
+            percentage of overall samples to be in each fold
+        fold_overlap_pct : float
+            percentage of overlap between the validation folds
+
+    Returns
+    -------
+        tuple (samples_per_fold, samples_overlap)
+
+            samples fold
+
+            samples overlap
+
+    Raises
+    -------
+        ValueError
+            If samples overlap is bigger than samples fold.
+        ValueError
+            If test percentage too large and there are not enough train samples.
+    """
+    samples_per_fold = max(1, int(fold_pct * total_samples))
+    samples_overlap = int(fold_overlap_pct * samples_per_fold)
+    raise_if(samples_overlap > samples_per_fold, "Samples overlap is bigger than samples fold")
+
+    min_train = total_samples - samples_per_fold - (k - 1) * (samples_per_fold - samples_overlap)
+    raise_if(
+        min_train < samples_per_fold,
+        "Test percentage too large. Not enough train samples. Select smaller test " "percentage.",
+    )
+    return samples_per_fold, samples_overlap
 
 
 def _crossvalidation_split_df(
@@ -194,6 +270,10 @@ def _crossvalidation_split_df(
             training data
 
             validation data
+    Raises
+    -------
+        ValueError
+            If invalid type of crossvalidation is selected.
     """
     if received_single_time_series:
         folds = (
@@ -339,21 +419,14 @@ def _crossvalidation_with_time_threshold(df, k, fold_pct, fold_overlap_pct=0.0):
             validation data
     """
     df_merged = merge_dataframes(df)
-    total_samples = len(df_merged)
-    samples_fold = max(1, int(fold_pct * total_samples))
-    samples_overlap = int(fold_overlap_pct * samples_fold)
-    assert samples_overlap < samples_fold
-    min_train = total_samples - samples_fold - (k - 1) * (samples_fold - samples_overlap)
-    assert (
-        min_train >= samples_fold
-    ), "Test percentage too large. Not enough train samples. Select smaller test percentage. "
+    samples_per_fold, samples_overlap = _calculate_cv_params(len(df_merged), k, fold_pct, fold_overlap_pct)
     folds = []
     df_fold, _, _, _ = prep_or_copy_df(df)
     for i in range(k, 0, -1):
-        threshold_time_stamp = find_time_threshold(df_fold, samples_fold)
+        threshold_time_stamp = find_time_threshold(df_fold, samples_per_fold)
         df_train, df_val = split_considering_timestamp(df_fold, threshold_time_stamp=threshold_time_stamp)
         folds.append((df_train, df_val))
-        split_idx = len(df_merged) - samples_fold + samples_overlap
+        split_idx = len(df_merged) - samples_per_fold + samples_overlap
         df_merged = df_merged[:split_idx].reset_index(drop=True)
         threshold_time_stamp = df_merged["ds"].iloc[-1]
         df_fold_aux = pd.DataFrame()
@@ -440,11 +513,18 @@ def merge_dataframes(df: pd.DataFrame) -> pd.DataFrame:
     -------
         pd.Dataframe
             Dataframe with concatenated time series (sorted 'ds', duplicates removed, index reset)
+
+    Raises
+    -------
+        ValueError
+            If df is not an instance of pd.DataFrame.
+        ValueError
+            If df does not contain 'ID' column.
+
     """
-    if not isinstance(df, pd.DataFrame):
-        raise ValueError("Can not join other than pd.DataFrames")
-    if "ID" not in df.columns:
-        raise ValueError("df does not contain 'ID' column")
+    raise_if(not isinstance(df, pd.DataFrame), "Can not join other than pd.DataFrames")
+    raise_if("ID" not in df.columns, "df does not contain 'ID' column")
+
     df_merged = df.copy(deep=True).drop("ID", axis=1)
     df_merged = df_merged.sort_values("ds")
     df_merged = df_merged.drop_duplicates(subset=["ds"])
@@ -470,13 +550,8 @@ def find_time_threshold(df, valid_p):
     """
     df_merged = merge_dataframes(df)
     n_samples = len(df_merged)
-    if 0.0 < valid_p < 1.0:
-        n_valid = max(1, int(n_samples * valid_p))
-    else:
-        assert valid_p >= 1
-        assert type(valid_p) == int
-        n_valid = valid_p
-    n_train = n_samples - n_valid
+    n_train = _calculate_n_train(n_samples, valid_p)
+
     threshold_time_stamp = df_merged.loc[n_train, "ds"]
     log.debug("Time threshold: ", threshold_time_stamp)
     return threshold_time_stamp
@@ -529,12 +604,13 @@ def _check_min_df_len(df, min_len):
 
     Raises
     ------
-    AssertionError
+    ValueError
         If the dataframe does not have at least `min_len` rows.
     """
-    assert (
-        df.groupby("ID").apply(lambda x: len(x) > min_len).all()
-    ), "Input time series has not enough sample to fit an predict the model."
+    raise_if(
+        df.groupby("ID").apply(lambda x: len(x) < min_len).any(),
+        "Input time series has not enough sample to " "fit an predict the model.",
+    )
 
 
 def add_first_inputs_to_df(samples: int, df_train: pd.DataFrame, df_test: pd.DataFrame) -> pd.DataFrame:
@@ -704,8 +780,7 @@ def _handle_missing_data(df, freq):
         pd.DataFrame
             preprocessed dataframe
     """
-    # Receives df with single ID column
-    assert len(df["ID"].unique()) == 1
+    _validate_single_ID_df(df)
 
     # set imput parameters:
     impute_linear = 10
@@ -796,41 +871,48 @@ def check_single_dataframe(df, check_y):
     Returns
     -------
         pd.DataFrame
+
+    Raises
+    -------
+        ValueError
+            If Dataframe has no rows.
+        ValueError
+            If Dataframe does not have columns 'ds' with the dates.
+        ValueError
+            If NaN is found in column 'ds'.
+        ValueError
+            If column 'ds' has timezone specified, which is not supported.
+        ValueError
+            If column 'ds' has duplicate values.
     """
-    # Receives df with single ID column
-    assert len(df["ID"].unique()) == 1
-    if df.shape[0] == 0:
-        raise ValueError("Dataframe has no rows.")
-    if "ds" not in df:
-        raise ValueError('Dataframe must have columns "ds" with the dates.')
-    if df.loc[:, "ds"].isnull().any():
-        raise ValueError("Found NaN in column ds.")
+    _validate_single_ID_df(df)
+
+    raise_if(df.shape[0] == 0, "Dataframe has no rows.")
+    raise_if("ds" not in df, 'Dataframe must have columns "ds" with the dates.')
+    raise_if(df.loc[:, "ds"].isnull().any(), "Found NaN in column ds.")
+
     if df["ds"].dtype == np.int64:
         df["ds"] = df.loc[:, "ds"].astype(str)
     if pd.api.types.is_string_dtype(df["ds"]):
         df["ds"] = pd.to_datetime(df.loc[:, "ds"])
     if not np.issubdtype(df["ds"].dtype, np.datetime64):
         df["ds"] = pd.to_datetime(df.loc[:, "ds"])
-    if df["ds"].dt.tz is not None:
-        raise ValueError("Column ds has timezone specified, which is not supported. Remove timezone.")
-    if len(df.ds.unique()) != len(df.ds):
-        raise ValueError("Column ds has duplicate values. Please remove duplicates.")
+
+    raise_if(df["ds"].dt.tz is not None, "Column ds has timezone specified, which is not supported. Remove timezone.")
+    raise_if(len(df.ds.unique()) != len(df.ds), "Column ds has duplicate values. Please remove duplicates.")
 
     columns = []
     if check_y:
         columns.append("y")
 
     for name in columns:
-        if name not in df:
-            raise ValueError(f"Column {name!r} missing from dataframe")
-        if df.loc[df.loc[:, name].notnull()].shape[0] < 1:
-            raise ValueError(f"Dataframe column {name!r} only has NaN rows.")
+        raise_if(name not in df, f"Column {name!r} missing from dataframe")
+        raise_if(df.loc[df.loc[:, name].notnull()].shape[0] < 1, f"Dataframe column {name!r} only has NaN rows.")
         if not np.issubdtype(df[name].dtype, np.number):
             df.loc[:, name] = pd.to_numeric(df.loc[:, name])
         if np.isinf(df.loc[:, name].values).any():
             df.loc[:, name] = df[name].replace([np.inf, -np.inf], np.nan)
-        if df.loc[df.loc[:, name].notnull()].shape[0] < 1:
-            raise ValueError(f"Dataframe column {name!r} only has NaN rows.")
+        raise_if(df.loc[df.loc[:, name].notnull()].shape[0] < 1, f"Dataframe column {name!r} only has NaN rows.")
 
     if df.index.name == "ds":
         df.index.name = None
@@ -874,12 +956,19 @@ def prep_or_copy_df(df):
             df or dict containing data
     Returns
     -------
-        pd.DataFrames
+        pd.DataFrame
             df with ID col
         bool
             whether the ID col was present
         bool
-            wheter it is a single time series
+            whether it is a single time series
+
+    Raises
+    -------
+        ValueError
+            If df is None.
+        ValueError
+            If df type is invalid.
     """
     received_ID_col = False
     received_single_time_series = True
@@ -925,7 +1014,7 @@ def return_df_in_original_format(df, received_ID_col=False, received_single_time
     """
     new_df = df.copy(deep=True)
     if not received_ID_col and received_single_time_series:
-        assert len(new_df["ID"].unique()) == 1
+        _validate_single_ID_df(df)
         new_df.drop("ID", axis=1, inplace=True)
         log.info("Returning df with no ID column")
     return new_df
@@ -948,13 +1037,19 @@ def unfold_dict_of_folds(folds_dict, k):
             training data
 
             validation data
+    Raises
+    -------
+        DataValidationError
+            If number of folds in folds_dict does not correspond to k.
     """
     folds = []
     df_train = pd.DataFrame()
     df_test = pd.DataFrame()
     for j in range(0, k):
         for key in folds_dict:
-            assert k == len(folds_dict[key])
+            raise_data_validation_error_if(
+                k != len(folds_dict[key]), "Number of folds in folds_dict does not " "correspond to k"
+            )
             df_train = pd.concat((df_train, folds_dict[key][j][0]), ignore_index=True)
             df_test = pd.concat((df_test, folds_dict[key][j][1]), ignore_index=True)
         folds.append((df_train, df_test))
