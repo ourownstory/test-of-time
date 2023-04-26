@@ -22,7 +22,7 @@ def raise_if(condition: bool, message: str):
 
 
 def raise_data_validation_error_if(condition: bool, message: str):
-    """Check the condition and throw an error if true.
+    """Check the condition and throw an error if True.
 
     Parameters
     ----------
