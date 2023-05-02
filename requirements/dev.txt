@@ -5,6 +5,7 @@ isort
 pyright
 pytest>=6.2.3
 pytest-cov
+scikit-learn
 sphinx>=4.2.0
 twine
 wheel
