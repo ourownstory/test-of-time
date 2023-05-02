@@ -10,10 +10,10 @@ from darts.models import NaiveDrift
 from tot.benchmark import SimpleBenchmark
 from tot.datasets.dataset import Dataset
 from tot.evaluation.metrics import ERROR_FUNCTIONS
+from tot.models.models_darts import DartsForecastingModel, LinearRegressionModel, RandomForestModel
 from tot.models.models_naive import NaiveModel, SeasonalNaiveModel
 from tot.models.models_neuralprophet import NeuralProphetModel
 from tot.models.models_prophet import ProphetModel
-from tot.models.models_darts import LinearRegressionModel, DartsForecastingModel, RandomForestModel
 from tot.plotting import plot_plotly
 
 log = logging.getLogger("tot.test")
@@ -54,8 +54,7 @@ def test_basic_plot(plotting_backend):
         (ProphetModel, {}),
         (LinearRegressionModel, {"lags": 12, "output_chunk_length": 1, "n_forecasts": 4}),
         (RandomForestModel, {"lags": 24, "output_chunk_length": 8, "n_forecasts": 8}),
-        (DartsForecastingModel,
-         {"model": NaiveDrift, "retrain": True, "lags": 12, "n_forecasts": 4}),
+        (DartsForecastingModel, {"model": NaiveDrift, "retrain": True, "lags": 12, "n_forecasts": 4}),
     ]
 
     benchmark = SimpleBenchmark(

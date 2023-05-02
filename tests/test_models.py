@@ -10,10 +10,10 @@ from darts.models import NaiveDrift
 from tot.benchmark import SimpleBenchmark
 from tot.datasets.dataset import Dataset
 from tot.evaluation.metrics import ERROR_FUNCTIONS
+from tot.models.models_darts import DartsForecastingModel, LinearRegressionModel, RandomForestModel
 from tot.models.models_naive import NaiveModel, SeasonalNaiveModel
 from tot.models.models_neuralprophet import NeuralProphetModel, TorchProphetModel
 from tot.models.models_prophet import ProphetModel
-from tot.models.models_darts import LinearRegressionModel, RandomForestModel, DartsForecastingModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
