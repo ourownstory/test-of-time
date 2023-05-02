@@ -3,6 +3,8 @@ from typing import Tuple
 
 import pandas as pd
 
+from tot.error_utils import raise_if
+
 
 def _pivot(df, col_name):
     return df.pivot(index="ds", columns="ID", values=col_name).rename_axis(columns=None).reset_index()
@@ -39,13 +41,10 @@ class Scaler:
             and callable(getattr(self.transformer, "transform", None))
             and callable(getattr(self.transformer, "inverse_transform", None))
         )
-        if not is_transformer_valid:
-            raise ValueError(
-                "Transformer provided to the Scaler must implement fit, transform and inverse_transform methods"
-            )
-
-        if self.scaling_level not in SCALING_LEVELS:
-            raise ValueError("Invalid scaling level. Allowed levels: `per_dataset`, `per_time_series`")
+        raise_if(not is_transformer_valid, "Transformer provided to the Scaler must implement fit, transform and "
+                                           "inverse_transform methods")
+        raise_if(self.scaling_level not in SCALING_LEVELS, "Invalid scaling level. Allowed levels: `per_dataset`, "
+                                                           "`per_time_series`")
 
     def _scale_per_series(self, df: pd.DataFrame, fit: bool = False) -> pd.DataFrame:
         """
