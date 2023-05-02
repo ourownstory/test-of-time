@@ -125,11 +125,11 @@ def test_evaluation_by_ID_for_forecast_step_invalid_input():
         benchmark.fcst_train[0]
     )  # ensure ID column in dataframe with single time series
     # calculate metrics by ID for selected forecast step
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         calculate_metrics_by_ID_for_forecast_step(
             fcst_df=fcst_test_peyton, df_historic=fcst_train_peyton, forecast_step_in_focus=1, freq="D"
         )
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         calculate_metrics_by_ID_for_forecast_step(
             fcst_df=fcst_test_peyton,
             df_historic=fcst_train_peyton,

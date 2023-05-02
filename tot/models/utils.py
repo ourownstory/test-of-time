@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 from darts import TimeSeries
 
+from tot.df_utils import _validate_single_ID_df
+
 log = logging.getLogger("tot.utils")
 
 FREQ_TO_SEASON_STEP_MAPPING = {
@@ -59,7 +61,8 @@ def reshape_raw_predictions_to_forecast_df(
             e.g. yhat3 is the prediction for this datetime, predicted 3 steps ago, "3 steps old".
     """
 
-    assert len(df["ID"].unique()) == 1
+    _validate_single_ID_df(df)
+
     cols = ["ds", "y", "ID"]  # cols to keep from df
     fcst_df = pd.concat((df[cols],), axis=1)
     # create a line for each forecast_lag
@@ -127,7 +130,6 @@ def convert_df_to_TimeSeries(df, freq) -> TimeSeries:
             time series to be fitted or predicted
 
     """
-    # Receives df with single ID column
     received_single_ts = len(df["ID"].unique()) == 1
 
     if not received_single_ts:
@@ -233,8 +235,7 @@ def _predict_single_raw_seasonal_naive(df, season_length, n_forecasts):
         np.array
             array containing the predictions
     """
-    # Receives df with single ID column
-    assert len(df["ID"].unique()) == 1
+    _validate_single_ID_df(df)
 
     dates = df["ds"].iloc[season_length : -n_forecasts + 1].reset_index(drop=True)
     # assemble last values based on season_length

@@ -55,9 +55,6 @@ def _calc_mase(
     where: MAE = mean(|actual - forecast|)
     where: NaiveMAE = mean(|actual_[i] - actual_[i-1]|)
     """
-    assert (
-        truth_train is not None and len(truth_train) > 1
-    ), "Please provide the actual values of the training data for MASE calculation."
     mae = _calc_mae(predictions, truth)
     naive_mae = _calc_mae(np.array(truth_train[:-1]), np.array(truth_train[1:]))
     return np.divide(mae, 1e-9 + naive_mae)
@@ -76,9 +73,6 @@ def _calc_rmsse(
     where: RMSE = sqrt(mean((actual - forecast)^2))
     where: NaiveMSE = sqrt(mean((actual_[i] - actual_[i-1])^2))
     """
-    assert (
-        truth_train is not None and len(truth_train) > 1
-    ), "Please provide the actual values of the training data for RMSSE calculation."
     rmse = _calc_rmse(predictions, truth)
     naive_rmse = _calc_rmse(np.array(truth_train[:-1]), np.array(truth_train[1:]))
     return np.divide(rmse, 1e-9 + naive_rmse)
@@ -115,9 +109,6 @@ def __calc_mae_seasonal_naive(
     truth_train: np.ndarray = None,
     freq: Optional[str] = None,
 ) -> float:
-    assert (
-        truth_train is not None and len(truth_train) > 1
-    ), "Please provide the actual values of the training data for sMASE calculation."
     # convert frequency str to int
     K = FREQ_TO_SEASON_LENGTH[freq]
     # calculate seasonal forecast

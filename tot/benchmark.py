@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 
 from tot.datasets.dataset import Dataset
+from tot.error_utils import raise_if
 from tot.experiment import CrossValidationExperiment, Experiment, SimpleExperiment
 from tot.models.models import Model
 
@@ -98,8 +99,10 @@ class Benchmark(ABC):
                 log.info("exp {}/{}: {}".format(i + 1, len(self.experiments), exp.experiment_name))
         log.info("---- Staring Series of {} Experiments ----".format(len(self.experiments)))
         if self.num_processes > 1 and len(self.experiments) > 1:
-            if not all([exp.num_processes == 1 for exp in self.experiments]):
-                raise ValueError("can not set multiprocessing in experiments and Benchmark.")
+            raise_if(
+                not all([exp.num_processes == 1 for exp in self.experiments]),
+                "Cannot set multiprocessing in " "Experiments and Benchmark.",
+            )
             with Pool(self.num_processes) as pool:
                 args_list = [(exp, verbose, i + 1) for i, exp in enumerate(self.experiments)]
                 pool.map_async(
