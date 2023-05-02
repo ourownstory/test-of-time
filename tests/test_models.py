@@ -5,6 +5,7 @@ import pathlib
 
 import pandas as pd
 import pytest
+from darts.models import NaiveDrift
 
 from tot.benchmark import SimpleBenchmark
 from tot.datasets.dataset import Dataset
@@ -12,7 +13,7 @@ from tot.evaluation.metrics import ERROR_FUNCTIONS
 from tot.models.models_naive import NaiveModel, SeasonalNaiveModel
 from tot.models.models_neuralprophet import NeuralProphetModel, TorchProphetModel
 from tot.models.models_prophet import ProphetModel
-from tot.models.models_simple import LinearRegressionModel
+from tot.models.models_simple import LinearRegressionModel, RandomForestModel, DartsForecastingModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -26,7 +27,6 @@ ERCOT_FILE = os.path.join(DATA_DIR, "ercot_load_reduced.csv")
 SAVE_DIR = os.path.join(DIR, "tests", "test-logs")
 if not os.path.isdir(SAVE_DIR):
     os.makedirs(SAVE_DIR)
-
 
 NROWS = 128
 EPOCHS = 2
@@ -267,6 +267,62 @@ def test_linear_regression_model():
     )
     results_train, results_test = benchmark.run()
     log.info("#### test_linear_regression_model")
+    print(results_test)
+
+
+def test_random_forest_model():
+    air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
+    peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
+    dataset_list = [
+        Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
+        Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
+    ]
+    model_classes_and_params = [
+        (
+            RandomForestModel,
+            {"lags": 12, "output_chunk_length": 1, "n_forecasts": 4},
+        ),
+    ]
+    log.debug("{}".format(model_classes_and_params))
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=0.25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    results_train, results_test = benchmark.run()
+    log.info("#### test_random_forest_model")
+    print(results_test)
+
+
+def test_darts_model():
+    air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
+    peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
+    dataset_list = [
+        Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
+        Dataset(df=peyton_manning_df, name="peyton_manning", freq="D"),
+    ]
+    model_classes_and_params = [
+        (
+            DartsForecastingModel,
+            {"model": NaiveDrift, "retrain": True, "lags": 12, "n_forecasts": 4},
+        ),
+    ]
+    log.debug("{}".format(model_classes_and_params))
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=0.25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    results_train, results_test = benchmark.run()
+    log.info("#### test_darts_model")
     print(results_test)
 
 

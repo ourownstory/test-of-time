@@ -39,35 +39,48 @@ except ImportError:
     )
 
 
-class DartsRegressionModel(Model):
+@dataclass
+class DartsForecastingModel(Model):
     """
-    A forecasting model using a regression model from the darts library.
+    A forecasting model using a model from the darts library.
+
+    Examples
+    --------
+    >>> model_classes_and_params = [
+    >>>     (
+    >>>         DartsForecastingModel,
+    >>>         {"model": NaiveDrift, "retrain": True, "lags": 12, "n_forecasts": 4},
+    >>>     ),
+    >>> ]
+    >>>
+    >>> benchmark = SimpleBenchmark(
+    >>>     model_classes_and_params=model_classes_and_params,
+    >>>     datasets=dataset_list,
+    >>>     metrics=list(ERROR_FUNCTIONS.keys()),
+    >>>     test_percentage=25,
+    >>>     save_dir=SAVE_DIR,
+    >>>     num_processes=1,
+    >>> )
     """
 
-    model_class: Type = RegressionModel
-    regression_class: Type
+    retrain: bool = False
 
     def __post_init__(self):
         # check if installed
-        if not (_darts_installed or _sklearn_installed):
+        if not _darts_installed:
             raise RuntimeError(
-                "Requires darts and sklearn to be installed:"
-                "https://scikit-learn.org/stable/install.html"
-                "https://github.com/unit8co/darts/blob/master/INSTALL.md"
+                "Requires darts to be installed:" "https://github.com/unit8co/darts/blob/master/INSTALL.md"
             )
-
+        self.n_forecasts = self.params["n_forecasts"]
+        self.n_lags = self.params["lags"]
+        self.retrain = self.params.get("retrain", False)
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
-        # n_forecasts is not a parameter of the model
         model_params.pop("n_forecasts")
-        # overwrite output_chunk_length with n_forecasts
-        model_params.update({"output_chunk_length": self.params["n_forecasts"]})
-        model = self.regression_class(n_jobs=-1)  # n_jobs=-1 indicates to use all processors
-        model_params.update({"model": model})  # assign model
-        self.model = self.model_class(**model_params)
-        self.n_forecasts = self.params["n_forecasts"]
-        self.n_lags = model_params["lags"]
-        # input checks are provided by model itself
+        model_params.pop("lags")
+        model_params.pop("retrain", None)
+        model = model_params.pop("model")
+        self.model = model(**model_params)
 
     def fit(self, df: pd.DataFrame, freq: str):
         """Fits the regression model.
@@ -82,7 +95,7 @@ class DartsRegressionModel(Model):
         _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
         self.freq = freq
         series = convert_df_to_TimeSeries(df, freq=self.freq)
-        self.model = self.model.fit(series)
+        self.model.fit(series)
 
     def predict(self, df: pd.DataFrame, received_single_time_series, df_historic: pd.DataFrame = None):
         """Runs the model to make predictions.
@@ -113,7 +126,7 @@ class DartsRegressionModel(Model):
             model=self,
             past_observations_per_prediction=self.n_lags,
             future_observations_per_prediction=self.n_forecasts,
-            retrain=False,
+            retrain=self.retrain,
             received_single_time_series=received_single_time_series,
         )
         if df_historic is not None:
@@ -135,6 +148,36 @@ class DartsRegressionModel(Model):
         """
         predicted = drop_first_inputs_from_df(samples=self.n_lags, predicted=predicted, df=df)
         return predicted
+
+
+class DartsRegressionModel(DartsForecastingModel):
+    """
+    A forecasting model using a regression model from the darts library.
+    """
+
+    model_class: Type = RegressionModel
+    regression_class: Type
+
+    def __post_init__(self):
+        # check if installed
+        if not (_darts_installed or _sklearn_installed):
+            raise RuntimeError(
+                "Requires darts and sklearn to be installed:"
+                "https://scikit-learn.org/stable/install.html"
+                "https://github.com/unit8co/darts/blob/master/INSTALL.md"
+            )
+        params = deepcopy(self.params)
+        params.pop("_data_params")
+        # n_forecasts is not a parameter of the model
+        params.pop("n_forecasts")
+        # overwrite output_chunk_length with n_forecasts
+        params.update({"output_chunk_length": self.params["n_forecasts"]})
+        model = self.regression_class(n_jobs=-1)  # n_jobs=-1 indicates to use all processors
+        params.update({"model": model})  # assign model
+        self.model = self.model_class(**params)
+        self.n_forecasts = self.params["n_forecasts"]
+        self.n_lags = params["lags"]
+        # input checks are provided by model itself
 
 
 @dataclass
@@ -161,7 +204,6 @@ class LinearRegressionModel(DartsRegressionModel):
     >>> )
     """
 
-    model_name: str = "LinearRegressionModel"
     regression_class: Type = LinearRegression
 
 
@@ -189,5 +231,4 @@ class RandomForestModel(DartsRegressionModel):
     >>> )
     """
 
-    model_name: str = "RandomForestModel"
     regression_class: Type = RandomForestRegressor
