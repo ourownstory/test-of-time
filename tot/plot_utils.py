@@ -222,7 +222,9 @@ def _plot_plotly(
         Plotly figure
     """
     if resampler_active:
-        register_plotly_resampler(mode="auto")
+        unregister_plotly_resampler()
+
+        # register_plotly_resampler(mode="auto")
     else:
         unregister_plotly_resampler()
     cross_marker_color = "blue"
@@ -322,4 +324,5 @@ def _plot_plotly(
         **layout_args,
     )
     fig = go.Figure(data=data, layout=layout)
+    unregister_plotly_resampler()
     return fig
