@@ -82,7 +82,7 @@ class DartsForecastingModel(Model):
         model = model_params.pop("model")
         self.model = model(**model_params)
 
-    def fit(self, df: pd.DataFrame, freq: str):
+    def fit(self, df: pd.DataFrame, freq: str) -> None:
         """Fits the regression model.
 
         Parameters
@@ -97,7 +97,9 @@ class DartsForecastingModel(Model):
         series = convert_df_to_TimeSeries(df, freq=self.freq)
         self.model.fit(series)
 
-    def predict(self, df: pd.DataFrame, received_single_time_series, df_historic: pd.DataFrame = None):
+    def predict(
+        self, df: pd.DataFrame, received_single_time_series: bool, df_historic: pd.DataFrame = None
+    ) -> pd.DataFrame:
         """Runs the model to make predictions.
 
         Expects all data to be present in dataframe.
@@ -133,7 +135,7 @@ class DartsForecastingModel(Model):
             fcst = self.maybe_drop_added_values_from_df(fcst, df)
         return fcst
 
-    def maybe_extend_df(self, df_train, df_test):
+    def maybe_extend_df(self, df_train: pd.DataFrame, df_test: pd.DataFrame) -> pd.DataFrame:
         """
         If model depends on historic values, extend beginning of df_test with last
         df_train values.
@@ -142,7 +144,7 @@ class DartsForecastingModel(Model):
 
         return df_test
 
-    def maybe_drop_added_values_from_df(self, predicted, df):
+    def maybe_drop_added_values_from_df(self, predicted: pd.DataFrame, df: pd.DataFrame) -> pd.DataFrame:
         """
         If model depends on historic values, drop first values of predicted and df_test.
         """
