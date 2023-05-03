@@ -205,7 +205,7 @@ class Scaler:
         df_train : pd.DataFrame
             dataframe containing column ``ds``, ``y``,[``yhat<i>``], and optionally ``ID`` with train results
         df_train : pd.DataFrame
-            dataframe containing column ``ds``, ``y``, and optionally ``ID`` with test results
+            dataframe containing column ``ds``, ``y``,[``yhat<i>``], and optionally ``ID`` with test results
 
         Returns:
         --------
