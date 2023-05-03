@@ -76,7 +76,8 @@ class Experiment(ABC):
 
         scaler = self.params.pop("scaler", None)
         if scaler is not None:
-            self.scaler = Scaler(transformer=scaler)
+            scaling_level = self.params.pop("scaling_level", "per_dataset")
+            self.scaler = Scaler(transformer=scaler, scaling_level=scaling_level)
 
     def write_results_to_csv(self, df, prefix, current_fold=None):
         """

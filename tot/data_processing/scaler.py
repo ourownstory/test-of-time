@@ -22,12 +22,13 @@ class Scaler:
     """
     A scaling module allowing to perform transform and inverse_transform operations on the time series data. Supports
     transformers from `sklearn.preprocessing` package and other scalers implementing `fit`, `transform` and
-    `inverse_transform` methods.
+    `inverse_transform` methods. See: https://scikit-learn.org/stable/modules/preprocessing.html
+    `scaling_level` specifies global ("per_dataset") or local scaling ("per_time_series").
 
     Examples
     --------
     >>> from sklearn.preprocessing import StandardScaler
-    >>> scaler = Scaler(transformer=StandardScaler)
+    >>> scaler = Scaler(transformer=StandardScaler(), scaling_level="per_dataset")
     >>> df_train, df_test = scaler.transform(df_train, df_test)
     >>> fcst_train, fcst_train = scaler.inverse_transform(fcst_train, fcst_train)
     """
@@ -41,23 +42,27 @@ class Scaler:
             and callable(getattr(self.transformer, "transform", None))
             and callable(getattr(self.transformer, "inverse_transform", None))
         )
-        raise_if(not is_transformer_valid, "Transformer provided to the Scaler must implement fit, transform and "
-                                           "inverse_transform methods")
-        raise_if(self.scaling_level not in SCALING_LEVELS, "Invalid scaling level. Allowed levels: `per_dataset`, "
-                                                           "`per_time_series`")
+        raise_if(
+            not is_transformer_valid,
+            "Transformer provided to the Scaler must implement fit, transform and " "inverse_transform methods",
+        )
+        raise_if(
+            self.scaling_level not in SCALING_LEVELS,
+            "Invalid scaling level. Available levels: `per_dataset`, " "`per_time_series`",
+        )
 
     def _scale_per_series(self, df: pd.DataFrame, fit: bool = False) -> pd.DataFrame:
         """
         Applies `transform` per series. Fits the `transformer` if `fit` set to True. First, pivot is performed on the
-        dataframe so that unique `ID`s become columns, then transformation is applied. Data is returned in the
-        original format.
+        dataframe so that unique `ID`s become columns, then the transformation is applied to the df's values. Data is
+        returned in its original format.
 
         Parameters:
         -----------
         df : pd.DataFrame
             dataframe containing column ``ds``, ``y``, and optionally ``ID`` with data
         fit : bool
-            if set to True Scaler is fitted with data from `df`
+            if set to True Scaler is fitted on data from `df`
 
         Returns:
         --------
@@ -67,7 +72,9 @@ class Scaler:
         IDs = df["ID"].unique()
         df_pivot = _pivot(df, "y")
 
-        df_pivot = self.scale(df_pivot, fit)
+        if fit:
+            self.transformer.fit(df_pivot[IDs])
+        df_pivot[IDs] = self.transformer.transform(df_pivot[IDs])
 
         return _melt(df_pivot, IDs, "y")
 
@@ -88,32 +95,31 @@ class Scaler:
             dataframe containing column ``ds``, ``y``, and optionally ``ID`` with transformed data
         """
         if fit:
-            self.transformer.fit(df["y"])
-        df["y"] = self.transformer.transform(df["y"])
+            self.transformer.fit(df["y"].values.reshape(-1, 1))
+        df["y"] = self.transformer.transform(df["y"].values.reshape(-1, 1))
         return df
 
-    def _rescale_per_series(self, df: pd.DataFrame, col_name: str) -> pd.Dataframe:
+    def _rescale_per_series(self, df: pd.DataFrame, col_name: str) -> pd.DataFrame:
         """
         Applies `inverse_transform` per series. First, pivot is performed on the dataframe so that unique `ID`s
-        become columns, then inverse transformation is applied. Operation is repeated on all `yhat` values and
-        results are joined to the main df.
+        become columns, then inverse transformation is applied. Data is returned in its original format.
 
         Parameters:
         -----------
         df : pd.DataFrame
-            dataframe containing column ``ds``, ``y``, and optionally ``ID`` with data
+            dataframe containing column ``ds``, ``y``, [``yhat<i>``], and optionally ``ID`` with data
         col_name : str
             name of the column, on which the operation is applied
 
         Returns:
         --------
         pd.DataFrame
-            dataframe containing column ``ds``, ``y``, and optionally ``ID`` with scaled data
+            dataframe containing column ``ds``, ``y``, [``yhat<i>``], and optionally ``ID`` with rescaled data
         """
         IDs = df["ID"].unique()
         df_pivot = _pivot(df, col_name)
 
-        df_pivot = self._rescale(df_pivot, col_name)
+        df_pivot[IDs] = self.transformer.inverse_transform(df_pivot[IDs])
 
         return _melt(df_pivot, IDs, col_name)
 
@@ -124,50 +130,50 @@ class Scaler:
         Parameters:
         -----------
         df : pd.DataFrame
-            dataframe containing column ``ds``, ``y``, and optionally ``ID`` with data
+            dataframe containing column ``ds``, ``y``, [``yhat<i>``], and optionally ``ID`` with data
         col_name : str
             name of the column, on which the operation is applied
 
         Returns:
         --------
         pd.DataFrame
-            dataframe containing column ``ds``, ``y``, and optionally ``ID`` with rescaled data
+            dataframe containing column ``ds``, ``y``, [``yhat<i>``],  and optionally ``ID`` with rescaled data
         """
-        df[col_name] = self.transformer.inverse_transform(df[col_name])
+        df[col_name] = self.transformer.inverse_transform(df[col_name].values.reshape(-1, 1))
         return df
 
     def _inverse_transform(self, df: pd.DataFrame):
         """
-        Applies `inverse_transform` per series. First, pivot is performed on the dataframe so that unique `ID`s
-        become columns, then inverse transformation is applied. Operation is repeated on all `yhat` values and
-        results are joined to the main df.
+        Applies rescaling on the `df`. First, rescaling is performed on the `y` column to create the main df. Then,
+        operation is repeated on all `yhat` values and results are updated in the main df. Proper `rescale`
+        implementation is chosen based on scaling level.
 
         Parameters:
         -----------
         df : pd.DataFrame
-            dataframe containing column ``ds``, ``y``, and optionally ``ID`` with data
+            dataframe containing column ``ds``, ``y``, [``yhat<i>``] and optionally ``ID`` with data
 
         Returns:
         --------
         pd.DataFrame
-            dataframe containing column ``ds``, ``y``, and optionally ``ID`` with rescaled data
+            dataframe containing column ``ds``, ``y``, [``yhat<i>``] and optionally ``ID`` with rescaled data
         """
         if self.scaling_level == "per_time_series":
-            apply = self._rescale_per_series
+            rescale_method = self._rescale_per_series
         else:
-            apply = self._rescale
+            rescale_method = self._rescale
 
-        result = apply(df, "y")
+        result = rescale_method(df, "y")
 
         yhats = [col for col in df.columns if "yhat" in col]
         for yhat in yhats:
-            result = result.join(apply(df, yhat)[yhat])
+            result[yhat] = rescale_method(df, yhat)[yhat]
 
         return result
 
     def transform(self, df_train: pd.DataFrame, df_test: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
         """
-        Applies `transform` on the dataframes. Scaler is fit on the `df_train`.
+        Applies `transform` on the dataframes. The transformer is fit on the `df_train`.
 
         Parameters:
         -----------
@@ -183,27 +189,31 @@ class Scaler:
         pd.DataFrame
             dataframe containing column ``ds``, ``y``, and optionally ``ID`` with scaled test data
         """
+        df_train = df_train.copy()
+        df_test = df_test.copy()
         if self.scaling_level == "per_time_series":
             return self._scale_per_series(df_train, fit=True), self._scale_per_series(df_test)
 
         return self._scale(df_train, fit=True), self._scale(df_test)
 
-    def inverse_transform(self, df_train: pd.DataFrame, df_test: pd.DataFrame):
+    def inverse_transform(self, df_train: pd.DataFrame, df_test: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
         """
         Applies `inverse_transform` on the dataframes.
 
         Parameters:
         -----------
         df_train : pd.DataFrame
-            dataframe containing column ``ds``, ``y``, and optionally ``ID`` with train data
+            dataframe containing column ``ds``, ``y``,[``yhat<i>``], and optionally ``ID`` with train results
         df_train : pd.DataFrame
-            dataframe containing column ``ds``, ``y``, and optionally ``ID`` with test data
+            dataframe containing column ``ds``, ``y``, and optionally ``ID`` with test results
 
         Returns:
         --------
         pd.DataFrame
-            dataframe containing column ``ds``, ``y``, and optionally ``ID`` with scaled train data
+            dataframe containing column ``ds``, ``y``,[``yhat<i>``], and optionally ``ID`` with rescaled train results
         pd.DataFrame
-            dataframe containing column ``ds``, ``y``, and optionally ``ID`` with scaled test data
+            dataframe containing column ``ds``, ``y``,[``yhat<i>``], and optionally ``ID`` with rescaled test results
         """
+        df_train = df_train.copy()
+        df_test = df_test.copy()
         return self._inverse_transform(df_train), self._inverse_transform(df_test)
