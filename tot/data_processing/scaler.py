@@ -123,7 +123,7 @@ class Scaler:
 
         return _melt(df_pivot, IDs, col_name)
 
-    def _rescale(self, df: pd.DataFrame, col_name: str):
+    def _rescale(self, df: pd.DataFrame, col_name: str) -> pd.DataFrame:
         """
         Applies `inverse_transform` on column `col_name` in `df`.
 
@@ -142,7 +142,7 @@ class Scaler:
         df[col_name] = self.transformer.inverse_transform(df[col_name].values.reshape(-1, 1))
         return df
 
-    def _inverse_transform(self, df: pd.DataFrame):
+    def _inverse_transform(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Applies rescaling on the `df`. First, rescaling is performed on the `y` column to create the main df. Then,
         operation is repeated on all `yhat` values and results are updated in the main df. Proper `rescale`
