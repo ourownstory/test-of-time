@@ -322,4 +322,5 @@ def _plot_plotly(
         **layout_args,
     )
     fig = go.Figure(data=data, layout=layout)
+    unregister_plotly_resampler()
     return fig
