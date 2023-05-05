@@ -3,6 +3,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
+from tot.error_utils import raise_if
 from tot.evaluation.metrics import ERROR_FUNCTIONS
 
 
@@ -54,8 +55,8 @@ def calculate_metrics_by_ID_for_forecast_step(
     1     2.5        1.5
     2     2.5        1.5
     """
-    assert metrics is not None, "Please specify a list of metrics to evaluate."
-    assert freq is not None, "Please specify the frequency of the data."
+    raise_if(metrics is None, "Please specify a list of metrics to evaluate.")
+    raise_if(freq is None, "Please specify the frequency of the data.")
     # calculate the specified metrics for every ID and every forecast step
     metrics_df_all_IDs = fcst_df.groupby("ID").apply(
         lambda x: _calc_metrics_for_single_ID_and_every_fcst_step(

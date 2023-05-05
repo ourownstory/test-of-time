@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.7", "3.10"]
+        python-version: ["3.9", "3.10"]
     steps:
       - uses: actions/checkout@v3
       - name: Install Python ${{ matrix.python-version }}
@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip3 install -e .
+          pip3 install -e ".[dev]"
           pip3 install pytest
           pip3 install pytest-cov
       - name: Pytest

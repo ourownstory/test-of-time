@@ -186,7 +186,7 @@ decorator_input = [
 
 @pytest.mark.parametrize(*decorator_input)
 def test_seasonal_naive_model_invalid_input(dataset_input, model_classes_and_params_input):
-    log.info("Test invalid model input - Raise Assertion")
+    log.info("Test invalid model input - Raise ValueError")
     peyton_manning_df = pd.read_csv(PEYTON_FILE, nrows=NROWS)
     dataset_list = [
         Dataset(
@@ -209,7 +209,7 @@ def test_seasonal_naive_model_invalid_input(dataset_input, model_classes_and_par
         num_processes=1,
     )
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         _, _ = benchmark.run()
 
     log.info("#### Done with test_seasonal_naive_model_invalid_input")
@@ -401,6 +401,6 @@ def test_check_min_input_len():
         save_dir=SAVE_DIR,
         num_processes=1,
     )
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         results_train, results_test = benchmark.run()
     log.info("#### test_check_min_input_len")
