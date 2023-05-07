@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Callable, Tuple
 
 import pandas as pd
 
@@ -142,7 +142,7 @@ class Scaler:
         df[col_name] = self.transformer.inverse_transform(df[col_name].values.reshape(-1, 1))
         return df
 
-    def _inverse_transform(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _inverse_transform(self, df: pd.DataFrame, rescale_method: Callable) -> pd.DataFrame:
         """
         Applies rescaling on the `df`. First, rescaling is performed on the `y` column to create the main df. Then,
         operation is repeated on all `yhat` values and results are updated in the main df. Proper `rescale`
@@ -158,11 +158,6 @@ class Scaler:
         pd.DataFrame
             dataframe containing column ``ds``, ``y``, [``yhat<i>``] and optionally ``ID`` with rescaled data
         """
-        if self.scaling_level == "per_time_series":
-            rescale_method = self._rescale_per_series
-        else:
-            rescale_method = self._rescale
-
         result = rescale_method(df, "y")
 
         yhats = [col for col in df.columns if "yhat" in col]
@@ -216,4 +211,8 @@ class Scaler:
         """
         df_train = df_train.copy()
         df_test = df_test.copy()
-        return self._inverse_transform(df_train), self._inverse_transform(df_test)
+        if self.scaling_level == "per_time_series":
+            rescale_method = self._rescale_per_series
+        else:
+            rescale_method = self._rescale
+        return self._inverse_transform(df_train, rescale_method), self._inverse_transform(df_test, rescale_method)
