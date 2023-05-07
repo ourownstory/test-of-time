@@ -53,16 +53,45 @@ class Experiment(ABC):
             data_params["freq"] = self.data.freq
         self.params.update({"_data_params": data_params})
         if not hasattr(self, "experiment_name") or self.experiment_name is None:
-            self.experiment_name = "{}_{}{}".format(
-                self.data.name,
-                self.model_class.model_name,
-                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()])
-                .replace("'", "")
-                .replace(":", "_")
-                .replace("{", "_")
-                .replace("}", "_")
-                .replace("[", "_")
-                .replace("]", "_"),
+            data_name = self.data.name[:3] if len(self.data.name) > 3 else self.data.name
+            model_name = self.model_class.model_name
+            abbreviated_name = ''.join([char for char in model_name if char.isupper()])
+            abbreviated_name += "M"
+            
+            d = {'seasonality_mode': 'SM',
+                 'additive': 'add',
+                 'learning_rate': 'LR',
+                 'multiplicative': 'mult'
+                 }
+            abbr_params = ''
+            for k, v in self.params.items():
+                abbr_k = k
+                if k in d.keys():
+                    abbr_k = d[k]
+                abbr_data_params = ''
+                if isinstance(v, dict):
+                    for k2, v2 in v.items():
+                        
+                        abbr_k2 = k2
+                        if k2 in d.keys():
+                            abbr_k2 = d[k2]
+                            
+                        abbr_v2 = v2
+                        if v2 in d.keys():
+                            abbr_v2 = d[v2]
+                        abbr_data_params += (r"-{0}_{1}".format(abbr_k2, abbr_v2))
+                    abbr_v = ''
+                else:
+                    abbr_v = v
+                    if v in d.keys():
+                        abbr_v = d[v]  
+                abbr_params += (r"-{0}_{1}".format(abbr_k, abbr_v))
+            abbr_params += abbr_data_params
+
+            self.experiment_name = "{}-{}{}".format(
+                data_name,
+                abbreviated_name,
+                abbr_params
             )
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
@@ -361,7 +390,7 @@ class CrossValidationExperiment(Experiment):
         Returns:
             tuple: (fcst_train, fcst_test, results_cv_train, results_cv_test)
         """
-        set_random_seed(42)
+ #       set_random_seed(42)
         # data-specific pre-processing
         df, received_ID_column, received_single_time_series, _ = prep_or_copy_df(self.data.df)
         df = check_dataframe(df, check_y=True)
