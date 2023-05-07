@@ -54,11 +54,14 @@ class Experiment(ABC):
         if hasattr(self.data, "freq") and self.data.freq is not None:
             data_params["freq"] = self.data.freq
         self.params.update({"_data_params": data_params})
+        model_name = self.params.get("model", self.model_class).__name__
+        params_repr = self.params.copy()
+        params_repr.pop("model", None)
         if not hasattr(self, "experiment_name") or self.experiment_name is None:
             self.experiment_name = "{}_{}{}".format(
                 self.data.name,
-                self.model_class.model_name,
-                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()])
+                model_name,
+                r"".join([r"_{0}_{1}".format(k, v) for k, v in params_repr.items()])
                 .replace("'", "")
                 .replace(":", "_")
                 .replace("{", "_")
@@ -69,7 +72,7 @@ class Experiment(ABC):
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
                 "data": self.data.name,
-                "model": self.model_class.model_name,
+                "model": model_name,
                 "params": str(self.params),
                 "experiment": self.experiment_name,
             }
