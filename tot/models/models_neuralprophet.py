@@ -16,7 +16,6 @@ log = logging.getLogger("tot.model")
 
 @dataclass
 class NeuralProphetModel(Model):
-    model_name: str = "NeuralProphet"
     model_class: Type = NeuralProphet
 
     def __post_init__(self):
@@ -157,7 +156,6 @@ class NeuralProphetModel(Model):
 
 @dataclass
 class TorchProphetModel(NeuralProphetModel):
-    model_name: str = "TorchProphet"
     model_class: Type = TorchProphet
 
     def __post_init__(self):

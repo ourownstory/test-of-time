@@ -21,7 +21,6 @@ class Model(ABC):
     """
 
     params: dict
-    model_name: str
 
     @abstractmethod
     def fit(self, df: pd.DataFrame, freq: str):

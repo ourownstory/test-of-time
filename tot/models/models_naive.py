@@ -26,8 +26,6 @@ class SeasonalNaiveModel(Model):
             number of steps ahead of prediction time step to forecast
     """
 
-    model_name: str = "SeasonalNaive"
-
     def __post_init__(self):
         # no installation checks required
 
@@ -143,8 +141,6 @@ class NaiveModel(SeasonalNaiveModel):
         ValueError
             If Model parameter n_forecasts is less than 1.
     """
-
-    model_name: str = "NaiveModel"
 
     def __post_init__(self):
         # no installation checks required

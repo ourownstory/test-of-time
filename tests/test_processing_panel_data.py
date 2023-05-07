@@ -6,13 +6,14 @@ import pathlib
 
 import pandas as pd
 import pytest
+from darts.models import NaiveDrift
 
 from tot.benchmark import CrossValidationBenchmark, ManualCVBenchmark, SimpleBenchmark
 from tot.datasets.dataset import Dataset
 from tot.experiment import CrossValidationExperiment
+from tot.models.models_darts import DartsForecastingModel, LinearRegressionModel, RandomForestModel
 from tot.models.models_naive import NaiveModel, SeasonalNaiveModel
 from tot.models.models_neuralprophet import NeuralProphetModel, TorchProphetModel
-from tot.models.models_simple import LinearRegressionModel
 
 log = logging.getLogger("tot.test")
 log.setLevel("WARNING")
@@ -85,6 +86,8 @@ def test_benchmark_panel_data_input():
         (LinearRegressionModel, {"lags": 24, "output_chunk_length": 8, "n_forecasts": 8}),
         (NaiveModel, {"n_forecasts": 8}),
         (SeasonalNaiveModel, {"n_forecasts": 8, "season_length": 24}),
+        (RandomForestModel, {"lags": 24, "output_chunk_length": 8, "n_forecasts": 8}),
+        (DartsForecastingModel, {"model": NaiveDrift, "retrain": True, "lags": 12, "n_forecasts": 4}),
     ]
     log.debug("{}".format(model_classes_and_params))
 
