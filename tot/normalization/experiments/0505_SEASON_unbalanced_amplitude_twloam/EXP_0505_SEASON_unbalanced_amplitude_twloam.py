@@ -46,6 +46,9 @@ df = generate_one_shape_season_data(
     n_ts_groups=[10, 1],
     offset_per_group=[0, 0],
     amplitude_per_group=[5, 50],
+    PLOT=PLOT,
+    PLOTS_DIR=PLOTS_DIR,
+    EXP_NAME=EXP_NAME,
 )
 fcsts_train, fcsts_test, metrics_test, elapsed_time = run_pipeline(
     df=df,
@@ -57,5 +60,13 @@ fcsts_train, fcsts_test, metrics_test, elapsed_time = run_pipeline(
     scale_levels=[None, "local", "global"],
     scalers=[MinMaxScaler(feature_range=(0.1, 1)), StandardScaler()],
 )
-plot_and_save_multiple_dfs(fcst_dfs=fcsts_test, date_rng=DATE_RNG, id_group_1=str(1), id_group_2=str(10))
-concat_and_save_results(metric_dfs=metrics_test, elapsed_time=elapsed_time)
+plot_and_save_multiple_dfs(
+    fcst_dfs=fcsts_test,
+    date_rng=DATE_RNG,
+    id_group_1=str(1),
+    id_group_2=str(10),
+    PLOT=PLOT,
+    PLOTS_DIR=PLOTS_DIR,
+    EXP_NAME=EXP_NAME,
+)
+concat_and_save_results(metric_dfs=metrics_test, elapsed_time=elapsed_time, EXP_DIR=EXP_DIR, EXP_NAME=EXP_NAME)

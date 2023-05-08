@@ -346,7 +346,14 @@ def plot_ts(df):
 
 
 def generate_canceling_shape_season_data(
-    series_length: int, date_rng, n_ts_groups: list, offset_per_group: list, amplitude_per_group: list
+    series_length: int,
+    date_rng,
+    n_ts_groups: list,
+    offset_per_group: list,
+    amplitude_per_group: list,
+    PLOT,
+    PLOTS_DIR,
+    EXP_NAME,
 ) -> pd.DataFrame:
     df_seasons = []
     period = 24
@@ -392,7 +399,14 @@ def generate_canceling_shape_season_data(
 
 
 def generate_one_shape_season_data(
-    series_length: int, date_rng, n_ts_groups: list, offset_per_group: list, amplitude_per_group: list
+    series_length: int,
+    date_rng,
+    n_ts_groups: list,
+    offset_per_group: list,
+    amplitude_per_group: list,
+    PLOT,
+    PLOTS_DIR,
+    EXP_NAME,
 ) -> pd.DataFrame:
     df_seasons = []
     period = 24
@@ -522,7 +536,7 @@ def run_pipeline(df, model_class, params, freq, test_percentage, metrics, scale_
     return fcsts_train, fcsts_test, metrics_test, elapsed_time
 
 
-def plot_and_save_multiple_dfs(fcst_dfs: list, id_group_1, id_group_2, date_rng):
+def plot_and_save_multiple_dfs(fcst_dfs: list, id_group_1, id_group_2, date_rng, PLOT, PLOTS_DIR, EXP_NAME):
     for fcst_df in fcst_dfs:
         fig1 = plot_plotly(
             fcst=fcst_df[fcst_df["ID"] == str(id_group_1)],
@@ -556,7 +570,7 @@ def plot_and_save_multiple_dfs(fcst_dfs: list, id_group_1, id_group_2, date_rng)
         pio.write_image(fig, file_name)
 
 
-def concat_and_save_results(metric_dfs: list, elapsed_time: pd.DataFrame):
+def concat_and_save_results(metric_dfs: list, elapsed_time: pd.DataFrame, EXP_DIR, EXP_NAME):
     df_metrics_concatenated = pd.DataFrame()
     for metric_df in metric_dfs:
         df_metrics_concatenated = pd.concat([df_metrics_concatenated, metric_df])

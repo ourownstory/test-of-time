@@ -1,6 +1,6 @@
 ,scaler,scale_level,time
-0,None,None,24.45133924484253
-0,"MinMaxScaler(feature_range=(0.1, 1))",local,25.796334505081177
-0,StandardScaler(),local,26.29163694381714
-0,"MinMaxScaler(feature_range=(0.1, 1))",global,23.579528093338013
-0,StandardScaler(),global,24.145447254180908
+0,None,None,21.7001633644104
+0,"MinMaxScaler(feature_range=(0.1, 1))",local,22.114692449569702
+0,StandardScaler(),local,21.46684956550598
+0,"MinMaxScaler(feature_range=(0.1, 1))",global,21.560832977294922
+0,StandardScaler(),global,23.841859340667725
