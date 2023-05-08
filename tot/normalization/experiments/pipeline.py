@@ -1,18 +1,16 @@
-from typing import Optional
-
-import pandas as pd
-import plotly.graph_objects as go
-from neuralprophet import set_random_seed
-from plotly_resampler import unregister_plotly_resampler
-from tot.plotting import plot_plotly
 import os
 import pathlib
-import plotly.io as pio
-import plotly
-from tot.evaluation.metric_utils import calculate_metrics_by_ID_for_forecast_step
-from pandas import Index
 import time
+from typing import Optional
+
 import numpy as np
+import pandas as pd
+import plotly
+import plotly.graph_objects as go
+import plotly.io as pio
+from neuralprophet import set_random_seed
+from pandas import Index
+from plotly_resampler import unregister_plotly_resampler
 
 from tot.df_utils import (
     _check_min_df_len,
@@ -22,7 +20,11 @@ from tot.df_utils import (
     return_df_in_original_format,
     split_df,
 )
-from tot.evaluation.metric_utils import calculate_averaged_metrics_per_experiment
+from tot.evaluation.metric_utils import (
+    calculate_averaged_metrics_per_experiment,
+    calculate_metrics_by_ID_for_forecast_step,
+)
+from tot.plotting import plot_plotly
 
 unregister_plotly_resampler()
 
@@ -341,6 +343,52 @@ def plot_ts(df):
         )
     fig.update_layout(layout)
     return fig
+
+
+def generate_canceling_shape_season_data(
+    series_length: int, date_rng, n_ts_groups: list, offset_per_group: list, amplitude_per_group: list
+) -> pd.DataFrame:
+    df_seasons = []
+    period = 24
+    # Generate an array of time steps
+    t = np.arange(series_length)
+    # Define the angular frequency (omega) corresponding to the period
+    omega = 2 * np.pi / period
+    # Generate the seasonal time series using multiple sine and cosine terms
+    data_group_1 = [
+        (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) * amplitude_per_group[0]
+        for _ in range(n_ts_groups[0])
+    ]
+    for i in range(n_ts_groups[0]):
+        df = pd.DataFrame(date_rng, columns=["ds"])
+        df["y"] = data_group_1[i] + offset_per_group[0]
+        df["ID"] = str(i)
+        df_seasons.append(df.reset_index(drop=True))
+    i = i
+    data_group_2 = [
+        -(np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t))
+        * amplitude_per_group[1]
+        for _ in range(n_ts_groups[1])
+    ]
+    for j in range(n_ts_groups[1]):
+        df = pd.DataFrame(date_rng, columns=["ds"])
+        df["y"] = data_group_2[j] + offset_per_group[1]
+        df["ID"] = str(i + j + 1)
+        df_seasons.append(df.reset_index(drop=True))
+
+    concatenated_dfs = pd.DataFrame()
+    for i, df in enumerate(df_seasons):
+        concatenated_dfs = pd.concat([concatenated_dfs, df], axis=0)
+    fig = plot_ts(concatenated_dfs)
+    if PLOT:
+        fig.show()
+    fig.update_xaxes(range=[date_rng[0], date_rng[24 * 7]])
+
+    concatenated_dfs.to_csv(os.path.join(PLOTS_DIR, f"DATA_{EXP_NAME}.csv"))
+    file_name = os.path.join(PLOTS_DIR, f"DATA_{EXP_NAME}.png")
+    pio.write_image(fig, file_name)
+
+    return concatenated_dfs
 
 
 def generate_one_shape_season_data(
