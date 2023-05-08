@@ -5,14 +5,15 @@ import pathlib
 
 import pandas as pd
 import pytest
+from darts.models import NaiveDrift
 
 from tot.benchmark import SimpleBenchmark
 from tot.datasets.dataset import Dataset
 from tot.evaluation.metrics import ERROR_FUNCTIONS
+from tot.models.models_darts import DartsForecastingModel, LinearRegressionModel, RandomForestModel
 from tot.models.models_naive import NaiveModel, SeasonalNaiveModel
 from tot.models.models_neuralprophet import NeuralProphetModel
 from tot.models.models_prophet import ProphetModel
-from tot.models.models_simple import LinearRegressionModel
 from tot.plotting import plot_plotly
 
 log = logging.getLogger("tot.test")
@@ -27,7 +28,6 @@ ERCOT_FILE = os.path.join(DATA_DIR, "ercot_load_reduced.csv")
 SAVE_DIR = os.path.join(DIR, "tests", "test-logs")
 if not os.path.isdir(SAVE_DIR):
     os.makedirs(SAVE_DIR)
-
 
 NROWS = 128
 EPOCHS = 2
@@ -53,6 +53,8 @@ def test_basic_plot(plotting_backend):
         (SeasonalNaiveModel, {"n_forecasts": 4, "season_length": 12}),
         (ProphetModel, {}),
         (LinearRegressionModel, {"lags": 12, "output_chunk_length": 1, "n_forecasts": 4}),
+        (RandomForestModel, {"lags": 24, "output_chunk_length": 8, "n_forecasts": 8}),
+        (DartsForecastingModel, {"model": NaiveDrift, "retrain": True, "lags": 12, "n_forecasts": 4}),
     ]
 
     benchmark = SimpleBenchmark(

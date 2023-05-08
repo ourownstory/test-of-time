@@ -9,6 +9,7 @@ from typing import List, Optional
 import pandas as pd
 from neuralprophet import set_random_seed
 
+from tot.data_processing.scaler import Scaler
 from tot.datasets.dataset import Dataset
 from tot.df_utils import (
     check_dataframe,
@@ -42,6 +43,7 @@ class Experiment(ABC):
     metadata: Optional[dict] = None
     save_dir: Optional[str] = None
     num_processes: int = 1
+    scaler: Scaler = None
 
     def __post_init__(self):
         data_params = {}
@@ -52,11 +54,14 @@ class Experiment(ABC):
         if hasattr(self.data, "freq") and self.data.freq is not None:
             data_params["freq"] = self.data.freq
         self.params.update({"_data_params": data_params})
+        model_name = self.params.get("model", self.model_class).__name__
+        params_repr = self.params.copy()
+        params_repr.pop("model", None)
         if not hasattr(self, "experiment_name") or self.experiment_name is None:
             self.experiment_name = "{}_{}{}".format(
                 self.data.name,
-                self.model_class.model_name,
-                r"".join([r"_{0}_{1}".format(k, v) for k, v in self.params.items()])
+                model_name,
+                r"".join([r"_{0}_{1}".format(k, v) for k, v in params_repr.items()])
                 .replace("'", "")
                 .replace(":", "_")
                 .replace("{", "_")
@@ -67,10 +72,15 @@ class Experiment(ABC):
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
                 "data": self.data.name,
-                "model": self.model_class.model_name,
+                "model": model_name,
                 "params": str(self.params),
                 "experiment": self.experiment_name,
             }
+
+        scaler = self.params.pop("scaler", None)
+        if scaler is not None:
+            scaling_level = self.params.pop("scaling_level", "per_dataset")
+            self.scaler = Scaler(transformer=scaler, scaling_level=scaling_level)
 
     def write_results_to_csv(self, df, prefix, current_fold=None):
         """
@@ -221,6 +231,10 @@ class SimpleExperiment(Experiment):
             test_percentage=self.test_percentage,
             local_split=False,
         )
+
+        if self.scaler is not None:
+            df_train, df_test = self.scaler.transform(df_train, df_test)
+
         # fit model
         model = self.model_class(self.params)
         model.fit(df=df_train, freq=self.data.freq)
@@ -231,6 +245,10 @@ class SimpleExperiment(Experiment):
             df_test=df_test,
             received_single_time_series=received_single_time_series,
         )
+
+        if self.scaler is not None:
+            fcst_train, fcst_test = self.scaler.inverse_transform(fcst_train, fcst_test)
+
         # data-specific post-processing
         fcst_train, df_train = maybe_drop_added_dates(fcst_train, df_train)
         fcst_test, df_test = maybe_drop_added_dates(fcst_test, df_test)

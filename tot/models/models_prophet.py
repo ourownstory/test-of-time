@@ -28,7 +28,6 @@ except ImportError:
 
 @dataclass
 class ProphetModel(Model):
-    model_name: str = "Prophet"
     model_class: Type = Prophet
 
     def __post_init__(self):
