@@ -9,9 +9,10 @@ from plotly_resampler import unregister_plotly_resampler
 unregister_plotly_resampler()
 
 
+
 set_log_level("INFO")
 DIR = pathlib.Path(__file__).parent.parent.absolute()
-EXP_NAME = '0506_SEASON_unbalanced_scale_twloschiam'
+EXP_NAME = 'EXP_0506_SEASON_unbalanced_amplitude_twhiam'
 EXP_DIR = os.path.join(DIR, f"{EXP_NAME}")
 PLOTS_DIR = os.path.join(EXP_DIR, f"plots")
 PLOT=True
@@ -32,7 +33,7 @@ PARAMS = {
     "epochs": 20,
     "_data_params": {},
 }
-df = generate_one_shape_season_data(series_length=SERIES_LENGTH, date_rng=DATE_RNG, n_ts_groups=[10, 1], offset_per_group=[10, 100], amplitude_per_group=[50, 5])
+df = generate_one_shape_season_data(series_length=SERIES_LENGTH, date_rng=DATE_RNG, n_ts_groups=[10, 1], offset_per_group=[0, 0], amplitude_per_group=[50, 5])
 fcsts_train, fcsts_test, metrics_test, elapsed_time = run_pipeline(
     df=df,
     model_class=MODEL_CLASS,
