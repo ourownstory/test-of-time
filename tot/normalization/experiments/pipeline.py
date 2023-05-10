@@ -1,5 +1,6 @@
 import os
 import pathlib
+import copy
 import time
 from typing import Optional
 
@@ -11,7 +12,7 @@ import plotly.io as pio
 from neuralprophet import set_random_seed
 from pandas import Index
 from plotly_resampler import unregister_plotly_resampler
-
+from statsmodels.tsa.arima_process import ArmaProcess
 from tot.df_utils import (
     _check_min_df_len,
     check_dataframe,
@@ -81,7 +82,7 @@ layout = go.Layout(
 
 def scale_data_global(df_train: pd.DataFrame, df_test: pd.DataFrame, scaler) -> (pd.DataFrame, pd.DataFrame, dict):
     # initialize the scaler object
-    scaler_global = scaler  # e.g. MinMaxScaler(feature_range=(0.1, 1))
+    scaler_global = copy.deepcopy(scaler)  # e.g. MinMaxScaler(feature_range=(0.1, 1))
 
     # fit and transform the "y" column
     scaled_y_train = scaler_global.fit_transform(df_train[["y"]])
@@ -99,7 +100,7 @@ def scale_data_global(df_train: pd.DataFrame, df_test: pd.DataFrame, scaler) -> 
 
 
 def scale_data_local(df_train: pd.DataFrame, df_test: pd.DataFrame, scaler) -> (pd.DataFrame, pd.DataFrame, dict):
-    scalers_local = dict()
+    scalers_local = {}
 
     # create an empty dataframe to store the scaled data
     dfs_local_train_scaled = pd.DataFrame()
@@ -111,7 +112,7 @@ def scale_data_local(df_train: pd.DataFrame, df_test: pd.DataFrame, scaler) -> (
         df_test_local = df_test[df_test["ID"] == id].copy().reset_index(drop=True)
 
         # initialize the scaler object for the region
-        scaler_local = scaler
+        scaler_local = copy.deepcopy(scaler)
 
         # fit and transform the "y" column for the region
         scaled_y_train_local = scaler_local.fit_transform(df_train_local[["y"]])
@@ -122,13 +123,14 @@ def scale_data_local(df_train: pd.DataFrame, df_test: pd.DataFrame, scaler) -> (
             axis=1,
         ).reset_index(drop=True)
 
-        # append the scaler object for the region to the list
-        scalers_local[id] = scaler_local
+
 
         # append the scaled data for the region to the dataframe
         dfs_local_train_scaled = pd.concat([dfs_local_train_scaled, df_train_local_scaled], axis=0)
 
         scaled_y_test_local = scaler_local.fit_transform(df_test_local[["y"]])
+        # append the scaler object for the region to the list
+        scalers_local[str(id)] = scaler_local
 
         # concatenate the scaled "y" values with the original dataframe for the region
         df_test_local_scaled = pd.concat(
@@ -244,7 +246,7 @@ def rescale_data_local(
         fcst_test_local = fcst_test[fcst_test["ID"] == id]
         #
         # get the corresponding scaler object for the region
-        scaler_local = fitted_scalers[id]
+        scaler_local = fitted_scalers[str(id)]
 
         rescaled_train_local = scaler_local.inverse_transform(fcst_train_local[yhat])
         # create a new dataframe with the retransformed "y" values for the region
@@ -449,6 +451,59 @@ def generate_one_shape_season_data(
 
     return concatenated_dfs
 
+def generate_ar(
+        series_length: int,
+        date_rng,
+        n_ts_groups: list,
+        offset_per_group: list,
+        amplitude_per_group: list,
+        PLOT,
+        PLOTS_DIR,
+        EXP_NAME,
+)-> pd.DataFrame:
+    # Create a DataFrame with the simulated data and date range
+    ar_dfs = []
+    np.random.seed(42)
+    # Define AR coefficients (AR(4) model with coefficients 0.5 and 0.3)
+    ar_coeffs = np.array([1, 0.5, -0.3, 0.02, 0.01])
+    ma_coeffs = np.array([1])  # MA coefficients (no MA component)
+    # Create an ARMA process with the specified coefficients
+    ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
+
+
+    ar_data_group_1 = [ar_process.generate_sample(series_length)* amplitude_per_group[0] for _ in range(n_ts_groups[0])]
+    ar_data_norm_goup1 = [(ar_data_group_1[i] - np.mean(ar_data_group_1[i])) for i in range(n_ts_groups[0])]
+
+    for i in range(n_ts_groups[0]):
+        simulated_df = pd.DataFrame(date_rng, columns=['ds'])
+        simulated_df['y'] = ar_data_norm_goup1[i]+offset_per_group[0]
+        simulated_df['ID'] = str(i)
+        ar_dfs.append(simulated_df)
+
+
+    ar_data_group_2 = [ar_process.generate_sample(series_length) * amplitude_per_group[1] for _ in range(n_ts_groups[1])]
+    ar_data_norm_goup2 = [(ar_data_group_2[i] - np.mean(ar_data_group_2[i])) for i in range(n_ts_groups[1])]
+
+    for j in range(n_ts_groups[1]):
+        simulated_df = pd.DataFrame(date_rng, columns=['ds'])
+        simulated_df['y'] = ar_data_norm_goup2[j] + offset_per_group[1]
+        simulated_df['ID'] = str(i+1+j)
+        ar_dfs.append(simulated_df)
+
+    concatenated_dfs = pd.DataFrame()
+    for i, df in enumerate(ar_dfs):
+        concatenated_dfs = pd.concat([concatenated_dfs, df], axis=0)
+    fig = plot_ts(concatenated_dfs)
+    if PLOT:
+        fig.show()
+    fig.update_xaxes(range=[date_rng[0], date_rng[24 * 7]])
+
+    concatenated_dfs.to_csv(os.path.join(PLOTS_DIR, f"DATA_{EXP_NAME}.csv"))
+    file_name = os.path.join(PLOTS_DIR, f"DATA_{EXP_NAME}.png")
+    pio.write_image(fig, file_name)
+
+    return concatenated_dfs
+
 
 def run_pipeline(df, model_class, params, freq, test_percentage, metrics, scale_levels: list, scalers: list):
     elapsed_time = pd.DataFrame(columns=["scaler", "scale_level", "time"])
@@ -565,9 +620,41 @@ def plot_and_save_multiple_dfs(fcst_dfs: list, id_group_1, id_group_2, date_rng,
         fig.add_trace(fig1.data[1], row=1, col=1)
         fig.add_trace(fig2.data[0], row=2, col=1)
         fig.add_trace(fig2.data[1], row=2, col=1)
-        fig.update_xaxes(range=[date_rng[24 * 7 * 14], date_rng[(24 * 7 * 15) - 1]])
-        file_name = os.path.join(PLOTS_DIR, f"{EXP_NAME}_{fcst_df['scaler'][0]}_{fcst_df['scale_level'][0]}.png")
+        fig.update_xaxes(range=[date_rng[-(24 * 7)], date_rng[-1]])
+        file_name = os.path.join(PLOTS_DIR, f"{fcst_df['scaler'][0]}_{fcst_df['scale_level'][0]}.png")
         pio.write_image(fig, file_name)
+
+def plot_and_save_multiple_dfs_multiple_ids(fcst_dfs: list, ids:list, date_rng, PLOT, PLOTS_DIR, EXP_NAME):
+
+    for fcst_df in fcst_dfs:
+        figs=[]
+        for id in ids:
+            fig = plot_plotly(
+                fcst=fcst_df[fcst_df["ID"] == str(id)],
+                df_name="none",
+                xlabel="ds",
+                ylabel="y",
+                # highlight_forecast=None,
+                figsize=(700, 350),
+                plotting_backend="plotly",
+            )
+            figs.append(fig)
+
+        if PLOT:
+            for fig in figs:
+                fig.show()
+
+        # join figs
+        assert len(ids) == len(figs), "ids and figs must have the same length"
+        figure = plotly.subplots.make_subplots(rows=len(ids), cols=1)
+        for i, fig in enumerate(figs):
+            figure.add_trace(fig.data[0], row=i+1, col=1)
+            figure.add_trace(fig.data[1], row=i+1, col=1)
+        figure.update_xaxes(range=[date_rng[-(24 * 7)], date_rng[-1]])
+        figure.update_layout(autosize=False, width=500, height=1400)
+        file_name = os.path.join(PLOTS_DIR, f"{fcst_df['scaler'][0]}_{fcst_df['scale_level'][0]}.png")
+        pio.write_image(figure, file_name)
+        del figure
 
 
 def concat_and_save_results(metric_dfs: list, elapsed_time: pd.DataFrame, EXP_DIR, EXP_NAME):

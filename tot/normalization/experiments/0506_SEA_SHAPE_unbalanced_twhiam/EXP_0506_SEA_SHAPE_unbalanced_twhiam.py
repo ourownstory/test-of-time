@@ -4,7 +4,7 @@ import pathlib
 import pandas as pd
 from neuralprophet import set_log_level
 from plotly_resampler import unregister_plotly_resampler
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, MaxAbsScaler
 
 from tot.models.models_neuralprophet import NeuralProphetModel
 from tot.normalization.experiments.pipeline import (
@@ -22,7 +22,7 @@ DIR = pathlib.Path(__file__).parent.parent.absolute()
 EXP_NAME = "0506_SEA_SHAPE_unbalanced_twhiam"
 EXP_DIR = os.path.join(DIR, f"{EXP_NAME}")
 PLOTS_DIR = os.path.join(EXP_DIR, f"plots")
-PLOT = True
+PLOT = False
 
 SERIES_LENGTH = 24 * 7 * 15
 DATE_RNG = date_rng = pd.date_range(start=pd.to_datetime("2011-01-01 01:00:00"), periods=SERIES_LENGTH, freq="H")
@@ -32,7 +32,7 @@ PARAMS = {
     "n_changepoints": 0,
     "growth": "off",
     "global_normalization": True,
-    "normalize": "minmax",
+    "normalize": "off",
     # Disable seasonality components, except yearly
     "yearly_seasonality": False,
     "weekly_seasonality": False,
@@ -59,7 +59,7 @@ fcsts_train, fcsts_test, metrics_test, elapsed_time = run_pipeline(
     test_percentage=0.4,
     metrics=["MAPE", "MAE", "RMSE", "MASE"],
     scale_levels=[None, "local", "global"],
-    scalers=[MinMaxScaler(feature_range=(0.1, 1)), StandardScaler()],
+    scalers=[MinMaxScaler(feature_range=(0, 0.5)), StandardScaler(), MaxAbsScaler()],
 )
 plot_and_save_multiple_dfs(fcst_dfs=fcsts_test, date_rng=DATE_RNG, id_group_1=str(1), id_group_2=str(10), PLOT=PLOT, PLOTS_DIR= PLOTS_DIR, EXP_NAME=EXP_NAME,)
 concat_and_save_results(metric_dfs=metrics_test, elapsed_time=elapsed_time, EXP_DIR=EXP_DIR, EXP_NAME=EXP_NAME,)

@@ -19,10 +19,10 @@ unregister_plotly_resampler()
 
 set_log_level("INFO")
 DIR = pathlib.Path(__file__).parent.parent.absolute()
-EXP_NAME = "EXP_0506_SEASON_unbalanced_amplitude_twhiam"
+EXP_NAME = "0506_SEASON_unbalanced_amplitude_twhiam"
 EXP_DIR = os.path.join(DIR, f"{EXP_NAME}")
 PLOTS_DIR = os.path.join(EXP_DIR, f"plots")
-PLOT = True
+PLOT = False
 
 SERIES_LENGTH = 24 * 7 * 15
 DATE_RNG = date_rng = pd.date_range(start=pd.to_datetime("2011-01-01 01:00:00"), periods=SERIES_LENGTH, freq="H")
@@ -32,7 +32,7 @@ PARAMS = {
     "n_changepoints": 0,
     "growth": "off",
     "global_normalization": True,
-    "normalize": "minmax",
+    "normalize": "off",
     # Disable seasonality components, except yearly
     "yearly_seasonality": False,
     "weekly_seasonality": False,
