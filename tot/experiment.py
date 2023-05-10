@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from multiprocessing.pool import Pool
 from typing import List, Optional
+from sklearn.preprocessing import MinMaxScaler
 
 import pandas as pd
 from neuralprophet import set_random_seed
@@ -81,6 +82,7 @@ class Experiment(ABC):
         if scaler is not None:
             scaling_level = self.params.pop("scaling_level", "per_dataset")
             self.scaler = Scaler(transformer=scaler, scaling_level=scaling_level)
+        self.weighted_loss = self.params.pop("weighted_loss", False)
 
     def write_results_to_csv(self, df, prefix, current_fold=None):
         """
@@ -237,7 +239,12 @@ class SimpleExperiment(Experiment):
 
         # fit model
         model = self.model_class(self.params)
-        model.fit(df=df_train, freq=self.data.freq)
+        if self.weighted_loss:
+            vars = (MinMaxScaler().fit_transform(self.scaler.transformer.var_.reshape(-1, 1)) + 1).squeeze()
+            ids_weights = {id: var for id, var in zip(df_train["ID"].unique(), vars)}
+        else:
+            ids_weights = {}
+        model.fit(df=df_train, freq=self.data.freq, ids_weights=ids_weights)
         # predict model
         fcst_train, fcst_test = self._make_forecast(
             model=model,

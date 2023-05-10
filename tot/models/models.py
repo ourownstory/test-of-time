@@ -23,7 +23,7 @@ class Model(ABC):
     params: dict
 
     @abstractmethod
-    def fit(self, df: pd.DataFrame, freq: str):
+    def fit(self, df: pd.DataFrame, freq: str, ids_weights: dict):
         pass
 
     @abstractmethod

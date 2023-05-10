@@ -56,7 +56,7 @@ class ProphetModel(Model):
         self.n_forecasts = 1
         self.n_lags = 0
 
-    def fit(self, df: pd.DataFrame, freq: str):
+    def fit(self, df: pd.DataFrame, freq: str, ids_weights: dict):
         """Fits the model.
 
         Parameters
@@ -65,6 +65,8 @@ class ProphetModel(Model):
             DataFrame with columns "ds" and "y" and optionally "ID"
         freq : str
             Frequency of the time series
+        ids_weights : dict
+            Weights to apply to the loss function per ID
 
         Returns
         -------
