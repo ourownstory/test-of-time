@@ -504,6 +504,59 @@ def generate_ar(
 
     return concatenated_dfs
 
+def generate_ar(
+        series_length: int,
+        date_rng,
+        n_ts_groups: list,
+        offset_per_group: list,
+        amplitude_per_group: list,
+        PLOT,
+        PLOTS_DIR,
+        EXP_NAME,
+)-> pd.DataFrame:
+    # Create a DataFrame with the simulated data and date range
+    ar_dfs = []
+    np.random.seed(42)
+    # Define AR coefficients (AR(4) model with coefficients 0.5 and 0.3)
+    ar_coeffs = np.array([1, 0.5, -0.3, 0.02, 0.01])
+    ma_coeffs = np.array([1])  # MA coefficients (no MA component)
+    # Create an ARMA process with the specified coefficients
+    ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
+
+
+    ar_data_group_1 = [ar_process.generate_sample(series_length)* amplitude_per_group[0] for _ in range(n_ts_groups[0])]
+    ar_data_norm_goup1 = [(ar_data_group_1[i] - np.mean(ar_data_group_1[i])) for i in range(n_ts_groups[0])]
+
+    for i in range(n_ts_groups[0]):
+        simulated_df = pd.DataFrame(date_rng, columns=['ds'])
+        simulated_df['y'] = ar_data_norm_goup1[i]+offset_per_group[0]
+        simulated_df['ID'] = str(i)
+        ar_dfs.append(simulated_df)
+
+
+    ar_data_group_2 = [ar_process.generate_sample(series_length) * amplitude_per_group[1] for _ in range(n_ts_groups[1])]
+    ar_data_norm_goup2 = [(ar_data_group_2[i] - np.mean(ar_data_group_2[i])) for i in range(n_ts_groups[1])]
+
+    for j in range(n_ts_groups[1]):
+        simulated_df = pd.DataFrame(date_rng, columns=['ds'])
+        simulated_df['y'] = ar_data_norm_goup2[j] + offset_per_group[1]
+        simulated_df['ID'] = str(i+1+j)
+        ar_dfs.append(simulated_df)
+
+    concatenated_dfs = pd.DataFrame()
+    for i, df in enumerate(ar_dfs):
+        concatenated_dfs = pd.concat([concatenated_dfs, df], axis=0)
+    fig = plot_ts(concatenated_dfs)
+    if PLOT:
+        fig.show()
+    fig.update_xaxes(range=[date_rng[0], date_rng[24 * 7]])
+
+    concatenated_dfs.to_csv(os.path.join(PLOTS_DIR, f"DATA_{EXP_NAME}.csv"))
+    file_name = os.path.join(PLOTS_DIR, f"DATA_{EXP_NAME}.png")
+    pio.write_image(fig, file_name)
+
+    return concatenated_dfs
+
 
 def run_pipeline(df, model_class, params, freq, test_percentage, metrics, scale_levels: list, scalers: list):
     elapsed_time = pd.DataFrame(columns=["scaler", "scale_level", "time"])
