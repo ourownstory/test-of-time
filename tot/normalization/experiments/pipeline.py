@@ -164,6 +164,16 @@ def scale_data(
 
     return df_train_scaled, df_test_scaled, scalers
 
+def run_scale_pipeline(df_train: pd.DataFrame, df_test: pd.DataFrame, scalers:list, scale_level: Optional[str] = "local"):
+    dfs_train_scaled= {}
+    dfs_test_scaled= {}
+    scalers_fitted= {}
+    for scaler in scalers:
+        df_train_scaled, df_test_scaled, scaler_fitted = scale_data(df_train=df_train, df_test=df_test, scaler=scaler, scale_level=scale_level)
+        dfs_train_scaled[f'{scaler}'] = df_train_scaled
+        dfs_test_scaled[f'{scaler}'] = df_test_scaled
+        scalers_fitted[f'{scaler}'] = scaler_fitted
+    return dfs_train_scaled, dfs_test_scaled, scalers_fitted
 
 def data_specific_preprocessing(df, freq, test_percentage=0.25):
     # prep_or_copy_df() ensures that the df has an "ID" column to be usable in the further process
@@ -656,6 +666,44 @@ def plot_and_save_multiple_dfs_multiple_ids(fcst_dfs: list, ids:list, date_rng, 
         pio.write_image(figure, file_name)
         del figure
 
+def plot_and_save_scaled_dfs(df_train: pd.DataFrame, df_test: pd.DataFrame, dfs_train: dict, dfs_test: dict, date_rng, PLOT, PLOTS_DIR):
+    figs_df_train = []
+    figs_df_test = []
+    fig_keys = []
+    for key, df_train in dfs_train.items():
+        fig = plot_ts(df_train)
+        figs_df_train.append(fig)
+        fig_keys.append(key)
+    for key, df_test in dfs_test.items():
+        fig = plot_ts(df_test)
+        figs_df_test.append(fig)
+    fig_df_train = plot_ts(df_train)
+    fig_df_test = plot_ts(df_test)
+
+    if PLOT:
+        for fig in figs_df_train:
+            fig.show()
+        for fig in figs_df_test:
+            fig.show()
+        fig_df_train.show()
+        fig_df_test.show()
+
+    # join figs
+    for i, fig in enumerate(figs_df_train):
+        fig.update_xaxes(range=[date_rng[0], date_rng[24*7]])
+        file_name = os.path.join(PLOTS_DIR, f"{fig_keys[i]}_df_train.png")
+        pio.write_image(fig, file_name)
+        del fig
+    for i, fig in enumerate(figs_df_test):
+        fig.update_xaxes(range=[date_rng[-(24 * 7)], date_rng[-1]])
+        file_name = os.path.join(PLOTS_DIR, f"{fig_keys[i]}_df_test.png")
+        pio.write_image(fig, file_name)
+    fig_df_train.update_xaxes(range=[date_rng[-(24 * 7)], date_rng[-1]])
+    file_name = os.path.join(PLOTS_DIR, f"non-scaled_df_train.png")
+    pio.write_image(fig_df_train, file_name)
+    fig_df_test.update_xaxes(range=[date_rng[-(24 * 7)], date_rng[-1]])
+    file_name = os.path.join(PLOTS_DIR, f"non-scaled_df_test.png")
+    pio.write_image(fig_df_test, file_name)
 
 def concat_and_save_results(metric_dfs: list, elapsed_time: pd.DataFrame, EXP_DIR, EXP_NAME):
     df_metrics_concatenated = pd.DataFrame()
