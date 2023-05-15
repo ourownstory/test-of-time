@@ -1,11 +1,12 @@
 from typing import Optional
-
+import logging
 import numpy as np
 import pandas as pd
 
 from tot.error_utils import raise_if
 from tot.evaluation.metrics import ERROR_FUNCTIONS
 
+log = logging.getLogger("tot.benchmark")
 
 def calculate_metrics_by_ID_for_forecast_step(
     fcst_df: pd.DataFrame,

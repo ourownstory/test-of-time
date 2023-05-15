@@ -10,7 +10,7 @@ from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 from neuralprophet import set_random_seed
 
-from tot.data_processing.scaler import Scaler
+from tot.data_processing.scaler import Scaler, NoScaler
 from tot.datasets.dataset import Dataset
 from tot.df_utils import (
     check_dataframe,
@@ -59,30 +59,24 @@ class Experiment(ABC):
         params_repr = self.params.copy()
         params_repr.pop("model", None)
         if not hasattr(self, "experiment_name") or self.experiment_name is None:
-            self.experiment_name = "{}_{}{}".format(
+            self.experiment_name = "{}_{}".format(
                 self.data.name,
                 model_name,
-                r"".join([r"_{0}_{1}".format(k, v) for k, v in params_repr.items()])
-                .replace("'", "")
-                .replace(":", "_")
-                .replace("{", "_")
-                .replace("}", "_")
-                .replace("[", "_")
-                .replace("]", "_"),
             )
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
                 "data": self.data.name,
                 "model": model_name,
-                "params": str(self.params),
-                "experiment": self.experiment_name,
+                "scaler": self.params.get("scaler", "no scaler"),
+                "scaling level": self.params.get("scaling_level", "per_dataset"),
+                "weighted": self.params.get("weighted_loss", "none"),
             }
 
         scaler = self.params.pop("scaler", None)
         if scaler is not None:
             scaling_level = self.params.pop("scaling_level", "per_dataset")
             self.scaler = Scaler(transformer=scaler, scaling_level=scaling_level)
-        self.weighted_loss = self.params.pop("weighted_loss", False)
+        self.weighted_loss = self.params.pop("weighted_loss", None)
 
     def write_results_to_csv(self, df, prefix, current_fold=None):
         """
@@ -233,16 +227,32 @@ class SimpleExperiment(Experiment):
             test_percentage=self.test_percentage,
             local_split=False,
         )
+        avgs = df_train.groupby(['ID'])['y'].mean().array
+        print(avgs)
+        stds = df_train.groupby(['ID'])['y'].std().array
+        print(stds)
 
         if self.scaler is not None:
+            log.info("using scaler")
             df_train, df_test = self.scaler.transform(df_train, df_test)
 
         # fit model
         model = self.model_class(self.params)
-        if self.weighted_loss:
-            vars = (MinMaxScaler().fit_transform(self.scaler.transformer.var_.reshape(-1, 1)) + 1).squeeze()
-            ids_weights = {id: var for id, var in zip(df_train["ID"].unique(), vars)}
+        if self.weighted_loss == "avg":
+            log.info("weighted loss set to avg")
+            weights_scaled = (MinMaxScaler(feature_range=(1, 2)).fit_transform(avgs.reshape(-1, 1))).squeeze()
+            ids_weights = {id: var for id, var in zip(df_train["ID"].unique(), weights_scaled)}
+        elif self.weighted_loss == "std":
+            log.info("weighted loss set to std")
+            weights_scaled = (MinMaxScaler(feature_range=(1, 2)).fit_transform(stds.reshape(-1, 1))).squeeze()
+            ids_weights = {id: var for id, var in zip(df_train["ID"].unique(), weights_scaled)}
+        elif self.weighted_loss == "std*avg":
+            weights = stds * avgs
+            log.info("weighted loss set to std * avg")
+            weights_scaled = (MinMaxScaler(feature_range=(1, 2)).fit_transform(weights.reshape(-1, 1))).squeeze()
+            ids_weights = {id: var for id, var in zip(df_train["ID"].unique(), weights_scaled)}
         else:
+            log.info("weighted loss set to none")
             ids_weights = {}
         model.fit(df=df_train, freq=self.data.freq, ids_weights=ids_weights)
         # predict model

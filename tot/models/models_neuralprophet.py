@@ -31,12 +31,19 @@ class NeuralProphetModel(Model):
 
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
-
+        model_params.update({"n_changepoints": 0,
+                             "growth": "off",
+                             "global_normalization": True,
+                             "normalize": "off",
+                             "yearly_seasonality": False,
+                             "weekly_seasonality": False,
+                             "daily_seasonality": True})
         # identifiy model_params
         if "lagged_regressors" in model_params.keys():
             model_params.pop("lagged_regressors")
         if "future_regressors" in model_params.keys():
             model_params.pop("future_regressors")
+
         self.model = self.model_class(**model_params)
 
         # map lagged regressors
@@ -99,10 +106,10 @@ class NeuralProphetModel(Model):
         _ = self.model.fit(df=df, freq=freq, progress="none", minimal=True, ids_weights=ids_weights)
 
     def predict(
-        self,
-        received_single_time_series,
-        df: pd.DataFrame,
-        df_historic: pd.DataFrame = None,
+            self,
+            received_single_time_series,
+            df: pd.DataFrame,
+            df_historic: pd.DataFrame = None,
     ):
         """Runs the model to make predictions.
 

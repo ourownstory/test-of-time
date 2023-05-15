@@ -38,9 +38,9 @@ class Scaler:
 
     def __post_init__(self):
         is_transformer_valid = (
-            callable(getattr(self.transformer, "fit", None))
-            and callable(getattr(self.transformer, "transform", None))
-            and callable(getattr(self.transformer, "inverse_transform", None))
+                callable(getattr(self.transformer, "fit", None))
+                and callable(getattr(self.transformer, "transform", None))
+                and callable(getattr(self.transformer, "inverse_transform", None))
         )
         raise_if(
             not is_transformer_valid,
@@ -216,3 +216,7 @@ class Scaler:
         else:
             rescale_method = self._rescale
         return self._inverse_transform(df_train, rescale_method), self._inverse_transform(df_test, rescale_method)
+
+
+class NoScaler:
+    pass

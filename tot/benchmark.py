@@ -227,7 +227,7 @@ class SimpleBenchmark(Benchmark):
             for model_class, params in self.model_classes_and_params:
                 exp = SimpleExperiment(
                     model_class=model_class,
-                    params=params,
+                    params=params.copy(),
                     data=ts,
                     metrics=self.metrics,
                     test_percentage=self.test_percentage,
