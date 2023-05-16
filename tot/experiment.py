@@ -9,8 +9,9 @@ from sklearn.preprocessing import MinMaxScaler
 
 import pandas as pd
 from neuralprophet import set_random_seed
+import numpy as np
 
-from tot.data_processing.scaler import Scaler, NoScaler
+from tot.data_processing.scaler import Scaler
 from tot.datasets.dataset import Dataset
 from tot.df_utils import (
     check_dataframe,
@@ -227,33 +228,34 @@ class SimpleExperiment(Experiment):
             test_percentage=self.test_percentage,
             local_split=False,
         )
+
         avgs = df_train.groupby(['ID'])['y'].mean().array
-        print(avgs)
         stds = df_train.groupby(['ID'])['y'].std().array
-        print(stds)
 
         if self.scaler is not None:
             log.info("using scaler")
             df_train, df_test = self.scaler.transform(df_train, df_test)
 
-        # fit model
-        model = self.model_class(self.params)
         if self.weighted_loss == "avg":
             log.info("weighted loss set to avg")
-            weights_scaled = (MinMaxScaler(feature_range=(1, 2)).fit_transform(avgs.reshape(-1, 1))).squeeze()
-            ids_weights = {id: var for id, var in zip(df_train["ID"].unique(), weights_scaled)}
+            weights = avgs
         elif self.weighted_loss == "std":
             log.info("weighted loss set to std")
-            weights_scaled = (MinMaxScaler(feature_range=(1, 2)).fit_transform(stds.reshape(-1, 1))).squeeze()
-            ids_weights = {id: var for id, var in zip(df_train["ID"].unique(), weights_scaled)}
+            weights = stds
         elif self.weighted_loss == "std*avg":
-            weights = stds * avgs
             log.info("weighted loss set to std * avg")
-            weights_scaled = (MinMaxScaler(feature_range=(1, 2)).fit_transform(weights.reshape(-1, 1))).squeeze()
-            ids_weights = {id: var for id, var in zip(df_train["ID"].unique(), weights_scaled)}
+            weights = stds * avgs
         else:
             log.info("weighted loss set to none")
-            ids_weights = {}
+            weights = None
+
+        ids_weights = None
+        if weights is not None:
+            weights_scaled = (MinMaxScaler(feature_range=(1, 2)).fit_transform(weights.reshape(-1, 1))).squeeze()
+            ids_weights = {id: var for id, var in zip(df_train["ID"].unique(), weights_scaled)}
+
+        # fit model
+        model = self.model_class(self.params)
         model.fit(df=df_train, freq=self.data.freq, ids_weights=ids_weights)
         # predict model
         fcst_train, fcst_test = self._make_forecast(

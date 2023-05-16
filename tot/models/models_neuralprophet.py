@@ -31,13 +31,6 @@ class NeuralProphetModel(Model):
 
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
-        model_params.update({"n_changepoints": 0,
-                             "growth": "off",
-                             "global_normalization": True,
-                             "normalize": "off",
-                             "yearly_seasonality": False,
-                             "weekly_seasonality": False,
-                             "daily_seasonality": True})
         # identifiy model_params
         if "lagged_regressors" in model_params.keys():
             model_params.pop("lagged_regressors")

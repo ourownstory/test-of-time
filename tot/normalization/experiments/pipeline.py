@@ -190,7 +190,7 @@ def model_specific_preprocessing(df_train, df_test, model):
 
 
 def fit_and_predict(model, df_train, df_test, freq, received_single_time_series):
-    model.fit(df=df_train, freq=freq)
+    model.fit(df=df_train, freq=freq, ids_weights=None)
     # the model-individual predict function outputs the forecasts as a df
     fcst_train = model.predict(df=df_train, received_single_time_series=received_single_time_series)
     fcst_test = model.predict(df=df_test, received_single_time_series=received_single_time_series)
