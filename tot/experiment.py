@@ -60,16 +60,19 @@ class Experiment(ABC):
         params_repr = self.params.copy()
         params_repr.pop("model", None)
         if not hasattr(self, "experiment_name") or self.experiment_name is None:
-            self.experiment_name = "{}_{}".format(
+            self.experiment_name = "{}_{}_{}_{}_{}".format(
                 self.data.name,
                 model_name,
-            )
+                self.params.get("scaler", "no scaler"),
+                self.params.get("scaling_level", "none"),
+                self.params.get("weighted_loss", "none")
+            ).replace("(", "").replace(")", "")
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
                 "data": self.data.name,
                 "model": model_name,
                 "scaler": self.params.get("scaler", "no scaler"),
-                "scaling level": self.params.get("scaling_level", "per_dataset"),
+                "scaling level": self.params.get("scaling_level", "none"),
                 "weighted": self.params.get("weighted_loss", "none"),
             }
 

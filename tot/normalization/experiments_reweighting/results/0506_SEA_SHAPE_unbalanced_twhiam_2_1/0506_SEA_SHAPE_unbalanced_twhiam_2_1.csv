@@ -1,0 +1,2 @@
+,data,model,scaler,scaling level,weighted,MAE,RMSE,MAPE,MASE
+0,0506_SEA_SHAPE_unbalanced_twhiam_2_1,NeuralProphetModel,no scaler,none,none,20.863791783650715,26.103390462043908,1318685559466.6667,1.2017245982659408

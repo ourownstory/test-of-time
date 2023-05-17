@@ -1,0 +1,2 @@
+,data,model,scaler,scaling level,weighted,MAE,RMSE,MAPE,MASE
+0,EIA,NeuralProphetModel,no scaler,none,none,66.21396506916393,91.3444963162682,1.7749501730908046,0.39120379952543183
