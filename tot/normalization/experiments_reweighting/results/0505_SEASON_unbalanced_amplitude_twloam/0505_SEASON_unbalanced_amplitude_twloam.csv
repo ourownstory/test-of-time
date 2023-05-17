@@ -1,0 +1,12 @@
+,data,model,scaler,scaling level,weighted,MAE,RMSE,MAPE,MASE
+0,0505_SEASON_unbalanced_amplitude_twloam,NeuralProphetModel,no scaler,none,none,10.133012078025125,12.711817093081045,40559014595490.91,2.244841023927871
+1,0505_SEASON_unbalanced_amplitude_twloam,NeuralProphetModel,StandardScaler(),per_time_series,none,0.0001702867064688524,0.0002006784049083829,2780857400.0,3.77248720881171e-05
+2,0505_SEASON_unbalanced_amplitude_twloam,NeuralProphetModel,StandardScaler(),per_time_series,std*avg,0.00017045172254173932,0.00020094364660874352,2778903363.6363635,3.776142931781067e-05
+3,0505_SEASON_unbalanced_amplitude_twloam,NeuralProphetModel,StandardScaler(),per_time_series,avg,0.00017045172254173932,0.00020094364660874352,2778903363.6363635,3.776142931781067e-05
+4,0505_SEASON_unbalanced_amplitude_twloam,NeuralProphetModel,StandardScaler(),per_time_series,std,0.00017045172254173932,0.00020094364660874352,2778903363.6363635,3.776142931781067e-05
+5,0505_SEASON_unbalanced_amplitude_twloam,NeuralProphetModel,StandardScaler(),per_dataset,none,15.061946522105824,18.01570989436924,874743581900800.0,3.336784284147484
+6,0505_SEASON_unbalanced_amplitude_twloam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,none,0.0001807207392465154,0.00021143151438592314,3363162400.0,4.0036400451445666e-05
+7,0505_SEASON_unbalanced_amplitude_twloam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std*avg,0.00017904381886844269,0.00021000733003718162,3340613400.0,3.966489989173332e-05
+8,0505_SEASON_unbalanced_amplitude_twloam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,avg,0.00017904381886844269,0.00021000733003718162,3340613400.0,3.966489989173332e-05
+9,0505_SEASON_unbalanced_amplitude_twloam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std,0.00017904381886844269,0.00021000733003718162,3340613400.0,3.966489989173332e-05
+10,0505_SEASON_unbalanced_amplitude_twloam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_dataset,none,8.555214448408647,10.737664679385501,3298101671563.636,1.8952998589567627

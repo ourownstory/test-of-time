@@ -66,10 +66,10 @@ def plot_forecast(df, show=True, save=False, file_name=None):
 
 def gen_model_and_params(common_params, model_class):
     model_classes_and_params = [(model_class, common_params)]
-    for scaler in [StandardScaler()]: #, MinMaxScaler(feature_range=(-1, 1))]:
-        for scaling_level in ["per_time_series"]: #, "per_dataset"]:
+    for scaler in [StandardScaler(), MinMaxScaler(feature_range=(-1, 1))]:
+        for scaling_level in ["per_time_series", "per_dataset"]:
             if scaling_level == "per_time_series":
-                for weighting in ["none"]: #, "std*avg", "avg", "std"]:
+                for weighting in ["none", "std*avg", "avg", "std"]:
                     params = common_params.copy()
                     params.update(
                         {"scaler": scaler, "scaling_level": scaling_level, "weighted_loss": weighting})

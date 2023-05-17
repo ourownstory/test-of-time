@@ -1,0 +1,12 @@
+,data,model,scaler,scaling level,weighted,MAE,RMSE,MAPE,MASE
+0,full,NeuralProphetModel,no scaler,none,none,61.878610491752625,86.44801297464261,1.1989723949227482,0.33388565070250087
+1,full,NeuralProphetModel,StandardScaler(),per_time_series,none,54.94158220291138,77.36546756622924,1.0597258806228638,0.29645471639814824
+2,full,NeuralProphetModel,StandardScaler(),per_time_series,std*avg,54.398125767707825,76.82381348072317,1.054751279298216,0.29352232499416575
+3,full,NeuralProphetModel,StandardScaler(),per_time_series,avg,54.389631390571594,76.81535788180241,1.0547346610110253,0.2934764908906701
+4,full,NeuralProphetModel,StandardScaler(),per_time_series,std,54.391157269477844,76.8149978946657,1.054877880960703,0.29348472425382194
+5,full,NeuralProphetModel,StandardScaler(),per_dataset,none,56.761850357055664,80.21976170193905,1.2340389774180949,0.30627655002158605
+6,full,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,none,54.10745930671692,76.52280001438558,1.051357196411118,0.29195394199890967
+7,full,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std*avg,53.68994414806366,76.11679727125579,1.0485605045687407,0.28970110666021565
+8,full,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,avg,53.69131350517273,76.12597121011765,1.0486235725693405,0.2897084954604129
+9,full,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std,53.6933228969574,76.11825010981497,1.0489104606676847,0.2897193377705134
+10,full,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_dataset,none,57.795106530189514,81.33374121584242,1.2367116811219603,0.31185181111693905

@@ -9,7 +9,7 @@ DATE_RNG = date_rng = pd.date_range(start=pd.to_datetime("2011-01-01 01:00:00"),
 df = generate_canceling_shape_season_data(
     series_length=SERIES_LENGTH,
     date_rng=DATE_RNG,
-    n_ts_groups=[2, 1],
+    n_ts_groups=[2, 1], # todo run with switched
     offset_per_group=[0, 0],
     amplitude_per_group=[50, 5],
     PLOT=False,

@@ -1,0 +1,12 @@
+,data,model,scaler,scaling level,weighted,MAE,RMSE,MAPE,MASE
+0,0506_SEA_SHAPE_unbalanced_twhiam_2_1_n_lags,NeuralProphetModel,no scaler,none,none,7.416743111813655e-06,8.981997536314997e-06,61160458.333333336,4.271938068069804e-07
+1,0506_SEA_SHAPE_unbalanced_twhiam_2_1_n_lags,NeuralProphetModel,StandardScaler(),per_time_series,none,0.05590617066870133,0.05595711216009246,606739421866.6666,0.0032201155563716284
+2,0506_SEA_SHAPE_unbalanced_twhiam_2_1_n_lags,NeuralProphetModel,StandardScaler(),per_time_series,std*avg,0.035108910873532295,0.03514556142116302,520099379200.0,0.0020222231055867907
+3,0506_SEA_SHAPE_unbalanced_twhiam_2_1_n_lags,NeuralProphetModel,StandardScaler(),per_time_series,avg,0.035108910873532295,0.03514556142116302,520099379200.0,0.0020222231055867907
+4,0506_SEA_SHAPE_unbalanced_twhiam_2_1_n_lags,NeuralProphetModel,StandardScaler(),per_time_series,std,0.035108910873532295,0.03514556142116302,520099379200.0,0.0020222231055867907
+5,0506_SEA_SHAPE_unbalanced_twhiam_2_1_n_lags,NeuralProphetModel,StandardScaler(),per_dataset,none,0.0003307204460725188,0.00039009180093401845,4936654033.333333,1.9049025187562902e-05
+6,0506_SEA_SHAPE_unbalanced_twhiam_2_1_n_lags,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,none,0.0022128645117239407,0.0025049932718991465,21620357333.333332,0.00012745783431620776
+7,0506_SEA_SHAPE_unbalanced_twhiam_2_1_n_lags,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std*avg,0.0020366777219654373,0.0023066466736311408,19967140266.666668,0.00011730972694733449
+8,0506_SEA_SHAPE_unbalanced_twhiam_2_1_n_lags,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,avg,0.0020366777219654373,0.0023066466736311408,19967140266.666668,0.00011730972694733449
+9,0506_SEA_SHAPE_unbalanced_twhiam_2_1_n_lags,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std,0.0020366777219654373,0.0023066466736311408,19967140266.666668,0.00011730972694733449
+10,0506_SEA_SHAPE_unbalanced_twhiam_2_1_n_lags,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_dataset,none,0.0019277165022989113,0.002287552460900758,64794855466.666664,0.00011103371636938526

@@ -1,5 +1,5 @@
 from tot.models import NeuralProphetModel
-from tot.normalization.experiments.pipeline import generate_canceling_shape_season_data
+from tot.normalization.experiments.pipeline import generate_one_shape_season_data
 from tot.normalization.experiments_reweighting.pipeline_reweighting import run
 import pandas as pd
 

@@ -1,0 +1,12 @@
+,data,model,scaler,scaling level,weighted,MAE,RMSE,MAPE,MASE
+0,0506_SEA_SHAPE_unbalanced_twhiam_2_1_lr,NeuralProphetModel,no scaler,none,none,34.56278864542643,45.873813727976795,13022494583466.666,1.9907672455024843
+1,0506_SEA_SHAPE_unbalanced_twhiam_2_1_lr,NeuralProphetModel,StandardScaler(),per_time_series,none,19.51621373494466,22.76804125542182,5203573555200.0,1.1241060279693234
+2,0506_SEA_SHAPE_unbalanced_twhiam_2_1_lr,NeuralProphetModel,StandardScaler(),per_time_series,std*avg,11.981228192647299,14.04168717137312,2922785314133.3335,0.6901016261015558
+3,0506_SEA_SHAPE_unbalanced_twhiam_2_1_lr,NeuralProphetModel,StandardScaler(),per_time_series,avg,11.981228192647299,14.04168717137312,2922785314133.3335,0.6901016261015558
+4,0506_SEA_SHAPE_unbalanced_twhiam_2_1_lr,NeuralProphetModel,StandardScaler(),per_time_series,std,11.981228192647299,14.04168717137312,2922785314133.3335,0.6901016261015558
+5,0506_SEA_SHAPE_unbalanced_twhiam_2_1_lr,NeuralProphetModel,StandardScaler(),per_dataset,none,26.49172592163086,32.90859894524295,4992226781866.667,1.5258855638834736
+6,0506_SEA_SHAPE_unbalanced_twhiam_2_1_lr,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,none,28.376471519470215,31.879637449944713,87408749226666.67,1.634444217549288
+7,0506_SEA_SHAPE_unbalanced_twhiam_2_1_lr,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std*avg,17.48721440633138,19.428103776283077,78568180940800.0,1.0072385655088152
+8,0506_SEA_SHAPE_unbalanced_twhiam_2_1_lr,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,avg,17.48721440633138,19.428103776283077,78568180940800.0,1.0072385655088152
+9,0506_SEA_SHAPE_unbalanced_twhiam_2_1_lr,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std,17.48721440633138,19.428103776283077,78568180940800.0,1.0072385655088152
+10,0506_SEA_SHAPE_unbalanced_twhiam_2_1_lr,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_dataset,none,27.66024907430013,34.60251466994146,1768975052800.0,1.5931908279873035

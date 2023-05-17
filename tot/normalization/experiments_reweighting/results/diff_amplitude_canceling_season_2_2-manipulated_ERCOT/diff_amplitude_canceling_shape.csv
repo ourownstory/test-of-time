@@ -1,0 +1,12 @@
+,data,model,scaler,scaling level,weighted,MAE,RMSE,MAPE,MASE
+0,diff_amplitude_canceling_shape,NeuralProphetModel,no scaler,none,none,81.98915362358093,113.65242649243028,1.3630151515826583,0.3262781064072859
+1,diff_amplitude_canceling_shape,NeuralProphetModel,StandardScaler(),per_time_series,none,70.925448179245,99.05420853847932,1.2677366379648447,0.2822497843343565
+2,diff_amplitude_canceling_shape,NeuralProphetModel,StandardScaler(),per_time_series,std*avg,69.75028610229492,98.05933853390769,1.2660331558436155,0.2775731943191786
+3,diff_amplitude_canceling_shape,NeuralProphetModel,StandardScaler(),per_time_series,avg,69.70535278320312,98.0472176417852,1.2661120621487498,0.2773943809320424
+4,diff_amplitude_canceling_shape,NeuralProphetModel,StandardScaler(),per_time_series,std,69.76751947402954,98.08342074685847,1.2659251457080245,0.27764177499903786
+5,diff_amplitude_canceling_shape,NeuralProphetModel,StandardScaler(),per_dataset,none,74.03478050231934,103.45523647619507,1.435182150453329,0.2946234583842357
+6,diff_amplitude_canceling_shape,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,none,70.35379242897034,98.5719216410676,1.271951338276267,0.2799748644519929
+7,diff_amplitude_canceling_shape,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std*avg,69.54519319534302,97.95476892770729,1.2738428311422467,0.2767570214187356
+8,diff_amplitude_canceling_shape,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,avg,69.50531053543091,97.94114014374196,1.2740427860990167,0.27659830726961343
+9,diff_amplitude_canceling_shape,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std,69.55303263664246,97.96655367655781,1.2736986856907606,0.27678821869239223
+10,diff_amplitude_canceling_shape,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_dataset,none,76.19196224212646,105.67985491837163,1.464882306754589,0.3032080228312849

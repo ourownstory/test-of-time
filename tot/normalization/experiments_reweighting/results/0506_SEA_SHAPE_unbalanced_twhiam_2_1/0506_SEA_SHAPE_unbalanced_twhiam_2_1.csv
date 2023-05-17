@@ -1,2 +1,12 @@
 ,data,model,scaler,scaling level,weighted,MAE,RMSE,MAPE,MASE
-0,0506_SEA_SHAPE_unbalanced_twhiam_2_1,NeuralProphetModel,no scaler,none,none,20.863791783650715,26.103390462043908,1318685559466.6667,1.2017245982659408
+0,0506_SEA_SHAPE_unbalanced_twhiam_2_1,NeuralProphetModel,no scaler,none,none,20.866044759750366,26.112329080717107,676450414933.3334,1.2018543664704133
+1,0506_SEA_SHAPE_unbalanced_twhiam_2_1,NeuralProphetModel,StandardScaler(),per_time_series,none,19.30943012237549,22.525407364111555,6026582016000.0,1.1121955873207832
+2,0506_SEA_SHAPE_unbalanced_twhiam_2_1,NeuralProphetModel,StandardScaler(),per_time_series,std*avg,11.799695014953613,13.836964043421267,3424003959466.6665,0.6796455744260962
+3,0506_SEA_SHAPE_unbalanced_twhiam_2_1,NeuralProphetModel,StandardScaler(),per_time_series,avg,11.799695014953613,13.836964043421267,3424003959466.6665,0.6796455744260962
+4,0506_SEA_SHAPE_unbalanced_twhiam_2_1,NeuralProphetModel,StandardScaler(),per_time_series,std,11.799695014953613,13.836964043421267,3424003959466.6665,0.6796455744260962
+5,0506_SEA_SHAPE_unbalanced_twhiam_2_1,NeuralProphetModel,StandardScaler(),per_dataset,none,26.39972686767578,32.78245415014313,6852773000533.333,1.5205865498163542
+6,0506_SEA_SHAPE_unbalanced_twhiam_2_1,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,none,28.35240109761556,31.844566022476425,87341509290666.67,1.6330577956403018
+7,0506_SEA_SHAPE_unbalanced_twhiam_2_1,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std*avg,17.43674596150716,19.3824102841453,78332030702933.33,1.0043316551921095
+8,0506_SEA_SHAPE_unbalanced_twhiam_2_1,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,avg,17.43674596150716,19.3824102841453,78332030702933.33,1.0043316551921095
+9,0506_SEA_SHAPE_unbalanced_twhiam_2_1,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std,17.43674596150716,19.3824102841453,78332030702933.33,1.0043316551921095
+10,0506_SEA_SHAPE_unbalanced_twhiam_2_1,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_dataset,none,27.640992482503254,34.54981280432509,3655615965866.6665,1.5920816758120406

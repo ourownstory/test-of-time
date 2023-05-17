@@ -9,6 +9,8 @@ df = filter_ID(df_global, chosen_regions)
 df.loc[df["ID"] == "EAST", 'y'] = -1 * df.loc[df["ID"] == "EAST", 'y'] + 2 * df[df["ID"] == "EAST"]['y'].mean()
 df.loc[df["ID"] == "WEST", 'y'] = -1 * df.loc[df["ID"] == "WEST", 'y'] + 2 * df[df["ID"] == "WEST"]['y'].mean()
 
+# try with one of higher amplitude
+
 model_params = {
     "n_forecasts": 1,
     "epochs": 20,
