@@ -1,0 +1,12 @@
+,data,model,scaler,scaling level,weighted,MAE,RMSE,MAPE,MASE
+0,similar_season_diff_amplitude_2_1,NeuralProphetModel,no scaler,none,none,71.46298535664876,100.95488220940062,1.0711147139469783,0.35515635586037847
+1,similar_season_diff_amplitude_2_1,NeuralProphetModel,StandardScaler(),per_time_series,none,58.92284075419108,85.98970685742357,0.9001560509204865,0.2928344134346035
+2,similar_season_diff_amplitude_2_1,NeuralProphetModel,StandardScaler(),per_time_series,std*avg,58.24540170033773,85.47111237762859,0.8966056630015373,0.2894676805100927
+3,similar_season_diff_amplitude_2_1,NeuralProphetModel,StandardScaler(),per_time_series,avg,58.35583368937174,85.54899453938316,0.8969055954366922,0.290016504808434
+4,similar_season_diff_amplitude_2_1,NeuralProphetModel,StandardScaler(),per_time_series,std,58.25655015309652,85.4787614636549,0.8966295359035333,0.28952308602996474
+5,similar_season_diff_amplitude_2_1,NeuralProphetModel,StandardScaler(),per_dataset,none,63.651787439982094,91.92261609249049,1.1069918361802895,0.31633630694775056
+6,similar_season_diff_amplitude_2_1,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,none,58.392578760782875,85.62161981420365,0.8960976265370846,0.29019912026443656
+7,similar_season_diff_amplitude_2_1,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std*avg,57.877206802368164,85.24804970030338,0.8943414936463038,0.2876378275091771
+8,similar_season_diff_amplitude_2_1,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,avg,57.974449475606285,85.32352650990974,0.8945010447253784,0.28812110361762694
+9,similar_season_diff_amplitude_2_1,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std,57.887420654296875,85.2556578340989,0.8943537871042887,0.2876885882549281
+10,similar_season_diff_amplitude_2_1,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_dataset,none,66.50193977355957,95.15082758411636,1.1671520459155242,0.3305009785100778

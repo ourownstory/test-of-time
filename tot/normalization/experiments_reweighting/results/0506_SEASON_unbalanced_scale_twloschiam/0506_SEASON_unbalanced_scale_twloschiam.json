@@ -1,0 +1,1 @@
+{"n_forecasts": 1, "epochs": 20, "global_normalization": true, "normalize": "off", "n_changepoints": 0, "growth": "off", "yearly_seasonality": false, "weekly_seasonality": false, "daily_seasonality": true}

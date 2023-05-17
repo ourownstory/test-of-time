@@ -28,9 +28,9 @@ model_params = {
 }
 
 run(df=df,
-    df_name="0506_SEASON_unbalanced_amplitude_twhiam",
+    df_name="0506_SEASON_unbalanced_scale_twloschiam",
     freq="H",
     model_class=NeuralProphetModel,
     save=True,
-    dir_name="0506_SEASON_unbalanced_amplitude_twhiam",
+    dir_name="0506_SEASON_unbalanced_scale_twloschiam",
     model_params=model_params)

@@ -1,12 +1,12 @@
 ,data,model,scaler,scaling level,weighted,MAE,RMSE,MAPE,MASE
-0,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,no scaler,none,none,8.886125404726375,10.137434382144946,9.564667618410153,0.3898966340036772
-1,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,StandardScaler(),per_time_series,none,0.000859947848022619,0.0010134259216118195,0.002306689963854131,3.773194233612657e-05
-2,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,StandardScaler(),per_time_series,std*avg,0.000863111537579574,0.0010163810954121994,0.0023233835587565077,3.78707555818448e-05
-3,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,StandardScaler(),per_time_series,avg,0.0008607811660939743,0.0010147654443053084,0.002302297240352015,3.776850584342336e-05
-4,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,StandardScaler(),per_time_series,std,0.000863111537579574,0.0010163810954121994,0.0023233835587565077,3.78707555818448e-05
-5,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,StandardScaler(),per_dataset,none,13.58149441805753,15.182647587578176,34.11838032982566,0.5959153981243437
-6,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,none,0.0009126398052268831,0.0010677291813315731,0.002678970225712295,4.004390799239349e-05
-7,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std*avg,0.0009179879641372033,0.0010780489050344329,0.0026658127405260693,4.027856922687725e-05
-8,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,avg,0.0009041713049307211,0.0010605370090750745,0.0026446358994937987,3.967233550043018e-05
-9,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std,0.0009179879641372033,0.0010780489050344329,0.0026658127405260693,4.027856922687725e-05
-10,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_dataset,none,15.456627759066494,17.481060490953876,41.57736789096486,0.6781906468597036
+0,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,no scaler,none,none,4.6979951492764735,5.8693881635861604,236580305454.54544,0.20613399111993552
+1,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,StandardScaler(),per_time_series,none,0.000859947848022619,0.0010134259216118195,2780864600.0,3.773194233612657e-05
+2,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,StandardScaler(),per_time_series,std*avg,0.000863111537579574,0.0010163810954121994,2823605036.3636365,3.78707555818448e-05
+3,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,StandardScaler(),per_time_series,avg,0.000863111537579574,0.0010163810954121994,2823605036.3636365,3.78707555818448e-05
+4,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,StandardScaler(),per_time_series,std,0.000863111537579574,0.0010163810954121994,2823605036.3636365,3.78707555818448e-05
+5,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,StandardScaler(),per_dataset,none,7.942896149375222,9.754617829480296,1010671308800.0,0.3485105523308254
+6,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,none,0.0009126398052268831,0.0010677291813315731,3363162400.0,4.004390799239349e-05
+7,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std*avg,0.0009179879641372033,0.0010780489050344329,3288270200.0,4.027856922687725e-05
+8,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,avg,0.0009179879641372033,0.0010780489050344329,3288270200.0,4.027856922687725e-05
+9,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_time_series,std,0.0009179879641372033,0.0010780489050344329,3288270200.0,4.027856922687725e-05
+10,0506_SEASON_unbalanced_amplitude_twhiam,NeuralProphetModel,"MinMaxScaler(feature_range=(-1, 1))",per_dataset,none,8.54742466319691,10.730529353306473,976492990836.3636,0.3750354573893288
