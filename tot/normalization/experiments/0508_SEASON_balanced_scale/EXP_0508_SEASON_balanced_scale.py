@@ -38,7 +38,6 @@ PARAMS = {
     "weekly_seasonality": False,
     "daily_seasonality": True,
     "epochs": 20,
-    "learning_rate": 0.01,
     "_data_params": {},
 }
 df = generate_one_shape_season_data(
@@ -48,6 +47,8 @@ df = generate_one_shape_season_data(
     offset_per_group=[1000, 100],
     amplitude_per_group=[50, 50],
     PLOT=PLOT,
+    PLOTS_DIR=PLOTS_DIR,
+    EXP_NAME=EXP_NAME,
 )
 fcsts_train, fcsts_test, metrics_test, elapsed_time = run_pipeline(
     df=df,
