@@ -82,7 +82,7 @@ class DartsForecastingModel(Model):
         model = model_params.pop("model")
         self.model = model(**model_params)
 
-    def fit(self, df: pd.DataFrame, freq: str) -> None:
+    def fit(self, df: pd.DataFrame, freq: str, ids_weights: dict) -> None:
         """Fits the regression model.
 
         Parameters

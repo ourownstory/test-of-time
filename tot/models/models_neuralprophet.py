@@ -80,7 +80,7 @@ class NeuralProphetModel(Model):
         self.n_lags = self.model.n_lags
         self.season_length = None
 
-    def fit(self, df: pd.DataFrame, freq: str):
+    def fit(self, df: pd.DataFrame, freq: str, ids_weights: dict = None):
         """Fits the model.
 
         Parameters
@@ -89,6 +89,8 @@ class NeuralProphetModel(Model):
             DataFrame with columns "ds" and "y" and optionally "ID"
         freq : str
             Frequency of the time series
+        ids_weights : str
+            Weights per ID applied to the loss function.
 
         Returns
         -------
@@ -96,7 +98,7 @@ class NeuralProphetModel(Model):
         """
         _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
         self.freq = freq
-        _ = self.model.fit(df=df, freq=freq, progress="none", minimal=True)
+        _ = self.model.fit(df=df, freq=freq, progress="none", minimal=True, ids_weights=ids_weights)
 
     def predict(
         self,
