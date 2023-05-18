@@ -21,7 +21,7 @@ set_log_level("INFO")
 DIR = pathlib.Path(__file__).parent.parent.absolute()
 EXP_NAME = "0506_SEA_SHAPE_unbalanced_twhiam"
 EXP_DIR = os.path.join(DIR, f"{EXP_NAME}")
-PLOTS_DIR = os.path.join(EXP_DIR, f"plots")
+PLOTS_DIR = os.path.join(EXP_DIR, f"plots_NeuralProphetModel")
 PLOT = False
 
 SERIES_LENGTH = 24 * 7 * 15
@@ -29,8 +29,8 @@ DATE_RNG = date_rng = pd.date_range(start=pd.to_datetime("2011-01-01 01:00:00"),
 MODEL_CLASS = NeuralProphetModel
 PARAMS = {
     "n_forecasts": 1,
-    "n_changepoints": 0,
-    "growth": "off",
+    # "n_changepoints": 0,
+    # "growth": "off",
     "global_normalization": True,
     "normalize": "off",
     # Disable seasonality components, except yearly

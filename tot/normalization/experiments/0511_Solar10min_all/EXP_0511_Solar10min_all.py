@@ -1,6 +1,8 @@
 import os
 import pathlib
-
+import time
+from pathlib import Path
+import plotly.io as pio
 import pandas as pd
 from neuralprophet import set_log_level
 from plotly_resampler import unregister_plotly_resampler
@@ -11,6 +13,7 @@ from tot.normalization.experiments.pipeline import (
     concat_and_save_results,
     plot_and_save_multiple_dfs_multiple_ids,
     run_pipeline,
+    plot_ts,
 )
 
 unregister_plotly_resampler()
@@ -18,19 +21,18 @@ unregister_plotly_resampler()
 
 set_log_level("INFO")
 DIR = pathlib.Path(__file__).parent.parent.absolute()
-EXP_NAME = "0509_ERCOT_CO_FW_WE"
+EXP_NAME = "0511_Solar10min_all"
 EXP_DIR = os.path.join(DIR, f"{EXP_NAME}")
 PLOTS_DIR = os.path.join(EXP_DIR, f"plots_NeuralProphetModel")
 PLOT = False
 
-SERIES_LENGTH = 24 * 7 * 15
-# DATE_RNG = date_rng = pd.date_range(start=pd.to_datetime("2011-01-01 01:00:00"), periods=SERIES_LENGTH, freq="H")
+SERIES_LENGTH = 6* 24 * 7 * 3
 MODEL_CLASS = NeuralProphetModel
 PARAMS = {
     "n_forecasts": 1,
     "n_lags": 24,
-    "n_changepoints": 0,
-    "growth": "off",
+    # "n_changepoints": 0,
+    # "growth": "off",
     "global_normalization": True,
     "normalize": "off",
     # Disable seasonality components, except yearly
@@ -40,19 +42,27 @@ PARAMS = {
     "epochs": 20,
     "_data_params": {},
 }
-data_location = "https://raw.githubusercontent.com/ourownstory/neuralprophet-data/main/datasets/"
-df_ercot = pd.read_csv(data_location + "multivariate/ercot-panel.csv")
-df_ercot = df_ercot.sort_values(['ID', 'ds']).groupby('ID').apply(lambda x: x[0:SERIES_LENGTH]).reset_index(drop=True)
-df_ercot = df_ercot[df_ercot['ID'].isin(['COAST', 'WEST', 'FAR_WEST'])]
-min_date = df_ercot[df_ercot['ID']=='WEST'].loc[:, 'ds'].min()
-max_date = df_ercot[df_ercot['ID']=='WEST'].loc[:, 'ds'].max()
-DATE_RNG = pd.date_range(start=min_date, end=max_date, freq="H")
+_DEFAULT_DIRECTORY = os.path.join(Path(__file__).parent.parent.parent.parent.parent.absolute(), "ar_data")
+SOLAR_FILE = os.path.join(_DEFAULT_DIRECTORY, "solar_10_minutes_dataset.csv")
+df_solar = pd.read_csv(SOLAR_FILE)
+df_solar = df_solar.drop('Unnamed: 0', axis=1)
+df_solar = df_solar.sort_values(['ID', 'ds']).groupby('ID').apply(lambda x: x[0:SERIES_LENGTH]).reset_index(drop=True)
+df_solar[df_solar['ID'].isin(['T1', 'T14', 'T26', 'T59', 'T71', 'T98', 'T102', 'T110', 'T122','T134'])].reset_index(drop=True)
+min_date = df_solar[df_solar['ID']=='T1'].loc[:, 'ds'].min()
+max_date = df_solar[df_solar['ID']=='T1'].loc[:, 'ds'].max()
+DATE_RNG = pd.date_range(start=min_date, end=max_date, freq="10min")
+fig = plot_ts(df_solar)
+if PLOT:
+    fig.show()
+file_name = os.path.join(PLOTS_DIR, f"DATA_{EXP_NAME}.png")
+pio.write_image(fig, file_name)
+start_time = time.time()
 
 fcsts_train, fcsts_test, metrics_test, elapsed_time = run_pipeline(
-    df=df_ercot,
+    df=df_solar,
     model_class=MODEL_CLASS,
     params=PARAMS,
-    freq="H",
+    freq="10min",
     test_percentage=0.4,
     metrics=["MAPE", "MAE", "RMSE", "MASE"],
     scale_levels=[None, "local", "global"],
@@ -61,7 +71,7 @@ fcsts_train, fcsts_test, metrics_test, elapsed_time = run_pipeline(
 plot_and_save_multiple_dfs_multiple_ids(
     fcst_dfs=fcsts_test,
     date_rng=DATE_RNG,
-    ids=['COAST', 'FAR_WEST', 'WEST'], #coast against afrwest and west
+    ids=['T1', 'T14', 'T26', 'T59', 'T71', 'T98', 'T102', 'T110', 'T122','T134'],
     PLOT=PLOT,
     PLOTS_DIR=PLOTS_DIR,
     EXP_NAME=EXP_NAME,
@@ -72,3 +82,6 @@ concat_and_save_results(
     EXP_DIR=EXP_DIR,
     EXP_NAME=EXP_NAME,
 )
+end_time = time.time()
+elapsed_time = end_time - start_time
+print('elapsed_time: ', elapsed_time)

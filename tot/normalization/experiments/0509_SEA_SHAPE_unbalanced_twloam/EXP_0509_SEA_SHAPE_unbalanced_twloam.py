@@ -21,7 +21,7 @@ set_log_level("INFO")
 DIR = pathlib.Path(__file__).parent.parent.absolute()
 EXP_NAME = "0509_SEA_SHAPE_unbalanced_twloam"
 EXP_DIR = os.path.join(DIR, f"{EXP_NAME}")
-PLOTS_DIR = os.path.join(EXP_DIR, f"plots")
+PLOTS_DIR = os.path.join(EXP_DIR, f"plots_NeuralProphetModel")
 PLOT = False
 
 SERIES_LENGTH = 24 * 7 * 15

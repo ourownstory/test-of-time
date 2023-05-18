@@ -21,12 +21,13 @@ set_log_level("INFO")
 DIR = pathlib.Path(__file__).parent.parent.absolute()
 EXP_NAME = "0508_SEASON_balanced_amplitude"
 EXP_DIR = os.path.join(DIR, f"{EXP_NAME}")
-PLOTS_DIR = os.path.join(EXP_DIR, f"plots")
+
 PLOT = False
 
 SERIES_LENGTH = 24 * 7 * 15
 DATE_RNG = date_rng = pd.date_range(start=pd.to_datetime("2011-01-01 01:00:00"), periods=SERIES_LENGTH, freq="H")
 MODEL_CLASS = NeuralProphetModel
+PLOTS_DIR = os.path.join(EXP_DIR, "plots_NeuralProphetModel")
 PARAMS = {
     "n_forecasts": 1,
     "n_changepoints": 0,

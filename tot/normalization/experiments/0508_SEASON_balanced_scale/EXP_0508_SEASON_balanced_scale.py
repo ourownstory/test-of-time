@@ -21,7 +21,7 @@ set_log_level("INFO")
 DIR = pathlib.Path(__file__).parent.parent.absolute()
 EXP_NAME = "0508_SEASON_balanced_scale"
 EXP_DIR = os.path.join(DIR, f"{EXP_NAME}")
-PLOTS_DIR = os.path.join(EXP_DIR, f"plots")
+PLOTS_DIR = os.path.join(EXP_DIR, f"plots_NeuralProphetModel")
 PLOT = False
 
 SERIES_LENGTH = 24 * 7 * 15
@@ -57,7 +57,7 @@ fcsts_train, fcsts_test, metrics_test, elapsed_time = run_pipeline(
     freq="H",
     test_percentage=0.4,
     metrics=["MAPE", "MAE", "RMSE", "MASE"],
-    scale_levels=["local"],
+    scale_levels=[None, "local", "global"],
     scalers=[MinMaxScaler(feature_range=(0.1, 1)), StandardScaler()],
 )
 plot_and_save_multiple_dfs(

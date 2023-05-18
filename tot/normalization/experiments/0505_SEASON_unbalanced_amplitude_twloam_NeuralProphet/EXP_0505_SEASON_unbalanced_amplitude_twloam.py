@@ -1,6 +1,5 @@
 import os
 import pathlib
-
 import pandas as pd
 from neuralprophet import set_log_level
 from plotly_resampler import unregister_plotly_resampler
@@ -9,7 +8,7 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from tot.models.models_neuralprophet import NeuralProphetModel
 from tot.normalization.experiments.pipeline import (
     concat_and_save_results,
-    generate_canceling_shape_season_data,
+    generate_one_shape_season_data,
     plot_and_save_multiple_dfs,
     run_pipeline,
 )
@@ -19,9 +18,9 @@ unregister_plotly_resampler()
 
 set_log_level("INFO")
 DIR = pathlib.Path(__file__).parent.parent.absolute()
-EXP_NAME = "0506_SEA_SHAPE_unbalanced"
+EXP_NAME = "0505_SEASON_unbalanced_amplitude_twloam_NeuralProphet"
 EXP_DIR = os.path.join(DIR, f"{EXP_NAME}")
-PLOTS_DIR = os.path.join(EXP_DIR, f"plots_NeuralProphetModel")
+PLOTS_DIR = os.path.join(EXP_DIR, f"plots")
 PLOT = False
 
 SERIES_LENGTH = 24 * 7 * 15
@@ -40,12 +39,12 @@ PARAMS = {
     "epochs": 20,
     "_data_params": {},
 }
-df = generate_canceling_shape_season_data(
+df = generate_one_shape_season_data(
     series_length=SERIES_LENGTH,
     date_rng=DATE_RNG,
     n_ts_groups=[10, 1],
     offset_per_group=[0, 0],
-    amplitude_per_group=[5, 5],
+    amplitude_per_group=[5, 50],
     PLOT=PLOT,
     PLOTS_DIR=PLOTS_DIR,
     EXP_NAME=EXP_NAME,
@@ -69,9 +68,4 @@ plot_and_save_multiple_dfs(
     PLOTS_DIR=PLOTS_DIR,
     EXP_NAME=EXP_NAME,
 )
-concat_and_save_results(
-    metric_dfs=metrics_test,
-    elapsed_time=elapsed_time,
-    EXP_DIR=EXP_DIR,
-    EXP_NAME=EXP_NAME,
-)
+concat_and_save_results(metric_dfs=metrics_test, elapsed_time=elapsed_time, EXP_DIR=EXP_DIR, EXP_NAME=EXP_NAME)

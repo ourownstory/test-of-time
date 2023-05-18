@@ -1,6 +1,8 @@
 import os
 import pathlib
-
+import time
+from pathlib import Path
+import plotly.io as pio
 import pandas as pd
 from neuralprophet import set_log_level
 from plotly_resampler import unregister_plotly_resampler
@@ -11,6 +13,7 @@ from tot.normalization.experiments.pipeline import (
     concat_and_save_results,
     plot_and_save_multiple_dfs_multiple_ids,
     run_pipeline,
+    plot_ts,
 )
 
 unregister_plotly_resampler()
@@ -18,9 +21,9 @@ unregister_plotly_resampler()
 
 set_log_level("INFO")
 DIR = pathlib.Path(__file__).parent.parent.absolute()
-EXP_NAME = "0509_ERCOT_CO_FW_WE"
+EXP_NAME = "0512_EIAElec_all"
 EXP_DIR = os.path.join(DIR, f"{EXP_NAME}")
-PLOTS_DIR = os.path.join(EXP_DIR, f"plots_NeuralProphetModel")
+PLOTS_DIR = os.path.join(EXP_DIR, "plots_NeuralProphetModel")
 PLOT = False
 
 SERIES_LENGTH = 24 * 7 * 15
@@ -29,8 +32,8 @@ MODEL_CLASS = NeuralProphetModel
 PARAMS = {
     "n_forecasts": 1,
     "n_lags": 24,
-    "n_changepoints": 0,
-    "growth": "off",
+    # "n_changepoints": 0,
+    # "growth": "off",
     "global_normalization": True,
     "normalize": "off",
     # Disable seasonality components, except yearly
@@ -40,19 +43,27 @@ PARAMS = {
     "epochs": 20,
     "_data_params": {},
 }
-data_location = "https://raw.githubusercontent.com/ourownstory/neuralprophet-data/main/datasets/"
-df_ercot = pd.read_csv(data_location + "multivariate/ercot-panel.csv")
-df_ercot = df_ercot.sort_values(['ID', 'ds']).groupby('ID').apply(lambda x: x[0:SERIES_LENGTH]).reset_index(drop=True)
-df_ercot = df_ercot[df_ercot['ID'].isin(['COAST', 'WEST', 'FAR_WEST'])]
-min_date = df_ercot[df_ercot['ID']=='WEST'].loc[:, 'ds'].min()
-max_date = df_ercot[df_ercot['ID']=='WEST'].loc[:, 'ds'].max()
+_DEFAULT_DIRECTORY = os.path.join(Path(__file__).parent.parent.parent.parent.parent.absolute(), "ar_data")
+EIA_ELEC_FILE = os.path.join(_DEFAULT_DIRECTORY, "eia_electricity_hourly.csv")
+df_eia_elec = pd.read_csv(EIA_ELEC_FILE)
+df_eia_elec = df_eia_elec.drop('Unnamed: 0', axis=1)
+df_eia_elec = df_eia_elec.sort_values(['ID', 'ds']).groupby('ID').apply(lambda x: x[0:SERIES_LENGTH]).reset_index(drop=True)
+min_date = df_eia_elec[df_eia_elec['ID']=='DOPD'].loc[:, 'ds'].min()
+max_date = df_eia_elec[df_eia_elec['ID']=='DOPD'].loc[:, 'ds'].max()
 DATE_RNG = pd.date_range(start=min_date, end=max_date, freq="H")
+fig = plot_ts(df_eia_elec)
+if PLOT:
+    fig.show()
+file_name = os.path.join(PLOTS_DIR, f"DATA_{EXP_NAME}.png")
+pio.write_image(fig, file_name)
+
+start_time = time.time()
 
 fcsts_train, fcsts_test, metrics_test, elapsed_time = run_pipeline(
-    df=df_ercot,
+    df=df_eia_elec,
     model_class=MODEL_CLASS,
     params=PARAMS,
-    freq="H",
+    freq="30min",
     test_percentage=0.4,
     metrics=["MAPE", "MAE", "RMSE", "MASE"],
     scale_levels=[None, "local", "global"],
@@ -61,7 +72,7 @@ fcsts_train, fcsts_test, metrics_test, elapsed_time = run_pipeline(
 plot_and_save_multiple_dfs_multiple_ids(
     fcst_dfs=fcsts_test,
     date_rng=DATE_RNG,
-    ids=['COAST', 'FAR_WEST', 'WEST'], #coast against afrwest and west
+    ids=['AEC', 'AECI', 'AVA','AZPS', 'BANC', 'BPAT', 'CHPD', 'CISO', 'CPLE', 'CPLW', 'DOPD'],
     PLOT=PLOT,
     PLOTS_DIR=PLOTS_DIR,
     EXP_NAME=EXP_NAME,
@@ -72,3 +83,7 @@ concat_and_save_results(
     EXP_DIR=EXP_DIR,
     EXP_NAME=EXP_NAME,
 )
+
+end_time = time.time()
+elapsed_time = end_time - start_time
+print('elapsed_time: ', elapsed_time)

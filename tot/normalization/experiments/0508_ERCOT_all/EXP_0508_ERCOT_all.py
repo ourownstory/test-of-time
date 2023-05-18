@@ -1,7 +1,8 @@
 import os
 import pathlib
-
+import time
 import pandas as pd
+import plotly.io as pio
 from neuralprophet import set_log_level
 from plotly_resampler import unregister_plotly_resampler
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, MaxAbsScaler
@@ -11,6 +12,7 @@ from tot.normalization.experiments.pipeline import (
     concat_and_save_results,
     plot_and_save_multiple_dfs_multiple_ids,
     run_pipeline,
+    plot_ts,
 )
 
 unregister_plotly_resampler()
@@ -20,7 +22,7 @@ set_log_level("INFO")
 DIR = pathlib.Path(__file__).parent.parent.absolute()
 EXP_NAME = "0508_ERCOT_all"
 EXP_DIR = os.path.join(DIR, f"{EXP_NAME}")
-PLOTS_DIR = os.path.join(EXP_DIR, f"plots")
+PLOTS_DIR = os.path.join(EXP_DIR, f"plots_NeuralProphetModel")
 PLOT = False
 
 SERIES_LENGTH = 24 * 7 * 15
@@ -29,8 +31,8 @@ MODEL_CLASS = NeuralProphetModel
 PARAMS = {
     "n_forecasts": 1,
     "n_lags": 24,
-    "n_changepoints": 0,
-    "growth": "off",
+    # "n_changepoints": 0,
+    # "growth": "off",
     "global_normalization": True,
     "normalize": "off",
     # Disable seasonality components, except yearly
@@ -42,10 +44,16 @@ PARAMS = {
 }
 data_location = "https://raw.githubusercontent.com/ourownstory/neuralprophet-data/main/datasets/"
 df_ercot = pd.read_csv(data_location + "multivariate/ercot-panel.csv")
-df_ercot = df_ercot.sort_values(['ID', 'ds']).groupby('ID').apply(lambda x: x[0:SERIES_LENGTH]).reset_index(drop=True)
+# df_ercot = df_ercot.sort_values(['ID', 'ds']).groupby('ID').apply(lambda x: x[0:SERIES_LENGTH]).reset_index(drop=True)
 min_date = df_ercot[df_ercot['ID']=='WEST'].loc[:, 'ds'].min()
 max_date = df_ercot[df_ercot['ID']=='WEST'].loc[:, 'ds'].max()
 DATE_RNG = pd.date_range(start=min_date, end=max_date, freq="H")
+fig = plot_ts(df_ercot)
+if PLOT:
+    fig.show()
+file_name = os.path.join(PLOTS_DIR, f"DATA_{EXP_NAME}.png")
+pio.write_image(fig, file_name)
+start_time = time.time()
 
 fcsts_train, fcsts_test, metrics_test, elapsed_time = run_pipeline(
     df=df_ercot,
@@ -71,3 +79,7 @@ concat_and_save_results(
     EXP_DIR=EXP_DIR,
     EXP_NAME=EXP_NAME,
 )
+
+end_time = time.time()
+elapsed_time = end_time - start_time
+print('elapsed_time: ', elapsed_time)

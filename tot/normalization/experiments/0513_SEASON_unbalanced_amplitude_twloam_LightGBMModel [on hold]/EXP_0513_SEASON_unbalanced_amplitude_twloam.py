@@ -1,15 +1,16 @@
 import os
 import pathlib
-
 import pandas as pd
 from neuralprophet import set_log_level
 from plotly_resampler import unregister_plotly_resampler
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
-from tot.models.models_neuralprophet import NeuralProphetModel
+
+from darts.models.forecasting.lgbm import LightGBMModel
+from tot.models.models_darts import DartsForecastingModel
 from tot.normalization.experiments.pipeline import (
     concat_and_save_results,
-    generate_ar,
+    generate_one_shape_season_data,
     plot_and_save_multiple_dfs,
     run_pipeline,
 )
@@ -17,37 +18,30 @@ from tot.normalization.experiments.pipeline import (
 unregister_plotly_resampler()
 
 
-
 set_log_level("INFO")
 DIR = pathlib.Path(__file__).parent.parent.absolute()
-EXP_NAME = "0508_AR_unbalance_amplitude_twhiam"
+EXP_NAME = "0513_SEASON_unbalanced_amplitude_twloam_LightGBMModel [on hold]"
 EXP_DIR = os.path.join(DIR, f"{EXP_NAME}")
 PLOTS_DIR = os.path.join(EXP_DIR, f"plots")
 PLOT = False
 
-SERIES_LENGTH = 24 * 7 * 150
+SERIES_LENGTH = 24 * 7 * 15
 DATE_RNG = date_rng = pd.date_range(start=pd.to_datetime("2011-01-01 01:00:00"), periods=SERIES_LENGTH, freq="H")
-MODEL_CLASS = NeuralProphetModel
+MODEL_CLASS = DartsForecastingModel
 PARAMS = {
-    "n_forecasts": 1,
-    "n_lags": 4,
-    "n_changepoints": 0,
-    "growth": "off",
-    "global_normalization": True,
-    "normalize": "off",
-    # Disable seasonality components, except yearly
-    "yearly_seasonality": False,
-    "weekly_seasonality": False,
-    "daily_seasonality": False,
-    "epochs": 20,
-    "_data_params": {},
+    "model": LightGBMModel,
+    "lags": 24,
+    'n_forecasts': 1,
+    "output_chunk_length": 1,
+    'objective':"mape",
+    '_data_params':{},
 }
-df = generate_ar(
+df = generate_one_shape_season_data(
     series_length=SERIES_LENGTH,
     date_rng=DATE_RNG,
     n_ts_groups=[10, 1],
     offset_per_group=[0, 0],
-    amplitude_per_group=[50, 5],
+    amplitude_per_group=[5, 50],
     PLOT=PLOT,
     PLOTS_DIR=PLOTS_DIR,
     EXP_NAME=EXP_NAME,
@@ -59,8 +53,8 @@ fcsts_train, fcsts_test, metrics_test, elapsed_time = run_pipeline(
     freq="H",
     test_percentage=0.4,
     metrics=["MAPE", "MAE", "RMSE", "MASE"],
-    scale_levels=[None, "local", "global"],
-    scalers=[MinMaxScaler(feature_range=(0.1, 1)), StandardScaler()],
+    scale_levels=[None], #,"local", "global"
+    scalers=[StandardScaler()], #MinMaxScaler(feature_range=(0.1, 1)),
 )
 plot_and_save_multiple_dfs(
     fcst_dfs=fcsts_test,
@@ -71,9 +65,4 @@ plot_and_save_multiple_dfs(
     PLOTS_DIR=PLOTS_DIR,
     EXP_NAME=EXP_NAME,
 )
-concat_and_save_results(
-    metric_dfs=metrics_test,
-    elapsed_time=elapsed_time,
-    EXP_DIR=EXP_DIR,
-    EXP_NAME=EXP_NAME,
-)
+concat_and_save_results(metric_dfs=metrics_test, elapsed_time=elapsed_time, EXP_DIR=EXP_DIR, EXP_NAME=EXP_NAME)

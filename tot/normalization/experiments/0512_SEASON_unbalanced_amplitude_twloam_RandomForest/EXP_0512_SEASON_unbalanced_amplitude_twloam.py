@@ -5,7 +5,8 @@ from neuralprophet import set_log_level
 from plotly_resampler import unregister_plotly_resampler
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
-from tot.models.models_neuralprophet import NeuralProphetModel
+# from tot.models.models_neuralprophet import NeuralProphetModel
+from tot.models.models_darts import RandomForestModel
 from tot.normalization.experiments.pipeline import (
     concat_and_save_results,
     generate_one_shape_season_data,
@@ -18,25 +19,18 @@ unregister_plotly_resampler()
 
 set_log_level("INFO")
 DIR = pathlib.Path(__file__).parent.parent.absolute()
-EXP_NAME = "0505_SEASON_unbalanced_amplitude_twloam"
+EXP_NAME = "0512_SEASON_unbalanced_amplitude_twloam_RandomForest"
 EXP_DIR = os.path.join(DIR, f"{EXP_NAME}")
 PLOTS_DIR = os.path.join(EXP_DIR, f"plots")
 PLOT = False
 
 SERIES_LENGTH = 24 * 7 * 15
 DATE_RNG = date_rng = pd.date_range(start=pd.to_datetime("2011-01-01 01:00:00"), periods=SERIES_LENGTH, freq="H")
-MODEL_CLASS = NeuralProphetModel
+MODEL_CLASS = RandomForestModel
 PARAMS = {
     "n_forecasts": 1,
-    "n_changepoints": 0,
-    "growth": "off",
-    "global_normalization": True,
-    "normalize": "off",
-    # Disable seasonality components, except yearly
-    "yearly_seasonality": False,
-    "weekly_seasonality": False,
-    "daily_seasonality": True,
-    "epochs": 20,
+    "output_chunk_length": 1,
+    "lags": 24,
     "_data_params": {},
 }
 df = generate_one_shape_season_data(
@@ -57,7 +51,7 @@ fcsts_train, fcsts_test, metrics_test, elapsed_time = run_pipeline(
     test_percentage=0.4,
     metrics=["MAPE", "MAE", "RMSE", "MASE"],
     scale_levels=[None, "local", "global"],
-    scalers=[MinMaxScaler(feature_range=(0.1, 1)), StandardScaler()],
+    scalers=[StandardScaler(),MinMaxScaler(feature_range=(-1, 1))],
 )
 plot_and_save_multiple_dfs(
     fcst_dfs=fcsts_test,
