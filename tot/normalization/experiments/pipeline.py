@@ -633,6 +633,8 @@ def plot_and_save_multiple_dfs(fcst_dfs: list, id_group_1, id_group_2, date_rng,
         fig.update_xaxes(range=[date_rng[-(24 * 7)], date_rng[-1]])
         file_name = os.path.join(PLOTS_DIR, f"{fcst_df['scaler'][0]}_{fcst_df['scale_level'][0]}.png")
         pio.write_image(fig, file_name)
+        file_name_fcst = os.path.join(PLOTS_DIR, f"{fcst_df['scaler'][0]}_{fcst_df['scale_level'][0]}.csv")
+        fcst_df.to_csv(file_name_fcst)
 
 def plot_and_save_multiple_dfs_multiple_ids(fcst_dfs: list, ids:list, date_rng, PLOT, PLOTS_DIR, EXP_NAME):
 
@@ -665,6 +667,8 @@ def plot_and_save_multiple_dfs_multiple_ids(fcst_dfs: list, ids:list, date_rng, 
         file_name = os.path.join(PLOTS_DIR, f"{fcst_df['scaler'][0]}_{fcst_df['scale_level'][0]}.png")
         pio.write_image(figure, file_name)
         del figure
+        file_name_fcst = os.path.join(PLOTS_DIR, f"{fcst_df['scaler'][0]}_{fcst_df['scale_level'][0]}.csv")
+        fcst_df.to_csv(file_name_fcst)
 
 def plot_and_save_scaled_dfs(df_train: pd.DataFrame, df_test: pd.DataFrame, dfs_train: dict, dfs_test: dict, date_rng, PLOT, PLOTS_DIR):
     figs_df_train = []
