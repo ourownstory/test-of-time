@@ -56,7 +56,7 @@ class Benchmark(ABC):
             log.info("starting exp {}: {}".format(exp_num, exp.experiment_name))
             log.info("--------------------------------------------------------")
         exp.metrics = self.metrics
-        fcst_train, fcst_test, res_train, res_test = exp.run()
+        fcst_train, fcst_test, res_train, res_test, elapsed_time = exp.run()
         if verbose:
             log.info("--------------------------------------------------------")
             log.info("finished exp {}: {}".format(exp_num, exp.experiment_name))
@@ -64,13 +64,13 @@ class Benchmark(ABC):
             log.info("--------------------------------------------------------")
         # del exp
         # gc.collect()
-        return (fcst_train, fcst_test, res_train, res_test)
+        return (fcst_train, fcst_test, res_train, res_test, elapsed_time)
 
     def _log_result(self, results):
         if type(results) != list:
             results = [results]
         for res in results:
-            fcst_train, fcst_test, res_train, res_test = res
+            fcst_train, fcst_test, res_train, res_test, elapsed_time = res
             self.df_metrics_train = pd.concat(
                 [self.df_metrics_train, pd.DataFrame([res_train])],
                 ignore_index=True,
@@ -81,6 +81,7 @@ class Benchmark(ABC):
             )
             self.fcst_train.append(fcst_train)
             self.fcst_test.append(fcst_test)
+            self.elapsed_times.append(elapsed_time)
 
     def _log_error(self, error):
         log.error(repr(error))
@@ -92,6 +93,7 @@ class Benchmark(ABC):
         self.df_metrics_test = pd.DataFrame(columns=cols)
         self.fcst_train = []
         self.fcst_test = []
+        self.elapsed_times = []
 
         if verbose:
             log.info("Experiment list:")

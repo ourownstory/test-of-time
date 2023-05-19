@@ -1,6 +1,7 @@
 import gc
 import logging
 import os
+import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from multiprocessing.pool import Pool
@@ -70,6 +71,8 @@ class Experiment(ABC):
                 )
                 .replace("(", "")
                 .replace(")", "")
+                .replace("*", "")
+                .replace(",", "")
             )
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
@@ -263,6 +266,7 @@ class SimpleExperiment(Experiment):
 
         # fit model
         model = self.model_class(self.params)
+        time_start = time.time()
         model.fit(df=df_train, freq=self.data.freq, ids_weights=ids_weights)
         # predict model
         fcst_train, fcst_test = self._make_forecast(
@@ -271,6 +275,8 @@ class SimpleExperiment(Experiment):
             df_test=df_test,
             received_single_time_series=received_single_time_series,
         )
+        end_time = time.time()
+        elapsed_time = end_time - time_start
 
         if self.scaler is not None:
             fcst_train, fcst_test = self.scaler.inverse_transform(fcst_train, fcst_test)
@@ -283,7 +289,7 @@ class SimpleExperiment(Experiment):
         # remove ID col if not added
         fcst_train = return_df_in_original_format(fcst_train, received_ID_column, received_single_time_series)
         fcst_test = return_df_in_original_format(fcst_test, received_ID_column, received_single_time_series)
-        return fcst_train, fcst_test, result_train, result_test
+        return fcst_train, fcst_test, result_train, result_test, elapsed_time
 
 
 @dataclass
@@ -427,6 +433,7 @@ class CrossValidationExperiment(Experiment):
             self.results_cv_test[m] = []
         self.fcst_train = []
         self.fcst_test = []
+        time_start = time.time()
         if self.num_processes > 1 and self.num_folds > 1:
             with Pool(self.num_processes) as pool:
                 args = [
@@ -446,6 +453,8 @@ class CrossValidationExperiment(Experiment):
             for current_fold, (df_train, df_test) in enumerate(folds):
                 args = (df_train, df_test, current_fold, received_ID_column, received_single_time_series)
                 self._log_results(self._run_fold(args))
+        end_time = time.time()
+        elapsed_time = end_time - time_start
 
         if self.save_dir is not None:
             results_cv_test_df = pd.DataFrame()
@@ -461,4 +470,4 @@ class CrossValidationExperiment(Experiment):
             self.write_results_to_csv(results_cv_test_df, prefix="summary_test")
             self.write_results_to_csv(results_cv_train_df, prefix="summary_train")
 
-        return self.fcst_train, self.fcst_test, self.results_cv_train, self.results_cv_test
+        return self.fcst_train, self.fcst_test, self.results_cv_train, self.results_cv_test, elapsed_time
