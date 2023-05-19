@@ -1,11 +1,12 @@
 import json
 import os
 import pathlib
+import shutil
 import subprocess
 import time
 
 
-def run_benchmarks(folder_path):
+def run_benchmarks(folder_path, save_folder):
     # Liste zum Speichern der gefundenen Python-Skripte
     python_files = []
 
@@ -27,6 +28,11 @@ def run_benchmarks(folder_path):
         except subprocess.CalledProcessError as e:
             # Fehlerbehandlung, falls das Skript fehlschlägt
             print(f"Skript {python_file} ist fehlgeschlagen mit Rückgabecode {e.returncode}")
+
+            # Save the aborted file to the specified save folder
+            filename = os.path.basename(python_file)
+            save_path = os.path.join(save_folder, filename)
+            shutil.copy(python_file, save_path)
 
 
 def get_experiment_scripts(folder_path):
@@ -50,7 +56,7 @@ scripts_dir = os.path.join(dir, "scripts")
 print(dir)
 # Ausführen der Python-Skripte in den Unterordnern
 start_time = time.time()
-run_benchmarks(scripts_dir)
+run_benchmarks(scripts_dir, dir)
 end_time = time.time()
 elapsed_time = end_time - start_time
 print(elapsed_time)

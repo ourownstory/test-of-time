@@ -110,6 +110,24 @@ def load_Australian(n_samples=None, ids=None, n_ids=None):
     return df
 
 
+def load_Solar(n_samples=None, ids=None, n_ids=None):
+    datasets_dir = os.path.join(Path(__file__).parent.parent.absolute(), "datasets")
+    df = pd.read_csv(datasets_dir + "/solar_10_minutes_dataset.tsf.csv")
+
+    raise_if(
+        ids is not None and n_ids is not None, "Remove specified ids from input if you want to select a number of ids."
+    )
+    if ids is None and n_ids is not None:
+        unique_ids = df["ID"].unique()
+        ids = random.sample(list(unique_ids), k=10)
+
+    if ids is not None:
+        df = df[df["ID"].isin(ids)].reset_index(drop=True)
+    if n_samples is not None:
+        df = df.groupby("ID").apply(lambda x: x.iloc[:n_samples, :].copy(deep=True)).reset_index(drop=True)
+    return df
+
+
 def generate_canceling_shape_season_data(
     series_length: int,
     date_rng,
