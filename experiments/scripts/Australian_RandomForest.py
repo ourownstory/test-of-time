@@ -1,19 +1,18 @@
 from sklearn.preprocessing import MinMaxScaler, PowerTransformer, QuantileTransformer, RobustScaler, StandardScaler
 
 from experiments.pipeline_experiment import run
-from experiments.utils import LogTransformer, load_EIA
-from tot.models import NeuralProphetModel
+from experiments.utils import LogTransformer, load_Australian
+from tot.models.models_darts import RandomForestModel
 
 PLOT = False
-DIR_NAME = "EIA"
-FREQ = "H"
-MODEL = NeuralProphetModel
+DIR_NAME = "Australian_RandomForest.py"
+FREQ = "30min"
+MODEL = RandomForestModel
 MODEL_PARAMS = {
     "n_forecasts": 1,
-    "epochs": 100,
-    "global_normalization": True,
-    "normalize": "off",
-    "n_lags": 24,
+    "output_chunk_length": 1,
+    "lags": 24,
+    "_data_params": {},
 }
 
 scalers = [
@@ -30,7 +29,7 @@ scalers = [
 run(
     dir_name=DIR_NAME,
     save=True,
-    df=load_EIA(),
+    df=load_Australian(),
     df_name=DIR_NAME,
     freq=FREQ,
     model_class=MODEL,

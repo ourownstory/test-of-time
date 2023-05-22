@@ -2,18 +2,26 @@ from sklearn.preprocessing import MinMaxScaler, PowerTransformer, QuantileTransf
 
 from experiments.pipeline_experiment import run
 from experiments.utils import LogTransformer, load_EIA
-from tot.models import NeuralProphetModel
+from tot.models.models_darts import DartsForecastingModel
+from darts.models.forecasting.rnn_model import RNNModel
 
 PLOT = False
-DIR_NAME = "EIA"
+DIR_NAME = "EIA_RNN_flat"
 FREQ = "H"
-MODEL = NeuralProphetModel
+MODEL = DartsForecastingModel
 MODEL_PARAMS = {
-    "n_forecasts": 1,
-    "epochs": 100,
-    "global_normalization": True,
-    "normalize": "off",
-    "n_lags": 24,
+    "model": RNNModel,
+    "input_chunk_length": 24,
+    'hidden_dim':25,
+    'n_rnn_layers': 1,
+    'batch_size':16,
+    'n_epochs':20,
+    'random_state':0,
+    'training_length':24,
+    'force_reset':True,
+    'lags': 24,
+    'n_forecasts': 1,
+    '_data_params':{},
 }
 
 scalers = [

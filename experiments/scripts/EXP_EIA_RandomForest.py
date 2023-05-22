@@ -2,18 +2,17 @@ from sklearn.preprocessing import MinMaxScaler, PowerTransformer, QuantileTransf
 
 from experiments.pipeline_experiment import run
 from experiments.utils import LogTransformer, load_EIA
-from tot.models import NeuralProphetModel
+from tot.models.models_darts import RandomForestModel
 
 PLOT = False
-DIR_NAME = "EIA"
+DIR_NAME = "EIA_RandomForest"
 FREQ = "H"
-MODEL = NeuralProphetModel
+MODEL = RandomForestModel
 MODEL_PARAMS = {
     "n_forecasts": 1,
-    "epochs": 100,
-    "global_normalization": True,
-    "normalize": "off",
-    "n_lags": 24,
+    "output_chunk_length": 1,
+    "lags": 24,
+    "_data_params": {},
 }
 
 scalers = [

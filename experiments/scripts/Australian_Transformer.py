@@ -1,19 +1,35 @@
 from sklearn.preprocessing import MinMaxScaler, PowerTransformer, QuantileTransformer, RobustScaler, StandardScaler
 
 from experiments.pipeline_experiment import run
-from experiments.utils import LogTransformer, load_EIA
-from tot.models import NeuralProphetModel
+from experiments.utils import LogTransformer, load_Australian
+from tot.models.models_darts import DartsForecastingModel
+from darts.models.forecasting.transformer_model import TransformerModel
 
 PLOT = False
-DIR_NAME = "EIA"
-FREQ = "H"
-MODEL = NeuralProphetModel
+DIR_NAME = "Australian_Transformer.py"
+FREQ = "30min"
+MODEL = DartsForecastingModel
 MODEL_PARAMS = {
+    "model": TransformerModel,
+    'model_name':'air_transformer',
     "n_forecasts": 1,
-    "epochs": 100,
-    "global_normalization": True,
-    "normalize": "off",
-    "n_lags": 24,
+    'lags':24,
+    "output_chunk_length": 1,
+    "input_chunk_length":24,
+    'batch_size':32,
+    'n_epochs':100,
+    'nr_epochs_val_period':10,
+    'd_model':16,
+    # 'n_heads':8,
+    'num_encoder_layers':2,
+    'num_decoder_layers':2,
+    'dim_feedforward':128,
+    'dropout':0.1,
+    'activation':'relu',
+    'random_state':42,
+    'save_checkpoints':True,
+    'force_reset':True,
+    "_data_params": {},
 }
 
 scalers = [
@@ -30,7 +46,7 @@ scalers = [
 run(
     dir_name=DIR_NAME,
     save=True,
-    df=load_EIA(),
+    df=load_Australian(),
     df_name=DIR_NAME,
     freq=FREQ,
     model_class=MODEL,

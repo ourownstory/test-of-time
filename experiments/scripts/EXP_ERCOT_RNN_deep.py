@@ -1,19 +1,27 @@
 from sklearn.preprocessing import MinMaxScaler, PowerTransformer, QuantileTransformer, RobustScaler, StandardScaler
 
 from experiments.pipeline_experiment import run
-from experiments.utils import LogTransformer, load_EIA
-from tot.models import NeuralProphetModel
+from experiments.utils import LogTransformer, load_ERCOT
+from tot.models.models_darts import DartsForecastingModel
+from darts.models.forecasting.rnn_model import RNNModel
 
 PLOT = False
-DIR_NAME = "EIA"
+DIR_NAME = "ERCOT_RNN_deep"
 FREQ = "H"
-MODEL = NeuralProphetModel
+MODEL = DartsForecastingModel
 MODEL_PARAMS = {
-    "n_forecasts": 1,
-    "epochs": 100,
-    "global_normalization": True,
-    "normalize": "off",
-    "n_lags": 24,
+    "model": RNNModel,
+    "input_chunk_length": 24,
+    'hidden_dim':25,
+    'n_rnn_layers': 20,
+    'batch_size':16,
+    'n_epochs':20,
+    'random_state':0,
+    'training_length':24,
+    'force_reset':True,
+    'lags': 24,
+    'n_forecasts': 1,
+    '_data_params':{},
 }
 
 scalers = [
@@ -30,7 +38,7 @@ scalers = [
 run(
     dir_name=DIR_NAME,
     save=True,
-    df=load_EIA(),
+    df=load_ERCOT(),
     df_name=DIR_NAME,
     freq=FREQ,
     model_class=MODEL,
