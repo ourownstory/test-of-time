@@ -94,7 +94,7 @@ def load_ERCOT(n_samples=None, ids=None, n_ids=None):
 
 def load_Australian(n_samples=None, ids=None, n_ids=None):
     datasets_dir = os.path.join(Path(__file__).parent.parent.absolute(), "datasets")
-    df = pd.read_csv(datasets_dir + "/australian_electricity_half_hourly.tsf.csv")
+    df = pd.read_csv(datasets_dir + "/australian_electricity_half_hourly.csv")
 
     raise_if(
         ids is not None and n_ids is not None, "Remove specified ids from input if you want to select a number of ids."
@@ -112,7 +112,7 @@ def load_Australian(n_samples=None, ids=None, n_ids=None):
 
 def load_Solar(n_samples=None, ids=None, n_ids=None):
     datasets_dir = os.path.join(Path(__file__).parent.parent.absolute(), "datasets")
-    df = pd.read_csv(datasets_dir + "/solar_10_minutes_dataset.tsf.csv")
+    df = pd.read_csv(datasets_dir + "/solar_10_minutes_dataset.csv")
 
     raise_if(
         ids is not None and n_ids is not None, "Remove specified ids from input if you want to select a number of ids."
