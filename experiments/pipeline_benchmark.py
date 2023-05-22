@@ -44,6 +44,7 @@ def run_script(args):
     try:
         # Ausführen des Python-Skripts
         python_exe = "C:/Users/Leonie Freisinger/Leonie/01_Dokumente/02_Studium/Master/01_Masterstudium/NeuralProphet/tot4/Scripts/python.exe"
+        # python_exe = python_exe =  'python3' # for runnin gon ubuntu
         subprocess.run([python_exe, python_file], check=True)
     except subprocess.CalledProcessError as e:
         # Fehlerbehandlung, falls das Skript fehlschlägt

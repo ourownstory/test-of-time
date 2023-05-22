@@ -32,7 +32,7 @@ scalers = [
 run(
     dir_name=DIR_NAME,
     save=True,
-    df=load_Solar(),
+    df=load_Solar(n_ids=10, n_samples=40000),
     df_name=DIR_NAME,
     freq=FREQ,
     model_class=MODEL,
