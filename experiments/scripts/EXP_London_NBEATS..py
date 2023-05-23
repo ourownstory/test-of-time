@@ -24,7 +24,7 @@ MODEL_PARAMS = {
     'loss_fn':SmapeLoss(),
     'batch_size':1024,
     'optimizer_kwargs':{'lr':0.001},
-    # 'pl_trainer_kwargs':{'accelerator':'gpu', 'gpus':-1, 'auto_select_gpus': True},
+    'pl_trainer_kwargs':{'accelerator':'gpu', 'gpus':-1, 'auto_select_gpus': True},
     "_data_params": {},
 }
 

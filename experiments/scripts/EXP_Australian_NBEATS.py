@@ -3,32 +3,29 @@ from sklearn.preprocessing import MinMaxScaler, PowerTransformer, QuantileTransf
 from experiments.pipeline_experiment import run
 from experiments.utils import LogTransformer, load_Australian
 from tot.models.models_darts import DartsForecastingModel
-from darts.models.forecasting.transformer_model import TransformerModel
+from darts.models.forecasting.nbeats import NBEATSModel
+from darts.utils.losses import SmapeLoss
 
 PLOT = False
-DIR_NAME = "Australian_Transformer.py"
+DIR_NAME = "Australian_NBEATS.py"
 FREQ = "30min"
 MODEL = DartsForecastingModel
 MODEL_PARAMS = {
-    "model": TransformerModel,
-    'model_name':'air_transformer',
+    "model": NBEATSModel,
     "n_forecasts": 1,
-    'lags':24,
     "output_chunk_length": 1,
     "input_chunk_length":24,
-    'batch_size':32,
-    'n_epochs':100,
-    'nr_epochs_val_period':10,
-    'd_model':16,
-    # 'n_heads':8,
-    'num_encoder_layers':2,
-    'num_decoder_layers':2,
-    'dim_feedforward':128,
-    'dropout':0.1,
-    'activation':'relu',
-    'random_state':42,
-    'save_checkpoints':True,
-    'force_reset':True,
+    "lags":24,
+    'num_stacks':20,
+    'num_blocks':1,
+    'num_layers':2,
+    'layer_widths':136,
+    'expansion_coefficient_dim':11,
+    'loss_fn':SmapeLoss(),
+    'batch_size':1024,
+    'optimizer_kwargs':{'lr':0.001},
+    'log_tensorboard':True,
+    'pl_trainer_kwargs':{'accelerator':'gpu', 'gpus':-1, 'auto_select_gpus': True},
     "_data_params": {},
 }
 
