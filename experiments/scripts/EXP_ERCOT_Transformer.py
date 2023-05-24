@@ -13,7 +13,7 @@ MODEL_PARAMS = {
     "model": TransformerModel,
     'model_name':'air_transformer',
     "n_forecasts": 1,
-    'lags':24,
+    'n_lags':24,
     "output_chunk_length": 1,
     "input_chunk_length":24,
     'batch_size':32,

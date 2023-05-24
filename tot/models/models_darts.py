@@ -49,7 +49,7 @@ class DartsForecastingModel(Model):
     >>> model_classes_and_params = [
     >>>     (
     >>>         DartsForecastingModel,
-    >>>         {"model": NaiveDrift, "retrain": True, "lags": 12, "n_forecasts": 4},
+    >>>         {"model": NaiveDrift, "retrain": True, "n_lags": 12, "n_forecasts": 4},
     >>>     ),
     >>> ]
     >>>
@@ -72,12 +72,12 @@ class DartsForecastingModel(Model):
                 "Requires darts to be installed:" "https://github.com/unit8co/darts/blob/master/INSTALL.md"
             )
         self.n_forecasts = self.params["n_forecasts"]
-        self.n_lags = self.params["lags"]
+        self.n_lags = self.params["n_lags"]
         self.retrain = self.params.get("retrain", False)
         model_params = deepcopy(self.params)
         model_params.pop("_data_params")
         model_params.pop("n_forecasts")
-        model_params.pop("lags")
+        model_params.pop("n_lags")
         model_params.pop("retrain", None)
         model = model_params.pop("model")
         self.model = model(**model_params)
@@ -178,7 +178,7 @@ class DartsRegressionModel(DartsForecastingModel):
         params.update({"model": model})  # assign model
         self.model = self.model_class(**params)
         self.n_forecasts = self.params["n_forecasts"]
-        self.n_lags = params["lags"]
+        self.n_lags = params["n_lags"]
         # input checks are provided by model itself
 
 

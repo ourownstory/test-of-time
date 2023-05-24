@@ -1,27 +1,21 @@
 from sklearn.preprocessing import MinMaxScaler, PowerTransformer, QuantileTransformer, RobustScaler, StandardScaler
 
 from experiments.pipeline_experiment import run
-from experiments.utils import LogTransformer, load_Australian
-from darts.models.forecasting.rnn_model import RNNModel
+from experiments.utils import LogTransformer, load_ERCOT
 from tot.models.models_darts import DartsForecastingModel
+from darts.models.forecasting.xgboost import XGBModel
 
 PLOT = False
-DIR_NAME ="Australian_RNN_deep"
-FREQ = "30min"
+DIR_NAME = "ERCOT_XGBModel"
+FREQ = "H"
 MODEL = DartsForecastingModel
 MODEL_PARAMS = {
-    "model": RNNModel,
-    "input_chunk_length": 24,
-    'hidden_dim':25,
-    'n_rnn_layers': 20,
-    'batch_size':16,
-    'n_epochs':20,
-    'random_state':0,
-    'training_length':24,
-    'force_reset':True,
-    'n_lags': 24,
-    'n_forecasts': 1,
-    '_data_params':{},
+    "model": XGBModel,
+    "n_forecasts": 1,
+    "output_chunk_length": 1,
+    "lags":24,
+    "n_lags": 24,
+    "_data_params": {},
 }
 
 scalers = [
@@ -38,7 +32,7 @@ scalers = [
 run(
     dir_name=DIR_NAME,
     save=True,
-    df=load_Australian(),
+    df=load_ERCOT(),
     df_name=DIR_NAME,
     freq=FREQ,
     model_class=MODEL,

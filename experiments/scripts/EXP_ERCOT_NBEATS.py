@@ -16,7 +16,7 @@ MODEL_PARAMS = {
     "n_forecasts": 1,
     "output_chunk_length": 1,
     "input_chunk_length":24,
-    "lags":24,
+    "n_lags":24,
     'num_stacks':20,
     'num_blocks':1,
     'num_layers':2,
