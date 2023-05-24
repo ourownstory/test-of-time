@@ -252,7 +252,7 @@ def test_linear_regression_model():
     model_classes_and_params = [
         (
             LinearRegressionModel,
-            {"lags": 12, "output_chunk_length": 1, "n_forecasts": 4},
+            {"n_lags": 12, "output_chunk_length": 1, "n_forecasts": 4},
         ),
     ]
     log.debug("{}".format(model_classes_and_params))
@@ -280,7 +280,7 @@ def test_random_forest_model():
     model_classes_and_params = [
         (
             RandomForestModel,
-            {"lags": 12, "output_chunk_length": 1, "n_forecasts": 4},
+            {"n_lags": 12, "output_chunk_length": 1, "n_forecasts": 4},
         ),
     ]
     log.debug("{}".format(model_classes_and_params))
@@ -308,7 +308,7 @@ def test_darts_model():
     model_classes_and_params = [
         (
             DartsForecastingModel,
-            {"model": NaiveDrift, "retrain": True, "lags": 12, "n_forecasts": 4},
+            {"darts_model": NaiveDrift, "retrain": True, "n_lags": 12, "n_forecasts": 4},
         ),
     ]
     log.debug("{}".format(model_classes_and_params))

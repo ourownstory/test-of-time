@@ -52,9 +52,9 @@ def test_basic_plot(plotting_backend):
         (NaiveModel, {"n_forecasts": 4}),
         (SeasonalNaiveModel, {"n_forecasts": 4, "season_length": 12}),
         (ProphetModel, {}),
-        (LinearRegressionModel, {"lags": 12, "output_chunk_length": 1, "n_forecasts": 4}),
-        (RandomForestModel, {"lags": 24, "output_chunk_length": 8, "n_forecasts": 8}),
-        (DartsForecastingModel, {"model": NaiveDrift, "retrain": True, "lags": 12, "n_forecasts": 4}),
+        (LinearRegressionModel, {"n_lags": 12, "output_chunk_length": 1, "n_forecasts": 4}),
+        (RandomForestModel, {"n_lags": 24, "output_chunk_length": 8, "n_forecasts": 8}),
+        (DartsForecastingModel, {"darts_model": NaiveDrift, "retrain": True, "n_lags": 12, "n_forecasts": 4}),
     ]
 
     benchmark = SimpleBenchmark(
