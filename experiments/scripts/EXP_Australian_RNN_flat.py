@@ -2,30 +2,26 @@ from sklearn.preprocessing import MinMaxScaler, PowerTransformer, QuantileTransf
 
 from experiments.pipeline_experiment import run
 from experiments.utils import LogTransformer, load_Australian
+from darts.models.forecasting.rnn_model import RNNModel
 from tot.models.models_darts import DartsForecastingModel
-from darts.models.forecasting.nbeats import NBEATSModel
-from darts.utils.losses import SmapeLoss
 
 PLOT = False
-DIR_NAME = "Australian_NBEATS.py"
+DIR_NAME = "Australian_RNN_flat.py"
 FREQ = "30min"
 MODEL = DartsForecastingModel
 MODEL_PARAMS = {
-    "model": NBEATSModel,
-    "n_forecasts": 1,
-    "output_chunk_length": 1,
-    "input_chunk_length":24,
-    "n_lags":24,
-    'num_stacks':20,
-    'num_blocks':1,
-    'num_layers':2,
-    'layer_widths':136,
-    'expansion_coefficient_dim':11,
-    'loss_fn':SmapeLoss(),
-    'batch_size':1024,
-    'optimizer_kwargs':{'lr':0.001},
-    # 'pl_trainer_kwargs':{'accelerator':'gpu', 'gpus':-1, 'auto_select_gpus': True},
-    "_data_params": {},
+    "model": RNNModel,
+    "input_chunk_length": 24,
+    'hidden_dim':25,
+    'n_rnn_layers': 1,
+    'batch_size':128,
+    'n_epochs':20,
+    'random_state':0,
+    'training_length':24,
+    'force_reset':True,
+    'n_lags': 24,
+    'n_forecasts': 1,
+    '_data_params':{},
 }
 
 scalers = [

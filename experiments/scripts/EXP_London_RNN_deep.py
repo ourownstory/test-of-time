@@ -14,7 +14,7 @@ MODEL_PARAMS = {
     "input_chunk_length": 24,
     'hidden_dim':25,
     'n_rnn_layers': 20,
-    'batch_size':16,
+    'batch_size':128,
     'n_epochs':20,
     'random_state':0,
     'training_length':24,

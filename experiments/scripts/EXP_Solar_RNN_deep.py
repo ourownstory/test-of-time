@@ -5,6 +5,7 @@ from experiments.utils import LogTransformer, load_Solar
 from tot.models.models_darts import DartsForecastingModel
 from darts.models.forecasting.rnn_model import RNNModel
 
+
 PLOT = False
 DIR_NAME = "Solar_RNN_deep"
 FREQ = "10min"
@@ -14,14 +15,20 @@ MODEL_PARAMS = {
     "input_chunk_length": 24,
     'hidden_dim':25,
     'n_rnn_layers': 20,
-    'batch_size':16,
-    'n_epochs':20,
+    'batch_size':128,
+    'n_epochs':4,
     'random_state':0,
     'training_length':24,
     'force_reset':True,
     'n_lags': 24,
     'n_forecasts': 1,
+    'log_tensorboard':True,
+    'pl_trainer_kwargs':{
+      "accelerator": "gpu",
+      "devices": [0]
+    },
     '_data_params':{},
+    
 }
 
 scalers = [

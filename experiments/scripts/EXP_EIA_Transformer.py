@@ -16,7 +16,7 @@ MODEL_PARAMS = {
     'n_lags':24,
     "output_chunk_length": 1,
     "input_chunk_length":24,
-    'batch_size':32,
+    'batch_size':128,
     'n_epochs':100,
     'nr_epochs_val_period':10,
     'd_model':16,
