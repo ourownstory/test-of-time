@@ -20,7 +20,7 @@ MODEL_PARAMS = {
     'random_state':0,
     'training_length':24,
     'force_reset':True,
-    'lags': 24,
+    'n_lags': 24,
     'n_forecasts': 1,
     'log_tensorboard':True,
     'pl_trainer_kwargs':{
