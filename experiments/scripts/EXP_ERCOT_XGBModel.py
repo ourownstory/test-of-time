@@ -3,29 +3,18 @@ from sklearn.preprocessing import MinMaxScaler, PowerTransformer, QuantileTransf
 from experiments.pipeline_experiment import run
 from experiments.utils import LogTransformer, load_ERCOT
 from tot.models.models_darts import DartsForecastingModel
-from darts.models.forecasting.nbeats import NBEATSModel
-from darts.utils.losses import SmapeLoss
-
+from darts.models.forecasting.xgboost import XGBModel
 
 PLOT = False
-DIR_NAME = "ERCOT_NBEATS"
+DIR_NAME = "ERCOT_XGBModel"
 FREQ = "H"
 MODEL = DartsForecastingModel
 MODEL_PARAMS = {
-    "model": NBEATSModel,
+    "model": XGBModel,
     "n_forecasts": 1,
     "output_chunk_length": 1,
-    "input_chunk_length":24,
-    "n_lags":24,
-    'num_stacks':20,
-    'num_blocks':1,
-    'num_layers':2,
-    'layer_widths':136,
-    'expansion_coefficient_dim':11,
-    'loss_fn':SmapeLoss(),
-    'batch_size':1024,
-    'optimizer_kwargs':{'lr':0.001},
-    'pl_trainer_kwargs':{'accelerator':'gpu', 'gpus':-1, 'auto_select_gpus': True},
+    "lags":24,
+    "n_lags": 24,
     "_data_params": {},
 }
 
