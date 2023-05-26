@@ -54,9 +54,9 @@ class Experiment(ABC):
         if hasattr(self.data, "freq") and self.data.freq is not None:
             data_params["freq"] = self.data.freq
         self.params.update({"_data_params": data_params})
-        model_name = self.params.get("model", self.model_class).__name__
+        model_name = self.params.get("darts_model", self.model_class).__name__
         params_repr = self.params.copy()
-        params_repr.pop("model", None)
+        params_repr.pop("darts_model", None)
         if not hasattr(self, "experiment_name") or self.experiment_name is None:
             self.experiment_name = "{}_{}{}".format(
                 self.data.name,

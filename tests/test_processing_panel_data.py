@@ -83,11 +83,11 @@ def test_benchmark_panel_data_input():
                 "global_time_normalization": True,
             },
         ),
-        (LinearRegressionModel, {"lags": 24, "output_chunk_length": 8, "n_forecasts": 8}),
+        (LinearRegressionModel, {"n_lags": 24, "output_chunk_length": 8, "n_forecasts": 8}),
         (NaiveModel, {"n_forecasts": 8}),
         (SeasonalNaiveModel, {"n_forecasts": 8, "season_length": 24}),
-        (RandomForestModel, {"lags": 24, "output_chunk_length": 8, "n_forecasts": 8}),
-        (DartsForecastingModel, {"model": NaiveDrift, "retrain": True, "lags": 12, "n_forecasts": 4}),
+        (RandomForestModel, {"n_lags": 24, "output_chunk_length": 8, "n_forecasts": 8}),
+        (DartsForecastingModel, {"darts_model": NaiveDrift, "retrain": True, "n_lags": 12, "n_forecasts": 4}),
     ]
     log.debug("{}".format(model_classes_and_params))
 
