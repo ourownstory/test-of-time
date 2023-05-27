@@ -10,7 +10,7 @@ FREQ = "10min"
 MODEL = NeuralProphetModel
 MODEL_PARAMS = {
     "n_forecasts": 1,
-    "epochs": 100,
+    "epochs": 30,
     "global_normalization": True,
     "trend_global_local": "global",
     "season_global_local": "global",
@@ -23,9 +23,9 @@ scalers = [
     MinMaxScaler(feature_range=(-1, 1)),
     MinMaxScaler(feature_range=(0, 1)),
     RobustScaler(quantile_range=(25, 75)),
-    PowerTransformer(method="box-cox", standardize=True),
+    # PowerTransformer(method="box-cox", standardize=True),
     PowerTransformer(method="yeo-johnson", standardize=True),
-    QuantileTransformer(output_distribution="normal"),
+    # QuantileTransformer(output_distribution="normal"),
     LogTransformer(),
 ]
 
