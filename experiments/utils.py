@@ -772,7 +772,7 @@ def gen_model_and_params(common_params, model_class, scalers, scaling_levels, we
     if scaling_levels == "default":
         scaling_levels = ["per_time_series", "per_dataset"]
     if weighted_loss is True:
-        weighted_loss = ["none", "std*avg", "avg", "std"]
+        weighted_loss = ["none", "avg"]  # "std*avg", "std"
     else:
         weighted_loss = ["none"]
     model_classes_and_params = [(model_class, common_params)]
@@ -788,6 +788,7 @@ def gen_model_and_params(common_params, model_class, scalers, scaling_levels, we
                 params.update({"scaler": scaler, "scaling_level": scaling_level})
                 model_classes_and_params.append((model_class, params))
     model_classes_and_params.append((model_class, params))
+    model_classes_and_params[0][1].update({"learning_rate": 0.03})
     return model_classes_and_params
 
 
