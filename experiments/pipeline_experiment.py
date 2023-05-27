@@ -47,6 +47,7 @@ def run(
         datasets=dataset_list,
         metrics=metrics,
         test_percentage=test_percentage,
+        # num_processes=8,
     )
     results_train, results_test = benchmark.run(verbose=True)
     print("results test", results_test)
