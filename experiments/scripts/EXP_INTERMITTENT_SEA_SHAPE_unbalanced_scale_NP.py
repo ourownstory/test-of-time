@@ -1,7 +1,8 @@
 import pandas as pd
+from sklearn.preprocessing import MinMaxScaler, PowerTransformer, QuantileTransformer, RobustScaler, StandardScaler
 
 from experiments.pipeline_experiment import run
-from experiments.utils import generate_intermittent_multiple_shapes
+from experiments.utils import generate_intermittent_multiple_shapes, LogTransformer, ShiftedBoxCoxTransformer
 from tot.models import NeuralProphetModel
 
 PLOT = False
@@ -25,6 +26,18 @@ df = generate_intermittent_multiple_shapes(
     amplitude_per_group=[50, 5],
 )
 
+scalers = [
+    StandardScaler(),
+    MinMaxScaler(feature_range=(-1, 1)),
+    MinMaxScaler(feature_range=(0, 1)),
+    RobustScaler(quantile_range=(25, 75)),
+    # PowerTransformer(method="box-cox", standardize=True),
+    ShiftedBoxCoxTransformer(),
+    PowerTransformer(method="yeo-johnson", standardize=True),
+    QuantileTransformer(output_distribution="normal"),
+    LogTransformer(),
+]
+
 run(
     dir_name=DIR_NAME,
     save=True,
@@ -33,7 +46,7 @@ run(
     freq=FREQ,
     model_class=MODEL,
     model_params=MODEL_PARAMS,
-    scalers="default",
+    scalers=scalers,
     scaling_levels="default",
     reweight_loss=True,
     metrics=["MAE", "RMSE", "MAPE", "MASE"],

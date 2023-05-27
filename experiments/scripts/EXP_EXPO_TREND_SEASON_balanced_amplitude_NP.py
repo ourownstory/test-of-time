@@ -1,7 +1,7 @@
 import pandas as pd
-
+from sklearn.preprocessing import MinMaxScaler, PowerTransformer, QuantileTransformer, RobustScaler, StandardScaler
 from experiments.pipeline_experiment import run
-from experiments.utils import generate_one_shape_season_and_ar_and_expo_trend_data
+from experiments.utils import generate_one_shape_season_and_ar_and_expo_trend_data, LogTransformer, ShiftedBoxCoxTransformer
 from tot.models import NeuralProphetModel
 
 PLOT = False
@@ -26,6 +26,17 @@ df = generate_one_shape_season_and_ar_and_expo_trend_data(
     trend_gradient_per_group=[8, 5],
     amplitude_per_group=[50, 5],
 )
+scalers = [
+    StandardScaler(),
+    MinMaxScaler(feature_range=(-1, 1)),
+    MinMaxScaler(feature_range=(0, 1)),
+    RobustScaler(quantile_range=(25, 75)),
+    # PowerTransformer(method="box-cox", standardize=True),
+    ShiftedBoxCoxTransformer(),
+    PowerTransformer(method="yeo-johnson", standardize=True),
+    QuantileTransformer(output_distribution="normal"),
+    LogTransformer(),
+]
 
 run(
     dir_name=DIR_NAME,
@@ -35,7 +46,7 @@ run(
     freq=FREQ,
     model_class=MODEL,
     model_params=MODEL_PARAMS,
-    scalers="default",
+    scalers=scalers,
     scaling_levels="default",
     reweight_loss=True,
     metrics=["MAE", "RMSE", "MAPE", "MASE"],
