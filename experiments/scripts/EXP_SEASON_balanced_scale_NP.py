@@ -1,10 +1,12 @@
 import pandas as pd
 import multiprocessing
+import time
 from experiments.pipeline_experiment import run
 from experiments.utils import generate_one_shape_season_data
 from tot.models import NeuralProphetModel
 
 def run_benchmark():
+    start_time=time.time()
     PLOT = False
     DIR_NAME = "SEASON_balanced_scale_NP"
     FREQ = "H"
@@ -42,6 +44,8 @@ def run_benchmark():
         test_percentage=0.25,
         plot=PLOT,
     )
+    end_time=time.time()
+    print("time taken",end_time-start_time)
 
 if __name__ == "__main__":
     multiprocessing.freeze_support()
