@@ -9,7 +9,7 @@ from tot.models.models_darts import DartsForecastingModel
 def run_benchmark():
     start_time=time.time()
     PLOT = False
-    DIR_NAME = "SEASON_balanced_amplitude_NP"
+    DIR_NAME = "SEASON_balanced_scale_RNN"
     FREQ = "H"
     SERIES_LENGTH = 24 * 7 * 15
     DATE_RNG = pd.date_range(start=pd.to_datetime("2011-01-01 01:00:00"), periods=SERIES_LENGTH, freq="H")
