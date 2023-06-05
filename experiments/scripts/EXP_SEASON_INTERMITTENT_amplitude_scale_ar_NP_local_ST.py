@@ -1,14 +1,14 @@
-import pandas as pd
 import multiprocessing
 import time
+import pandas as pd
 from experiments.pipeline_experiment import run
-from experiments.utils import generate_one_shape_season_data
+from experiments.utils import generate_intermittent
 from tot.models import NeuralProphetModel
 
 def run_benchmark():
     start_time=time.time()
     PLOT = False
-    DIR_NAME = "SEASON_balanced_scale_NP"
+    DIR_NAME = "SEASON_balanced_amplitude_NP"
     FREQ = "H"
     SERIES_LENGTH = 24 * 7 * 15
     DATE_RNG = pd.date_range(start=pd.to_datetime("2011-01-01 01:00:00"), periods=SERIES_LENGTH, freq="H")
@@ -18,15 +18,16 @@ def run_benchmark():
         "epochs": 30,
         "global_normalization": True,
         "normalize": "off",
+        "trend_global_local": "local",
+        "season_global_local": "local",
         "n_lags": 4,
     }
 
-    df = generate_one_shape_season_data(
+    df = generate_intermittent(
         series_length=SERIES_LENGTH,
         date_rng=DATE_RNG,
         n_ts_groups=[5, 5],
-        offset_per_group=[1000, 100],
-        amplitude_per_group=[50, 50],
+        amplitude_per_group=[50, 5],
     )
 
     run(
@@ -40,7 +41,7 @@ def run_benchmark():
         scalers="default",
         scaling_levels="default",
         reweight_loss=True,
-        metrics=["MAE", "RMSE", "MAPE", "MASE"],
+        metrics=["MAE", "RMSE", "MASE"],
         test_percentage=0.25,
         plot=PLOT,
     )
@@ -50,3 +51,4 @@ def run_benchmark():
 if __name__ == "__main__":
     multiprocessing.freeze_support()
     run_benchmark()
+

@@ -16,7 +16,7 @@ def run(
     freq,
     model_class,
     model_params,
-    metrics=["MAE", "RMSE", "MAPE", "MASE"],
+    metrics=["MAE", "RMSE", "MASE"],
     test_percentage=0.25,
     save=True,
     plot=False,
