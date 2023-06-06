@@ -199,53 +199,44 @@ def generate_canceling_shape_season_and_ar_data(
 ) -> pd.DataFrame:
     df_seasons = []
     period = 24
-    noise_group_1 = [
-        np.random.normal(loc=0, scale=amplitude_per_group[0] / 10, size=series_length) for _ in range(n_ts_groups[0])
+
+    # Create noise groups in a nested list comprehension
+    noise_group = [
+        [np.random.normal(loc=0, scale=amplitude / 10, size=series_length) for _ in range(n_ts)]
+        for amplitude, n_ts in zip(amplitude_per_group, n_ts_groups)
     ]
-    noise_group_2 = [
-        np.random.normal(loc=0, scale=amplitude_per_group[1] / 10, size=series_length) for _ in range(n_ts_groups[1])
-    ]
+
     # Generate an array of time steps
     t = np.arange(series_length)
     # Define the angular frequency (omega) corresponding to the period
     omega = 2 * np.pi / period
-    # Generate the seasonal time series using multiple sine and cosine terms
-    data_group_1 = [
-        (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) * amplitude_per_group[0]
-        for _ in range(n_ts_groups[0])
-    ]
+
     # Define AR coefficients (AR(4) model with coefficients 0.5 and 0.3)
     ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
+
     # Create an ARMA process with the specified coefficients
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
-    ar_data_group_1 = [
-        ar_process.generate_sample(series_length) * amplitude_per_group[0] / 2 for _ in range(n_ts_groups[0])
-    ]
-    for i in range(n_ts_groups[0]):
-        df = pd.DataFrame(date_rng, columns=["ds"])
-        df["y"] = data_group_1[i] + ar_data_group_1[i] + noise_group_1[i] + offset_per_group[0]
-        df["ID"] = str(i)
-        df_seasons.append(df.reset_index(drop=True))
-    i = i
-    data_group_2 = [
-        -(np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t))
-        * amplitude_per_group[1]
-        for _ in range(n_ts_groups[1])
-    ]
-    ar_data_group_2 = [
-        ar_process.generate_sample(series_length) * amplitude_per_group[1] / 2 for _ in range(n_ts_groups[1])
-    ]
-    for j in range(n_ts_groups[1]):
-        df = pd.DataFrame(date_rng, columns=["ds"])
-        df["y"] = data_group_2[j] + ar_data_group_2[j] + noise_group_2[j] + offset_per_group[1]
-        df["ID"] = str(i + j + 1)
-        df_seasons.append(df.reset_index(drop=True))
+    for group in range(2):
+        data_group = [
+            ((-1) ** group)
+            * (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t))
+            * amplitude_per_group[group]
+            for _ in range(n_ts_groups[group])
+        ]
+        ar_data_group = [
+            ar_process.generate_sample(series_length) * amplitude_per_group[group] / 2
+            for _ in range(n_ts_groups[group])
+        ]
 
-    concatenated_dfs = pd.DataFrame()
-    for i, df in enumerate(df_seasons):
-        concatenated_dfs = pd.concat([concatenated_dfs, df], axis=0)
+        for i in range(n_ts_groups[group]):
+            df = pd.DataFrame(date_rng, columns=["ds"])
+            df["y"] = data_group[i] + ar_data_group[i] + noise_group[group][i] + offset_per_group[group]
+            df["ID"] = str(i + sum(n_ts_groups[:group]))
+            df_seasons.append(df.reset_index(drop=True))
+
+    concatenated_dfs = pd.concat(df_seasons, axis=0)
     return concatenated_dfs
 
 
@@ -302,9 +293,9 @@ def generate_one_shape_season_and_ar_data(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
-    num_outliers = 50
+    # num_outliers = 50
 
-    for group_num in range(2):  # looping over two groups
+    for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
         amplitude = amplitude_per_group[group_num]
@@ -422,7 +413,9 @@ def generate_ar(
     return concatenated_dfs
 
 
-def generate_intermittent(series_length: int, date_rng, n_ts_groups: list, amplitude_per_group: list) -> pd.DataFrame:
+def generate_intermittent(
+    series_length: int, date_rng, n_ts_groups: list, amplitude_per_group: list, offset_per_group: list = []
+) -> pd.DataFrame:
     np.random.seed(42)
 
     # Define the proportion of non-zero values
@@ -477,7 +470,7 @@ def generate_intermittent(series_length: int, date_rng, n_ts_groups: list, ampli
 
 
 def generate_intermittent_multiple_shapes(
-    series_length: int, date_rng, n_ts_groups: list, amplitude_per_group: list
+    series_length: int, date_rng, n_ts_groups: list, amplitude_per_group: list, offset_per_group: list = []
 ) -> pd.DataFrame:
     np.random.seed(42)
 
@@ -732,6 +725,7 @@ def plot_and_save(df, plot=True, save=False, file_name=None):
     fig2 = plot_ts(df, range_start=-24 * 7)
     if plot:
         fig.show()
+        fig2.show()
     if save:
         fig.write_image(file_name)
         fig2.write_image(file_name[:-4] + "_zoomed.png")
@@ -744,10 +738,10 @@ def gen_model_and_params(common_params, model_class, scalers, scaling_levels, we
         # Note: LogTransformer can only be applied to positive data
         scalers = [
             StandardScaler(),
-            MinMaxScaler(feature_range=(-1, 1)),
+            # MinMaxScaler(feature_range=(-0.5, 0.5)),
             MinMaxScaler(feature_range=(0, 1)),
-            RobustScaler(quantile_range=(25, 75)),
-            ShiftedBoxCoxTransformer(),
+            RobustScaler(quantile_range=(5, 95)),
+            # ShiftedBoxCoxTransformer(),
             PowerTransformer(method="yeo-johnson", standardize=True),
             QuantileTransformer(output_distribution="normal"),
             LogTransformer(),
@@ -755,7 +749,7 @@ def gen_model_and_params(common_params, model_class, scalers, scaling_levels, we
     if scaling_levels == "default":
         scaling_levels = ["per_time_series", "per_dataset"]
     if weighted_loss is True:
-        weighted_loss = ["none", "std*avg"]  # "std*avg", "std"
+        weighted_loss = ["none", "std"]  # "std*avg", "std"
     else:
         weighted_loss = ["none"]
     model_classes_and_params = [(model_class, common_params)]
