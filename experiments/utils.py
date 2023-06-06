@@ -29,16 +29,31 @@ from tot.evaluation.metric_utils import calculate_metrics_by_ID_for_forecast_ste
 from tot.plotting import plot_plotly
 
 
+# class LogTransformer(FunctionTransformer):
+#     def __init__(self):
+#         self.epsilon = 1e-8
+#         super().__init__(self._log_transform, self._exp_transform, validate=False)
+#
+#     def _log_transform(self, X):
+#         return np.log1p(np.maximum(X, self.epsilon))
+#
+#     def _exp_transform(self, X):
+#         return np.expm1(X)
+
+
 class LogTransformer(FunctionTransformer):
-    def __init__(self):
+    def __init__(self, shift_value=None):
         self.epsilon = 1e-8
+        self.shift_value = shift_value
         super().__init__(self._log_transform, self._exp_transform, validate=False)
 
     def _log_transform(self, X):
-        return np.log1p(np.maximum(X, self.epsilon))
+        if self.shift_value is None:
+            self.shift_value = np.abs(np.min(X)) + self.epsilon
+        return np.log1p(np.maximum(X + self.shift_value, self.epsilon))
 
     def _exp_transform(self, X):
-        return np.expm1(X)
+        return np.expm1(X) - self.shift_value
 
 
 class ShiftedBoxCoxTransformer(PowerTransformer):
