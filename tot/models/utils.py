@@ -237,7 +237,11 @@ def _predict_single_raw_seasonal_naive(df, season_length, n_forecasts):
     """
     _validate_single_ID_df(df)
 
-    dates = df["ds"].iloc[season_length : -n_forecasts + 1].reset_index(drop=True)
+    dates = (
+        df["ds"].iloc[season_length : -n_forecasts + 1].reset_index(drop=True)
+        if n_forecasts > 1
+        else df["ds"].iloc[season_length:].reset_index(drop=True)
+    )
     # assemble last values based on season_length
     last_k_vals_arrays = [df["y"].iloc[i : i + season_length].values for i in range(0, dates.shape[0])]
     last_k_vals = np.stack(last_k_vals_arrays, axis=0)

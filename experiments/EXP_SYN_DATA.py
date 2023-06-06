@@ -20,7 +20,8 @@ from experiments.utils import (
     generate_one_shape_season_and_ar_data_with_outlier,
     generate_one_shape_season_data,
 )
-from tot.models import DartsForecastingModel, NaiveModel, NeuralProphetModel, SeasonalNaiveModel, TorchProphetModel
+from tot.models import NaiveModel, NeuralProphetModel, SeasonalNaiveModel, TorchProphetModel
+from tot.models.models_darts import DartsForecastingModel
 
 FUNCTIONS = {
     "generate_canceling_shape_season_and_ar_data": generate_canceling_shape_season_and_ar_data,
