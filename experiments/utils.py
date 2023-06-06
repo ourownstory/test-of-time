@@ -254,6 +254,75 @@ def generate_canceling_shape_season_and_ar_data(
     concatenated_dfs = pd.concat(df_seasons, axis=0)
     return concatenated_dfs
 
+def generate_canceling_shape_season_and_ar_data_with_outlier(
+    series_length: int,
+    date_rng,
+    n_ts_groups: list,
+    offset_per_group: list,
+    amplitude_per_group: list,
+) -> pd.DataFrame:
+    df_seasons = []
+    period = 24
+    num_outliers = 50
+    # Generate an array of time steps
+    t = np.arange(series_length)
+    # Define the angular frequency (omega) corresponding to the period
+    omega = 2 * np.pi / period
+
+    # Define AR coefficients (AR(4) model with coefficients 0.5 and 0.3)
+    ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
+    ma_coeffs = np.array([1])  # MA coefficients (no MA component)
+
+    # Create an ARMA process with the specified coefficients
+    ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
+
+    for group in range(len(n_ts_groups)):
+        # Create noise groups
+        noise_group = [
+            np.random.normal(loc=0, scale=amplitude_per_group[group] / 10, size=series_length)
+            for _ in range(n_ts_groups[group])
+        ]
+
+        # Generate outlier positions for each time series in the group
+        outlier_positions = [
+            np.random.choice(series_length, size=num_outliers, replace=False)
+            for _ in range(n_ts_groups[group])
+        ]
+
+        # Generate outliers for each time series in the group
+        outliers = [
+            np.random.normal(loc=0, scale=amplitude_per_group[group] * 2, size=num_outliers)
+            for _ in range(n_ts_groups[group])
+        ]
+
+        # Replace selected positions in the noise group with outliers
+        for i in range(n_ts_groups[group]):
+            noise_group[i][outlier_positions[i]] = outliers[i]
+
+        # Generate base time series data
+        data_group = [
+            ((-1) ** group)
+            * (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t))
+            * amplitude_per_group[group]
+            for _ in range(n_ts_groups[group])
+        ]
+
+        # Generate AR time series data
+        ar_data_group = [
+            ar_process.generate_sample(series_length) * amplitude_per_group[group] / 2
+            for _ in range(n_ts_groups[group])
+        ]
+
+        # Combine base data, AR data, noise, and outliers into final time series data
+        for i in range(n_ts_groups[group]):
+            df = pd.DataFrame(date_rng, columns=["ds"])
+            df["y"] = data_group[i] + ar_data_group[i] + noise_group[i] + offset_per_group[group]
+            df["ID"] = str(i + sum(n_ts_groups[:group]))
+            df_seasons.append(df.reset_index(drop=True))
+
+    concatenated_dfs = pd.concat(df_seasons, axis=0)
+    return concatenated_dfs
+
 
 def generate_one_shape_season_data(
     series_length: int,
