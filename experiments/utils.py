@@ -129,11 +129,11 @@ def load_Solar(n_samples=None, ids=None, n_ids=None):
 
 
 def generate_canceling_shape_season_data(
-    series_length: int,
-    date_rng,
-    n_ts_groups: list,
-    offset_per_group: list,
-    amplitude_per_group: list,
+        series_length: int,
+        date_rng,
+        n_ts_groups: list,
+        offset_per_group: list,
+        amplitude_per_group: list,
 ) -> pd.DataFrame:
     df_seasons = []
     period = 24
@@ -170,11 +170,11 @@ def generate_canceling_shape_season_data(
 
 
 def generate_one_shape_season_data(
-    series_length: int,
-    date_rng,
-    n_ts_groups: list,
-    offset_per_group: list,
-    amplitude_per_group: list,
+        series_length: int,
+        date_rng,
+        n_ts_groups: list,
+        offset_per_group: list,
+        amplitude_per_group: list,
 ) -> pd.DataFrame:
     df_seasons = []
     period = 24
@@ -211,11 +211,11 @@ def generate_one_shape_season_data(
 
 
 def generate_ar(
-    series_length: int,
-    date_rng,
-    n_ts_groups: list,
-    offset_per_group: list,
-    amplitude_per_group: list,
+        series_length: int,
+        date_rng,
+        n_ts_groups: list,
+        offset_per_group: list,
+        amplitude_per_group: list,
 ) -> pd.DataFrame:
     # Create a DataFrame with the simulated data and date range
     ar_dfs = []
@@ -367,6 +367,15 @@ def gen_model_and_params(common_params, model_class, scalers, scaling_levels, we
     return model_classes_and_params
 
 
+def gen_model_and_params_norm(common_params, model_class, scalers, scaling_levels, weighted_los):
+    model_classes_and_params = [(model_class, common_params)]
+    for mode in scalers:
+        params = common_params.copy()
+        params.update({"norm_mode": mode})
+        model_classes_and_params.append((model_class, params))
+    return model_classes_and_params
+
+
 def save_params(params, dir, df_name, save=True):
     class CustomJSONEncoder(json.JSONEncoder):
         def default(self, obj):
@@ -451,7 +460,7 @@ def save_results(benchmark, metrics, freq, dir, save):
     if save:
         # result details
         for i, (fcst_test, fcst_train, exp) in enumerate(
-            zip(benchmark.fcst_test, benchmark.fcst_train, benchmark.experiments)
+                zip(benchmark.fcst_test, benchmark.fcst_train, benchmark.experiments)
         ):
             df_metric_perID = calculate_metrics_by_ID_for_forecast_step(
                 fcst_df=fcst_test,

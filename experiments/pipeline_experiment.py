@@ -24,6 +24,7 @@ def run(
     scalers="default",
     scaling_levels="default",
     reweight_loss=True,
+    model_and_params_generator=gen_model_and_params
 ):
     base_dir_name = pathlib.Path(__file__).parent.absolute()
     results_dir_name = os.path.join(base_dir_name, f"results")
@@ -41,7 +42,7 @@ def run(
     dataset_list = [
         Dataset(df=df, name=df_name, freq=freq),
     ]
-    model_classes_and_params = gen_model_and_params(model_params, model_class, scalers, scaling_levels, reweight_loss)
+    model_classes_and_params = model_and_params_generator(model_params, model_class, scalers, scaling_levels, reweight_loss)
     benchmark = SimpleBenchmark(
         model_classes_and_params=model_classes_and_params,
         datasets=dataset_list,

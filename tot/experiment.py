@@ -62,9 +62,10 @@ class Experiment(ABC):
         params_repr.pop("model", None)
         if not hasattr(self, "experiment_name") or self.experiment_name is None:
             self.experiment_name = (
-                "{}_{}_{}_{}_{}".format(
+                "{}_{}_{}_{}_{}_{}".format(
                     self.data.name,
                     model_name,
+                    self.params.get("norm_mode", "none"),
                     self.params.get("scaler", "no scaler"),
                     self.params.get("scaling_level", "none"),
                     self.params.get("weighted_loss", "none"),
@@ -78,6 +79,7 @@ class Experiment(ABC):
             self.metadata = {
                 "data": self.data.name,
                 "model": model_name,
+                "norm_mode": self.params.get("norm_mode", "none"),
                 "scaler": self.params.get("scaler", "no scaler"),
                 "scaling level": self.params.get("scaling_level", "none"),
                 "weighted": self.params.get("weighted_loss", "none"),

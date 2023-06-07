@@ -1,0 +1,4 @@
+,data,model,norm_mode,scaler,scaling level,weighted,MAE,RMSE,MAPE,MASE
+0,EXP_ERCOT_batch_instance_norm,NeuralProphetModel,none,no scaler,none,none,63.81192469596863,90.24350732458075,1.6424536006525159,0.4811541012552144
+1,EXP_ERCOT_batch_instance_norm,NeuralProphetModel,batch,no scaler,none,none,61.608705282211304,88.00660533777202,1.6393595142289996,0.4645414060270854
+2,EXP_ERCOT_batch_instance_norm,NeuralProphetModel,instance,no scaler,none,none,57.943265080451965,80.80147897798494,1.523060631006956,0.43690328675102375
