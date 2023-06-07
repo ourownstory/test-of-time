@@ -28,7 +28,7 @@ def run(
     base_dir_name = pathlib.Path(__file__).parent.absolute()
     results_dir_name = os.path.join(base_dir_name, f"results")
     exp_dir_name = os.path.join(results_dir_name, f"{dir_name}")
-    data_file_name = os.path.join(exp_dir_name, f"{df_name}.png")
+    data_file_name = os.path.join(exp_dir_name, "data.png")
     param_file_name = os.path.join(exp_dir_name, "model_classes_and_params.csv")
     if save:
         try:
@@ -47,7 +47,7 @@ def run(
         datasets=dataset_list,
         metrics=metrics,
         test_percentage=test_percentage,
-        num_processes=8,
+        num_processes=19,
     )
     results_train, results_test = benchmark.run(verbose=True)
     print("results test", results_test)

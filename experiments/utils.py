@@ -254,6 +254,7 @@ def generate_canceling_shape_season_and_ar_data(
     concatenated_dfs = pd.concat(df_seasons, axis=0)
     return concatenated_dfs
 
+
 def generate_canceling_shape_season_and_ar_data_with_outlier(
     series_length: int,
     date_rng,
@@ -285,8 +286,7 @@ def generate_canceling_shape_season_and_ar_data_with_outlier(
 
         # Generate outlier positions for each time series in the group
         outlier_positions = [
-            np.random.choice(series_length, size=num_outliers, replace=False)
-            for _ in range(n_ts_groups[group])
+            np.random.choice(series_length, size=num_outliers, replace=False) for _ in range(n_ts_groups[group])
         ]
 
         # Generate outliers for each time series in the group
@@ -429,7 +429,7 @@ def generate_one_shape_season_and_ar_data_with_outlier(
             for i in range(n_ts_groups[group])
         ]
         outliers = [
-            np.random.normal(loc=0, scale=amplitude_per_group[group] * 2, size=num_outliers)
+            np.random.normal(loc=0, scale=amplitude_per_group[group] * 3, size=num_outliers)
             for _ in range(n_ts_groups[group])
         ]
         for i in range(n_ts_groups[group]):
@@ -450,6 +450,105 @@ def generate_one_shape_season_and_ar_data_with_outlier(
             df_seasons.append(df.reset_index(drop=True))
 
     concatenated_dfs = pd.concat(df_seasons, axis=0)
+    return concatenated_dfs
+
+
+def generate_structural_break_and_ar_data(
+    series_length: int,
+    date_rng,
+    n_ts_groups: list,
+    offset_per_group: list,
+    amplitude_per_group: list,
+) -> pd.DataFrame:
+    df_seasons = []
+    period = 24
+    np.random.seed(42)
+
+    t = np.arange(series_length)
+    omega = 2 * np.pi / period
+    ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
+    ma_coeffs = np.array([1])  # MA coefficients (no MA component)
+    ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
+
+    for group_num in range(len(n_ts_groups)):  # looping over two groups
+        n_ts = n_ts_groups[group_num]
+        offset = offset_per_group[group_num]
+        amplitude = amplitude_per_group[group_num]
+
+        noise_group = [np.random.normal(loc=0, scale=amplitude / 5, size=series_length) for _ in range(n_ts)]
+        data_group = [
+            (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) * amplitude
+            for _ in range(n_ts)
+        ]
+        ar_data_group = [ar_process.generate_sample(series_length) * amplitude / 2 for _ in range(n_ts)]
+
+        # Define the step function
+        step_function = np.zeros(series_length)
+        step_function[series_length // 2 :] = amplitude * 10  # Adjust the step size relative to the amplitude
+
+        for i in range(n_ts):
+            df = pd.DataFrame(date_rng, columns=["ds"])
+            df["y"] = data_group[i] + noise_group[i] + offset + ar_data_group[i] + step_function
+            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df_seasons.append(df.reset_index(drop=True))
+
+    concatenated_dfs = pd.concat(df_seasons, axis=0)
+
+    return concatenated_dfs
+
+
+def generate_varaince_shift_and_ar_data(
+    series_length: int,
+    date_rng,
+    n_ts_groups: list,
+    offset_per_group: list,
+    amplitude_per_group: list,
+) -> pd.DataFrame:
+    df_seasons = []
+    period = 24
+    np.random.seed(42)
+
+    t = np.arange(series_length)
+    omega = 2 * np.pi / period
+    ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
+    ma_coeffs = np.array([1])  # MA coefficients (no MA component)
+    ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
+
+    for group_num in range(len(n_ts_groups)):  # looping over two groups
+        n_ts = n_ts_groups[group_num]
+        offset = offset_per_group[group_num]
+        amplitude = amplitude_per_group[group_num]
+
+        # Change amplitude in the second half of the series
+        amplitude_first_half = amplitude
+        amplitude_second_half = amplitude * 4
+
+        noise_group = [np.random.normal(loc=0, scale=amplitude / 5, size=series_length) for _ in range(n_ts)]
+        data_group = []
+        for _ in range(n_ts):
+            data_first_half = (
+                np.sin(omega * t[: series_length // 2])
+                + np.cos(omega * t[: series_length // 2])
+                + np.sin(2 * omega * t[: series_length // 2])
+                + np.cos(2 * omega * t[: series_length // 2])
+            ) * amplitude_first_half
+            data_second_half = (
+                np.sin(omega * t[series_length // 2 :])
+                + np.cos(omega * t[series_length // 2 :])
+                + np.sin(2 * omega * t[series_length // 2 :])
+                + np.cos(2 * omega * t[series_length // 2 :])
+            ) * amplitude_second_half
+            data_group.append(np.concatenate([data_first_half, data_second_half]))
+        ar_data_group = [ar_process.generate_sample(series_length) * amplitude / 2 for _ in range(n_ts)]
+
+        for i in range(n_ts):
+            df = pd.DataFrame(date_rng, columns=["ds"])
+            df["y"] = data_group[i] + noise_group[i] + offset + ar_data_group[i]
+            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df_seasons.append(df.reset_index(drop=True))
+
+    concatenated_dfs = pd.concat(df_seasons, axis=0)
+
     return concatenated_dfs
 
 
@@ -523,7 +622,7 @@ def generate_intermittent(
     common_daily_pattern = np.zeros(hours_per_day)
     window = np.hanning(end_hour - start_hour)
     common_daily_pattern[start_hour:end_hour] = (
-        np.random.exponential(scale=1, size=end_hour - start_hour) * window + 0.5
+        np.random.exponential(scale=1, size=end_hour - start_hour) + 0.5  # * window
     )
 
     # Generate time series for each group
@@ -876,7 +975,7 @@ def save_params(params, dir, df_name, save=True):
             return super().default(obj)
 
     if save:
-        config_file_name = os.path.join(dir, f"{df_name}.json")
+        config_file_name = os.path.join(dir, "params.json")
         with open(config_file_name, "w") as file:
             json.dump(params, file, cls=CustomJSONEncoder)
 

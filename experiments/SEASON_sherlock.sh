@@ -4,10 +4,9 @@
 #SBATCH --time=2:00:00
 #SBATCH -p normal
 #SBATCH --ntasks=7
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=16
 #SBATCH --mem-per-cpu=1G
 #SBATCH --output=myjob-%A_%a.out
-
 
  ### NP
  python3 EXP_SYN_DATA.py --data_func generate_one_shape_season_and_ar_data --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "50,50"

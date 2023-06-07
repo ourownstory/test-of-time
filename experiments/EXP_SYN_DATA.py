@@ -20,6 +20,8 @@ from experiments.utils import (
     generate_one_shape_season_and_ar_data,
     generate_one_shape_season_and_ar_data_with_outlier,
     generate_one_shape_season_data,
+    generate_varaince_shift_and_ar_data,
+    generate_structural_break_and_ar_data,
 )
 from tot.models import NaiveModel, NeuralProphetModel, SeasonalNaiveModel, TorchProphetModel
 from tot.models.models_darts import DartsForecastingModel
@@ -36,6 +38,8 @@ FUNCTIONS = {
     "generate_intermittent_multiple_shapes": generate_intermittent_multiple_shapes,
     "generate_one_shape_season_and_ar_and_trend_data": generate_one_shape_season_and_ar_and_trend_data,
     "generate_one_shape_season_and_ar_and_expo_trend_data": generate_one_shape_season_and_ar_and_expo_trend_data,
+    "generate_varaince_shift_and_ar_data": generate_varaince_shift_and_ar_data,
+    "generate_structural_break_and_ar_data": generate_structural_break_and_ar_data,
 }
 
 PARAMS = {
@@ -185,7 +189,7 @@ def run_benchmark(
         dir_name=DIR_NAME,
         save=True,
         df=df,
-        df_name=DIR_NAME,
+        df_name="",
         freq=FREQ,
         model_class=MODEL,
         model_params=MODEL_PARAMS,
@@ -242,7 +246,7 @@ if __name__ == "__main__":
     args.data_offset_per_group = [int(i) for i in args.data_offset_per_group.split(",")]
     args.data_amplitude_per_group = [int(i) for i in args.data_amplitude_per_group.split(",")]
     args.data_trend_gradient_per_group = (
-        [int(i) for i in args.data_trend_gradient_per_group.split(",")]
+        [float(i) for i in args.data_trend_gradient_per_group.split(",")]
         if args.data_trend_gradient_per_group is not None
         else None
     )
