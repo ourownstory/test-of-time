@@ -160,15 +160,15 @@ job_counter=1
 # loop through the python commands
 for command in "${python_commands[@]}"; do
     # create a job name based on the counter
-    job_name="job_$job_counter"
+    job_name="job_ss_$job_counter"
 
     # create a temporary Slurm script
     echo "#!/bin/bash" > temp.sh
     echo "#SBATCH --job-name=$job_name" >> temp.sh
     echo "#SBATCH --output=res_$job_name" >> temp.sh
-    echo "#SBATCH --time=00:40:00" >> temp.sh
+    echo "#SBATCH --time=00:20:00" >> temp.sh
     echo "#SBATCH --cpus-per-task=19" >> temp.sh
-    echo "#SBATCH --mem=2G" >> temp.sh
+    echo "#SBATCH --mem-per-cpu=1G" >> temp.sh
 
     # add the python command to the Slurm script
     echo $command >> temp.sh
