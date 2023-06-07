@@ -3,8 +3,7 @@
 #SBATCH --job-name=season_shape
 #SBATCH --time=2:00:00
 #SBATCH -p normal
-#SBATCH --ntasks=7
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=19
 #SBATCH --mem-per-cpu=1G
 #SBATCH --output=myjob-%A_%a.out
 
