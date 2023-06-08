@@ -106,6 +106,7 @@ PARAMS = {
         "force_reset": True,
         "n_lags": 4,
         "n_forecasts": 1,
+        "pl_trainer_kwargs": {"accelerator": "gpu", "devices": [0]},
         "_data_params": {},
     },
     "TF": {
@@ -128,6 +129,7 @@ PARAMS = {
         "random_state": 42,
         "save_checkpoints": True,
         "force_reset": True,
+        "pl_trainer_kwargs": {"accelerator": "gpu", "devices": [0]},
         "_data_params": {},
     },
     "Naive": {"n_forecasts": 1},
