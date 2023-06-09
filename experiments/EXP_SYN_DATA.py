@@ -22,6 +22,7 @@ from experiments.utils import (
     generate_one_shape_season_data,
     generate_varaince_shift_and_ar_data,
     generate_structural_break_and_ar_data,
+    gen_model_and_params,
 )
 from tot.models import NaiveModel, NeuralProphetModel, SeasonalNaiveModel, TorchProphetModel
 from tot.models.models_darts import DartsForecastingModel
@@ -144,6 +145,10 @@ MODELS = {
     "NaiveModel": NaiveModel,
     "SeasonalNaiveModel": SeasonalNaiveModel,
 }
+GEN_FUNC = {
+"gen_model_and_params": gen_model_and_params,
+}
+
 
 
 def run_benchmark(
@@ -152,8 +157,10 @@ def run_benchmark(
     data_func,
     n_ts_groups,
     amplitude_per_group,
+    gen_func,
     offset_per_group=[0, 0],
     data_trend_gradient_per_group=None,
+
 ):
     start_time = time.time()
     PLOT = False
@@ -204,7 +211,8 @@ def run_benchmark(
         metrics=["MAE", "RMSE", "MASE"],
         test_percentage=0.25,
         plot=PLOT,
-        num_processes=NUM_PROCESSES
+        num_processes=NUM_PROCESSES,
+        model_and_params_generator = GEN_FUNC[gen_func]
     )
     end_time = time.time()
     print("time taken", end_time - start_time)
@@ -240,7 +248,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("--model", type=str, required=True, help="Model class")
     parser.add_argument("--params", type=str, required=True, help="Model parameters")
-    # parser.add_argument('--dir_name', type=str, required=True, help='Directory name')
+    parser.add_argument('--gen_func', type=str, required=False, default= "gen_model_and_params", help='Directory name')
 
     args = parser.parse_args()
 
@@ -266,4 +274,5 @@ if __name__ == "__main__":
         offset_per_group=args.data_offset_per_group,
         amplitude_per_group=args.data_amplitude_per_group,
         data_trend_gradient_per_group=args.data_trend_gradient_per_group,
+        gen_func=args.gen_func
     )
