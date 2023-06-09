@@ -24,6 +24,7 @@ def run(
     scalers="default",
     scaling_levels="default",
     reweight_loss=True,
+    num_processes=19,
 ):
     base_dir_name = pathlib.Path(__file__).parent.absolute()
     results_dir_name = os.path.join(base_dir_name, f"results")
@@ -47,7 +48,7 @@ def run(
         datasets=dataset_list,
         metrics=metrics,
         test_percentage=test_percentage,
-        num_processes=19,
+        num_processes=num_processes,
     )
     results_train, results_test = benchmark.run(verbose=True)
     print("results test", results_test)

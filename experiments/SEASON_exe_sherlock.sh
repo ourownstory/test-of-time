@@ -79,13 +79,13 @@ commands_RNN=(
 
 ### LGBM
 commands_LGBM=(
-'python3 EXP_SYN_DATA.py --data_func generate_one_shape_season_and_ar_data --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "50,50"'
-'python3 EXP_SYN_DATA.py --data_func generate_one_shape_season_and_ar_data --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "50,5"'
-'python3 EXP_SYN_DATA.py --data_func generate_one_shape_season_and_ar_data --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "1000,100" --data_amplitude_per_group "50,50"'
-'python3 EXP_SYN_DATA.py --data_func generate_one_shape_season_and_ar_data --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "1000,100" --data_amplitude_per_group "50,5"'
-'python3 EXP_SYN_DATA.py --data_func generate_one_shape_season_and_ar_data_with_outlier --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "1000,100" --data_amplitude_per_group "50,5"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "50,5"'
-'python3 EXP_SYN_DATA.py --data_func generate_one_shape_season_and_ar_data --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "100,1000,100,1000" --data_amplitude_per_group "50,50,5,5"'
+#'python3 EXP_SYN_DATA.py --data_func generate_one_shape_season_and_ar_data --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "50,50"'
+#'python3 EXP_SYN_DATA.py --data_func generate_one_shape_season_and_ar_data --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "50,5"'
+#'python3 EXP_SYN_DATA.py --data_func generate_one_shape_season_and_ar_data --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "1000,100" --data_amplitude_per_group "50,50"'
+#'python3 EXP_SYN_DATA.py --data_func generate_one_shape_season_and_ar_data --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "1000,100" --data_amplitude_per_group "50,5"'
+#'python3 EXP_SYN_DATA.py --data_func generate_one_shape_season_and_ar_data_with_outlier --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "1000,100" --data_amplitude_per_group "50,5"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "50,5"'
+#'python3 EXP_SYN_DATA.py --data_func generate_one_shape_season_and_ar_data --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "100,1000,100,1000" --data_amplitude_per_group "50,50,5,5"'
 )
 
 ### Naive
@@ -124,9 +124,30 @@ for command in "${python_commands[@]}"; do
     echo "#!/bin/bash" > temp.sh
     echo "#SBATCH --job-name=$job_name" >> temp.sh
     echo "#SBATCH --output=res_$job_name" >> temp.sh
-    echo "#SBATCH --time=00:20:00" >> temp.sh
-    echo "#SBATCH --cpus-per-task=19" >> temp.sh
-    echo "#SBATCH --mem-per-cpu=1G" >> temp.sh
+
+    # check if "Transformer" or "RNN" is in the command
+    if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
+        echo "#SBATCH --time=02:00:00" >> temp.sh
+        echo "#SBATCH -p gpu" >> temp.sh
+        echo "#SBATCH -G 1" >> temp.sh
+    else
+        echo "#SBATCH --time=00:20:00" >> temp.sh
+        echo "#SBATCH --cpus-per-task=19" >> temp.sh
+        echo "#SBATCH --mem-per-cpu=1G" >> temp.sh
+    fi
+
+     # load the Python and CUDA modules
+    echo "module load python/3.9.0" >> temp.sh
+    echo "module load cuda/11.7.1" >> temp.sh
+
+    # activate the virtual environment
+    echo "source ../../tot4/bin/activate" >> temp.sh
+
+    # re-install the packages
+    echo "pip install --no-cache-dir -e  git+https://github.com/ourownstory/neural_prophet.git@weighted-loss" >> temp.sh
+    echo "pip install -e git+https://github.com/LeonieFreisinger/darts.git@lgbm_for_server#egg=darts" >> temp.sh
+
+
 
     # add the python command to the Slurm script
     echo $command >> temp.sh

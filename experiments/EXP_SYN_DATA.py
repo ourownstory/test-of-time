@@ -91,7 +91,6 @@ PARAMS = {
         "output_chunk_length": 1,
         "lags": 4,
         "n_lags": 4,
-        "multi_models": False,
         "_data_params": {},
     },
     "RNN": {
@@ -106,7 +105,7 @@ PARAMS = {
         "force_reset": True,
         "n_lags": 4,
         "n_forecasts": 1,
-        "pl_trainer_kwargs": {"accelerator": "gpu", "devices": [0]},
+        "pl_trainer_kwargs": {"accelerator": "gpu", "devices": 1},
         "_data_params": {},
     },
     "TF": {
@@ -129,7 +128,7 @@ PARAMS = {
         "random_state": 42,
         "save_checkpoints": True,
         "force_reset": True,
-        "pl_trainer_kwargs": {"accelerator": "gpu", "devices": [0]},
+        "pl_trainer_kwargs": {"accelerator": "gpu", "devices": 1},
         "_data_params": {},
     },
     "Naive": {"n_forecasts": 1},
@@ -168,6 +167,10 @@ def run_benchmark(
     DIR_NAME = "{}_{}_n_ts_{}_am_{}_of_{}_gr_{}".format(
         data_func, params, n_ts_groups, amplitude_per_group, offset_per_group, data_trend_gradient_per_group
     )
+    if params == "TF" or params == "RNN":
+        NUM_PROCESSES = 1
+    else:
+        NUM_PROCESSES = 19
 
     if data_trend_gradient_per_group is not None:
         df = FUNCTIONS[data_func](
@@ -201,6 +204,7 @@ def run_benchmark(
         metrics=["MAE", "RMSE", "MASE"],
         test_percentage=0.25,
         plot=PLOT,
+        num_processes=NUM_PROCESSES
     )
     end_time = time.time()
     print("time taken", end_time - start_time)
