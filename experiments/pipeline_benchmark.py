@@ -43,8 +43,8 @@ def run_script(args):
     print(f"Running {python_file} in process id {os.getpid()}")
     try:
         # Ausführen des Python-Skripts
-        python_exe = "C:/Users/Leonie Freisinger/Leonie/01_Dokumente/02_Studium/Master/01_Masterstudium/NeuralProphet/tot4/Scripts/python.exe"
-        # python_exe = "python3"  # for running on ubuntu
+        # python_exe = "C:/Users/Leonie Freisinger/Leonie/01_Dokumente/02_Studium/Master/01_Masterstudium/NeuralProphet/tot4/Scripts/python.exe"
+        python_exe = "python3"  # for runnin gon ubuntu
         subprocess.run([python_exe, python_file], check=True)
     except subprocess.CalledProcessError as e:
         # Fehlerbehandlung, falls das Skript fehlschlägt
@@ -61,7 +61,7 @@ def run_benchmarks(folder_path, save_folder):
     python_files = get_experiment_scripts(folder_path)
 
     # Create a pool of processes
-    with multiprocessing.Pool(processes=1) as pool:
+    with multiprocessing.Pool(processes=4) as pool:
         # Use starmap function with list of tuples, where each tuple contains parameters for run_script
         pool.map(run_script, [(python_file, save_folder) for python_file in python_files])
 
@@ -73,7 +73,6 @@ scripts_dir = os.path.join(dir_path, "scripts")
 print(dir_path)
 if __name__ == "__main__":
     # Specify the Python interpreter path and folders for benchmarks and saving aborted files
-    # multiprocessing.freeze_support()
     run_benchmarks(scripts_dir, dir_path)
 end_time = time.time()
 elapsed_time = end_time - start_time

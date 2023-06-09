@@ -3,7 +3,14 @@ import pathlib
 
 from neuralprophet.utils import set_log_level
 
-from experiments.utils import gen_model_and_params, plot_and_save, plot_forecasts, save_params, save_results
+from experiments.utils import (
+    gen_model_and_params,
+    gen_model_and_params_norm,
+    plot_and_save,
+    plot_forecasts,
+    save_params,
+    save_results,
+)
 from tot.benchmark import SimpleBenchmark
 from tot.datasets import Dataset
 
@@ -43,7 +50,9 @@ def run(
     dataset_list = [
         Dataset(df=df, name=df_name, freq=freq),
     ]
-    model_classes_and_params = model_and_params_generator(model_params, model_class, scalers, scaling_levels, reweight_loss)
+    model_classes_and_params = model_and_params_generator(
+        model_params, model_class, scalers, scaling_levels, reweight_loss
+    )
     benchmark = SimpleBenchmark(
         model_classes_and_params=model_classes_and_params,
         datasets=dataset_list,

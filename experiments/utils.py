@@ -952,6 +952,15 @@ def gen_model_and_params(common_params, model_class, scalers, scaling_levels, we
         model_classes_and_params[0][1].update({"learning_rate": 0.03})
     return model_classes_and_params
 
+def gen_model_and_params_norm(common_params, model_class, scalers, scaling_levels, weighted_los):
+    model_classes_and_params = [(model_class, common_params)]
+    if scalers == "default":
+        scalers = ["batch", "instance"]
+    for mode in scalers:
+        params = common_params.copy()
+        params.update({"norm_mode": mode}) # scalers=["batch", "instance"]
+        model_classes_and_params.append((model_class, params))
+    return model_classes_and_params
 
 def save_params(params, dir, df_name, save=True):
     class CustomJSONEncoder(json.JSONEncoder):
