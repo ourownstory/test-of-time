@@ -962,6 +962,10 @@ def gen_model_and_params_norm(common_params, model_class, scalers, scaling_level
         model_classes_and_params.append((model_class, params))
     return model_classes_and_params
 
+def gen_model_and_params_none(common_params, model_class, scalers, scaling_levels, weighted_los):
+    model_classes_and_params = [(model_class, common_params)]
+    return model_classes_and_params
+
 def save_params(params, dir, df_name, save=True):
     class CustomJSONEncoder(json.JSONEncoder):
         def default(self, obj):

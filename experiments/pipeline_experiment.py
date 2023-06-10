@@ -5,7 +5,6 @@ from neuralprophet.utils import set_log_level
 
 from experiments.utils import (
     gen_model_and_params,
-    gen_model_and_params_norm,
     plot_and_save,
     plot_forecasts,
     save_params,

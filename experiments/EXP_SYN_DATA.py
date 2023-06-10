@@ -24,6 +24,7 @@ from experiments.utils import (
     generate_structural_break_and_ar_data,
     gen_model_and_params,
     gen_model_and_params_norm,
+    gen_model_and_params_none,
 )
 from tot.models import NaiveModel, NeuralProphetModel, SeasonalNaiveModel, TorchProphetModel
 from tot.models.models_darts import DartsForecastingModel
@@ -149,6 +150,7 @@ MODELS = {
 GEN_FUNC = {
     "gen_model_and_params": gen_model_and_params,
     "gen_model_and_params_norm": gen_model_and_params_norm,
+    "gen_model_and_params_none": gen_model_and_params_none,
 }
 
 
@@ -248,7 +250,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("--model", type=str, required=True, help="Model class")
     parser.add_argument("--params", type=str, required=True, help="Model parameters")
-    parser.add_argument("--gen_func", type=str, required=False, default="gen_model_and_params", help="Directory name")
+    parser.add_argument("--gen_func", type=str, required=False, default="gen_model_and_params", help="")
 
     args = parser.parse_args()
 
