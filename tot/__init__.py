@@ -11,7 +11,6 @@ from .benchmark import (  # noqa: F401 to evade flake8
 
 # make classes available upon package import
 from .experiment import SimpleExperiment  # noqa: F401
-from .RevIN import RevIN  # noqa: F401
 
 # logger handling
 log = logging.getLogger("tot.benchmark")
