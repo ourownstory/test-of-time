@@ -8,6 +8,7 @@ import pandas as pd
 import plotly
 import plotly.graph_objects as go
 from plotly_resampler import unregister_plotly_resampler
+from scipy.stats import zscore
 
 unregister_plotly_resampler()
 from abc import ABCMeta
@@ -164,167 +165,238 @@ def load_Solar(n_samples=None, ids=None, n_ids=None):
     return df
 
 
-def generate_canceling_shape_season_data(
+# def generate_canceling_shape_season_data( # OUTDATED
+#     series_length: int,
+#     date_rng,
+#     n_ts_groups: list,
+#     offset_per_group: list,
+#     amplitude_per_group: list,
+# ) -> pd.DataFrame:
+#     df_seasons = []
+#     period = 24
+#     # Generate an array of time steps
+#     t = np.arange(series_length)
+#     # Define the angular frequency (omega) corresponding to the period
+#     omega = 2 * np.pi / period
+#     # Generate the seasonal time series using multiple sine and cosine terms
+#     data_group_1 = [
+#         (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) * amplitude_per_group[0]
+#         for _ in range(n_ts_groups[0])
+#     ]
+#     for i in range(n_ts_groups[0]):
+#         df = pd.DataFrame(date_rng, columns=["ds"])
+#         df["y"] = data_group_1[i] + offset_per_group[0]
+#         df["ID"] = str(i)
+#         df_seasons.append(df.reset_index(drop=True))
+#     i = i
+#     data_group_2 = [
+#         -(np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t))
+#         * amplitude_per_group[1]
+#         for _ in range(n_ts_groups[1])
+#     ]
+#     for j in range(n_ts_groups[1]):
+#         df = pd.DataFrame(date_rng, columns=["ds"])
+#         df["y"] = data_group_2[j] + offset_per_group[1]
+#         df["ID"] = str(i + j + 1)
+#         df_seasons.append(df.reset_index(drop=True))
+#
+#     concatenated_dfs = pd.DataFrame()
+#     for i, df in enumerate(df_seasons):
+#         concatenated_dfs = pd.concat([concatenated_dfs, df], axis=0)
+#     return concatenated_dfs
+
+
+def gen_cancel_shape_ar(
     series_length: int,
     date_rng,
     n_ts_groups: list,
     offset_per_group: list,
     amplitude_per_group: list,
 ) -> pd.DataFrame:
-    df_seasons = []
+    df_data = []
     period = 24
-    # Generate an array of time steps
+    np.random.seed(42)
+
+    proportion_season = 2
+    proportion_ar = 1
+    proportion_noise = 0.05
+
     t = np.arange(series_length)
-    # Define the angular frequency (omega) corresponding to the period
     omega = 2 * np.pi / period
-    # Generate the seasonal time series using multiple sine and cosine terms
-    data_group_1 = [
-        (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) * amplitude_per_group[0]
-        for _ in range(n_ts_groups[0])
-    ]
-    for i in range(n_ts_groups[0]):
-        df = pd.DataFrame(date_rng, columns=["ds"])
-        df["y"] = data_group_1[i] + offset_per_group[0]
-        df["ID"] = str(i)
-        df_seasons.append(df.reset_index(drop=True))
-    i = i
-    data_group_2 = [
-        -(np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t))
-        * amplitude_per_group[1]
-        for _ in range(n_ts_groups[1])
-    ]
-    for j in range(n_ts_groups[1]):
-        df = pd.DataFrame(date_rng, columns=["ds"])
-        df["y"] = data_group_2[j] + offset_per_group[1]
-        df["ID"] = str(i + j + 1)
-        df_seasons.append(df.reset_index(drop=True))
-
-    concatenated_dfs = pd.DataFrame()
-    for i, df in enumerate(df_seasons):
-        concatenated_dfs = pd.concat([concatenated_dfs, df], axis=0)
-    return concatenated_dfs
-
-
-def generate_canceling_shape_season_and_ar_data(
-    series_length: int,
-    date_rng,
-    n_ts_groups: list,
-    offset_per_group: list,
-    amplitude_per_group: list,
-) -> pd.DataFrame:
-    df_seasons = []
-    period = 24
-
-    # Create noise groups in a nested list comprehension
-    noise_group = [
-        [np.random.normal(loc=0, scale=amplitude / 10, size=series_length) for _ in range(n_ts)]
-        for amplitude, n_ts in zip(amplitude_per_group, n_ts_groups)
-    ]
-
-    # Generate an array of time steps
-    t = np.arange(series_length)
-    # Define the angular frequency (omega) corresponding to the period
-    omega = 2 * np.pi / period
-
-    # Define AR coefficients (AR(4) model with coefficients 0.5 and 0.3)
     ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
-
-    # Create an ARMA process with the specified coefficients
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
-    for group in range(2):
-        data_group = [
-            ((-1) ** group)
+    for group_num in range(len(n_ts_groups)):  # looping over two groups
+        n_ts = n_ts_groups[group_num]
+        offset = offset_per_group[group_num]
+        amplitude = amplitude_per_group[group_num]
+
+        # generate season data with default scale 1
+        season_group = [
+            ((-1) ** group_num)
             * (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t))
-            * amplitude_per_group[group]
-            for _ in range(n_ts_groups[group])
+            for _ in range(n_ts)
         ]
-        ar_data_group = [
-            ar_process.generate_sample(series_length) * amplitude_per_group[group] / 2
-            for _ in range(n_ts_groups[group])
-        ]
+        # generate ar data with default scale 1
+        ar_group = [ar_process.generate_sample(series_length) for _ in range(n_ts)]
+        # generate noise data with default scale 1
+        noise_group = [np.random.normal(loc=0, scale=1, size=series_length) for _ in range(n_ts)]
 
-        for i in range(n_ts_groups[group]):
+        for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
-            df["y"] = data_group[i] + ar_data_group[i] + noise_group[group][i] + offset_per_group[group]
-            df["ID"] = str(i + sum(n_ts_groups[:group]))
-            df_seasons.append(df.reset_index(drop=True))
+            # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
+            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            # Add the noise according to desired proportion
+            combined_data += proportion_noise * noise_group[i]
+            # Scale the series with the amplitude and offset of the respective group
+            df["y"] = combined_data * amplitude + offset
+            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df_data.append(df.reset_index(drop=True))
 
-    concatenated_dfs = pd.concat(df_seasons, axis=0)
+    concatenated_dfs = pd.concat(df_data, axis=0)
+
+    # Apply global normalization to ensure standardized variance for dataset
+    concatenated_dfs["y"] = (concatenated_dfs["y"]) / concatenated_dfs["y"].std()
+
     return concatenated_dfs
 
 
-def generate_canceling_shape_season_and_ar_data_with_outlier(
+def gen_cancel_shape_ar_outlier_0p1(
     series_length: int,
     date_rng,
     n_ts_groups: list,
     offset_per_group: list,
     amplitude_per_group: list,
 ) -> pd.DataFrame:
-    df_seasons = []
+    df_data = []
     period = 24
-    num_outliers = 50
-    # Generate an array of time steps
-    t = np.arange(series_length)
-    # Define the angular frequency (omega) corresponding to the period
-    omega = 2 * np.pi / period
+    np.random.seed(42)
 
-    # Define AR coefficients (AR(4) model with coefficients 0.5 and 0.3)
+    proportion_season = 2
+    proportion_ar = 1
+    proportion_noise = 0.05
+    proportion_outliers = 0.5
+    num_outliers = int(round(series_length * 0.1))  #  0,1% outliers
+
+    t = np.arange(series_length)
+    omega = 2 * np.pi / period
     ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
-
-    # Create an ARMA process with the specified coefficients
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
-    for group in range(len(n_ts_groups)):
-        # Create noise groups
-        noise_group = [
-            np.random.normal(loc=0, scale=amplitude_per_group[group] / 10, size=series_length)
-            for _ in range(n_ts_groups[group])
-        ]
+    for group_num in range(len(n_ts_groups)):  # looping over two groups
+        n_ts = n_ts_groups[group_num]
+        offset = offset_per_group[group_num]
+        amplitude = amplitude_per_group[group_num]
 
-        # Generate outlier positions for each time series in the group
+        # generate season data with default scale 1
+        season_group = [
+            ((-1) ** group_num)
+            * (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t))
+            for _ in range(n_ts)
+        ]
+        # generate ar data with default scale 1
+        ar_group = [ar_process.generate_sample(series_length) for _ in range(n_ts)]
+        # generate noise data with default scale 1
+        noise_group = [np.random.normal(loc=0, scale=1, size=series_length) for _ in range(n_ts)]
+
         outlier_positions = [
-            np.random.choice(series_length, size=num_outliers, replace=False) for _ in range(n_ts_groups[group])
+            np.random.choice(range(series_length), size=num_outliers, replace=False)
+            for i in range(n_ts_groups[group_num])
         ]
+        outlier_group = [np.random.normal(loc=0, scale=1, size=num_outliers) for _ in range(n_ts_groups[group_num])]
 
-        # Generate outliers for each time series in the group
-        outliers = [
-            np.random.normal(loc=0, scale=amplitude_per_group[group] * 2, size=num_outliers)
-            for _ in range(n_ts_groups[group])
-        ]
-
-        # Replace selected positions in the noise group with outliers
-        for i in range(n_ts_groups[group]):
-            noise_group[i][outlier_positions[i]] = outliers[i]
-
-        # Generate base time series data
-        data_group = [
-            ((-1) ** group)
-            * (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t))
-            * amplitude_per_group[group]
-            for _ in range(n_ts_groups[group])
-        ]
-
-        # Generate AR time series data
-        ar_data_group = [
-            ar_process.generate_sample(series_length) * amplitude_per_group[group] / 2
-            for _ in range(n_ts_groups[group])
-        ]
-
-        # Combine base data, AR data, noise, and outliers into final time series data
-        for i in range(n_ts_groups[group]):
+        for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
-            df["y"] = data_group[i] + ar_data_group[i] + noise_group[i] + offset_per_group[group]
-            df["ID"] = str(i + sum(n_ts_groups[:group]))
-            df_seasons.append(df.reset_index(drop=True))
+            # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
+            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            # Add the noise according to desired proportion
+            # Add the noise according to desired proportion
+            combined_data += proportion_noise * noise_group[i]
+            # Add the outliers at the specified positions
+            combined_data[outlier_positions[i]] += proportion_outliers * outlier_group[i]
+            # Scale the series with the amplitude and offset of the respective group
+            df["y"] = combined_data * amplitude + offset
+            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df_data.append(df.reset_index(drop=True))
 
-    concatenated_dfs = pd.concat(df_seasons, axis=0)
+        concatenated_dfs = pd.concat(df_data, axis=0)
+
+    # Apply global normalization to ensure standardized variance for dataset
+    concatenated_dfs["y"] = (concatenated_dfs["y"]) / concatenated_dfs["y"].std()
+
     return concatenated_dfs
 
 
-def generate_one_shape_season_data(
+def gen_cancel_shape_ar_outlier_1p(
+    series_length: int,
+    date_rng,
+    n_ts_groups: list,
+    offset_per_group: list,
+    amplitude_per_group: list,
+) -> pd.DataFrame:
+    df_data = []
+    period = 24
+    np.random.seed(42)
+
+    proportion_season = 2
+    proportion_ar = 1
+    proportion_noise = 0.05
+    proportion_outliers = 0.5
+    num_outliers = int(round(series_length * 1.0))  #  1% outliers
+
+    t = np.arange(series_length)
+    omega = 2 * np.pi / period
+    ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
+    ma_coeffs = np.array([1])  # MA coefficients (no MA component)
+    ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
+
+    for group_num in range(len(n_ts_groups)):  # looping over two groups
+        n_ts = n_ts_groups[group_num]
+        offset = offset_per_group[group_num]
+        amplitude = amplitude_per_group[group_num]
+
+        # generate season data with default scale 1
+        season_group = [
+            ((-1) ** group_num)
+            * (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t))
+            for _ in range(n_ts)
+        ]
+        # generate ar data with default scale 1
+        ar_group = [ar_process.generate_sample(series_length) for _ in range(n_ts)]
+        # generate noise data with default scale 1
+        noise_group = [np.random.normal(loc=0, scale=1, size=series_length) for _ in range(n_ts)]
+
+        outlier_positions = [
+            np.random.choice(range(series_length), size=num_outliers, replace=False)
+            for i in range(n_ts_groups[group_num])
+        ]
+        outlier_group = [np.random.normal(loc=0, scale=1, size=num_outliers) for _ in range(n_ts_groups[group_num])]
+
+        for i in range(n_ts):
+            df = pd.DataFrame(date_rng, columns=["ds"])
+            # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
+            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            # Add the noise according to desired proportion
+            # Add the noise according to desired proportion
+            combined_data += proportion_noise * noise_group[i]
+            # Add the outliers at the specified positions
+            combined_data[outlier_positions[i]] += proportion_outliers * outlier_group[i]
+            # Scale the series with the amplitude and offset of the respective group
+            df["y"] = combined_data * amplitude + offset
+            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df_data.append(df.reset_index(drop=True))
+
+        concatenated_dfs = pd.concat(df_data, axis=0)
+
+    # Apply global normalization to ensure standardized variance for dataset
+    concatenated_dfs["y"] = (concatenated_dfs["y"]) / concatenated_dfs["y"].std()
+
+    return concatenated_dfs
+
+
+def generate_one_shape_season_data(  # OUTDATED
     series_length: int,
     date_rng,
     n_ts_groups: list,
@@ -360,16 +432,23 @@ def generate_one_shape_season_data(
     return concatenated_dfs
 
 
-def generate_one_shape_season_and_ar_data(
+from scipy.stats import zscore
+
+
+def gen_one_shape_ar(
     series_length: int,
     date_rng,
     n_ts_groups: list,
     offset_per_group: list,
     amplitude_per_group: list,
 ) -> pd.DataFrame:
-    df_seasons = []
+    df_data = []
     period = 24
     np.random.seed(42)
+
+    proportion_season = 2
+    proportion_ar = 1
+    proportion_noise = 0.05
 
     t = np.arange(series_length)
     omega = 2 * np.pi / period
@@ -377,92 +456,55 @@ def generate_one_shape_season_and_ar_data(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
-    # num_outliers = 50
-
     for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
         amplitude = amplitude_per_group[group_num]
 
-        noise_group = [np.random.normal(loc=0, scale=amplitude / 5, size=series_length) for _ in range(n_ts)]
-        data_group = [
-            (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) * amplitude
-            for _ in range(n_ts)
+        # generate season data with default scale 1
+        season_group = [
+            (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) for _ in range(n_ts)
         ]
-        ar_data_group = [ar_process.generate_sample(series_length) * amplitude / 2 for _ in range(n_ts)]
+        # generate ar data with default scale 1
+        ar_group = [ar_process.generate_sample(series_length) for _ in range(n_ts)]
+        # generate noise data with default scale 1
+        noise_group = [np.random.normal(loc=0, scale=1, size=series_length) for _ in range(n_ts)]
 
         for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
-            df["y"] = data_group[i] + noise_group[i] + offset + ar_data_group[i]
+            # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
+            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            # Add the noise according to desired proportion
+            combined_data += proportion_noise * noise_group[i]
+            # Scale the series with the amplitude and offset of the respective group
+            df["y"] = combined_data * amplitude + offset
             df["ID"] = str(i + n_ts_groups[0] * group_num)
-            df_seasons.append(df.reset_index(drop=True))
+            df_data.append(df.reset_index(drop=True))
 
-    concatenated_dfs = pd.concat(df_seasons, axis=0)
+    concatenated_dfs = pd.concat(df_data, axis=0)
+
+    # Apply global normalization to ensure standardized variance for dataset
+    concatenated_dfs["y"] = (concatenated_dfs["y"]) / concatenated_dfs["y"].std()
 
     return concatenated_dfs
 
 
-def generate_one_shape_season_and_ar_data_with_outlier(
+def gen_one_shape_ar_outlier_0p1(
     series_length: int,
     date_rng,
     n_ts_groups: list,
     offset_per_group: list,
     amplitude_per_group: list,
 ) -> pd.DataFrame:
-    df_seasons = []
+    df_data = []
     period = 24
     np.random.seed(42)
-    t = np.arange(series_length)  # Generate an array of time steps
-    omega = 2 * np.pi / period  # Define the angular frequency (omega) corresponding to the period
-    ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])  # Define AR coefficients (AR(4) model)
-    ma_coeffs = np.array([1])  # MA coefficients (no MA component)
-    ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)  # Create an ARMA process
-    num_outliers = 100
 
-    for group in range(len(n_ts_groups)):
-        noise_group = [
-            np.random.normal(loc=0, scale=amplitude_per_group[group] / 5, size=series_length)
-            for _ in range(n_ts_groups[group])
-        ]
-        outlier_positions = [
-            np.random.choice(range(len(noise_group[i])), size=num_outliers, replace=False)
-            for i in range(n_ts_groups[group])
-        ]
-        outliers = [
-            np.random.normal(loc=0, scale=amplitude_per_group[group] * 3, size=num_outliers)
-            for _ in range(n_ts_groups[group])
-        ]
-        for i in range(n_ts_groups[group]):
-            noise_group[i][outlier_positions[i]] = outliers[i]
-        data_group = [
-            (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t))
-            * amplitude_per_group[group]
-            for _ in range(n_ts_groups[group])
-        ]
-        ar_data_group = [
-            ar_process.generate_sample(series_length) * amplitude_per_group[group] / 2
-            for _ in range(n_ts_groups[group])
-        ]
-        for i in range(n_ts_groups[group]):
-            df = pd.DataFrame(date_rng, columns=["ds"])
-            df["y"] = data_group[i] + noise_group[i] + offset_per_group[group] + ar_data_group[i]
-            df["ID"] = str(i + sum(n_ts_groups[:group]))
-            df_seasons.append(df.reset_index(drop=True))
-
-    concatenated_dfs = pd.concat(df_seasons, axis=0)
-    return concatenated_dfs
-
-
-def generate_structural_break_and_ar_data(
-    series_length: int,
-    date_rng,
-    n_ts_groups: list,
-    offset_per_group: list,
-    amplitude_per_group: list,
-) -> pd.DataFrame:
-    df_seasons = []
-    period = 24
-    np.random.seed(42)
+    proportion_season = 2
+    proportion_ar = 1
+    proportion_noise = 0.05
+    proportion_outliers = 0.5
+    num_outliers = int(round(series_length * 0.1))  #  0,1% outliers
 
     t = np.arange(series_length)
     omega = 2 * np.pi / period
@@ -475,38 +517,184 @@ def generate_structural_break_and_ar_data(
         offset = offset_per_group[group_num]
         amplitude = amplitude_per_group[group_num]
 
-        noise_group = [np.random.normal(loc=0, scale=amplitude / 5, size=series_length) for _ in range(n_ts)]
-        data_group = [
-            (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) * amplitude
-            for _ in range(n_ts)
+        # generate season data with default scale 1
+        season_group = [
+            (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) for _ in range(n_ts)
         ]
-        ar_data_group = [ar_process.generate_sample(series_length) * amplitude / 2 for _ in range(n_ts)]
+        # generate ar data with default scale 1
+        ar_group = [ar_process.generate_sample(series_length) for _ in range(n_ts)]
+        # generate noise data with default scale 1
+        noise_group = [np.random.normal(loc=0, scale=1, size=series_length) for _ in range(n_ts)]
+
+        outlier_positions = [
+            np.random.choice(range(series_length), size=num_outliers, replace=False)
+            for i in range(n_ts_groups[group_num])
+        ]
+        outlier_group = [np.random.normal(loc=0, scale=1, size=num_outliers) for _ in range(n_ts_groups[group_num])]
+
+        for i in range(n_ts):
+            df = pd.DataFrame(date_rng, columns=["ds"])
+            # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
+            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            # Add the noise according to desired proportion
+            # Add the noise according to desired proportion
+            combined_data += proportion_noise * noise_group[i]
+            # Add the outliers at the specified positions
+            combined_data[outlier_positions[i]] += proportion_outliers * outlier_group[i]
+            # Scale the series with the amplitude and offset of the respective group
+            df["y"] = combined_data * amplitude + offset
+            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df_data.append(df.reset_index(drop=True))
+
+        concatenated_dfs = pd.concat(df_data, axis=0)
+
+    # Apply global normalization to ensure standardized variance for dataset
+    concatenated_dfs["y"] = (concatenated_dfs["y"]) / concatenated_dfs["y"].std()
+
+    return concatenated_dfs
+
+
+def gen_one_shape_ar_outlier_1p(
+    series_length: int,
+    date_rng,
+    n_ts_groups: list,
+    offset_per_group: list,
+    amplitude_per_group: list,
+) -> pd.DataFrame:
+    df_data = []
+    period = 24
+    np.random.seed(42)
+
+    proportion_season = 2
+    proportion_ar = 1
+    proportion_noise = 0.05
+    proportion_outliers = 0.5
+    num_outliers = int(round(series_length * 1.0))  #  1% outliers
+
+    t = np.arange(series_length)
+    omega = 2 * np.pi / period
+    ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
+    ma_coeffs = np.array([1])  # MA coefficients (no MA component)
+    ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
+
+    for group_num in range(len(n_ts_groups)):  # looping over two groups
+        n_ts = n_ts_groups[group_num]
+        offset = offset_per_group[group_num]
+        amplitude = amplitude_per_group[group_num]
+
+        # generate season data with default scale 1
+        season_group = [
+            (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) for _ in range(n_ts)
+        ]
+        # generate ar data with default scale 1
+        ar_group = [ar_process.generate_sample(series_length) for _ in range(n_ts)]
+        # generate noise data with default scale 1
+        noise_group = [np.random.normal(loc=0, scale=1, size=series_length) for _ in range(n_ts)]
+
+        outlier_positions = [
+            np.random.choice(range(series_length), size=num_outliers, replace=False)
+            for i in range(n_ts_groups[group_num])
+        ]
+        outlier_group = [np.random.normal(loc=0, scale=1, size=num_outliers) for _ in range(n_ts_groups[group_num])]
+
+        for i in range(n_ts):
+            df = pd.DataFrame(date_rng, columns=["ds"])
+            # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
+            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            # Add the noise according to desired proportion
+            # Add the noise according to desired proportion
+            combined_data += proportion_noise * noise_group[i]
+            # Add the outliers at the specified positions
+            combined_data[outlier_positions[i]] += proportion_outliers * outlier_group[i]
+            # Scale the series with the amplitude and offset of the respective group
+            df["y"] = combined_data * amplitude + offset
+            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df_data.append(df.reset_index(drop=True))
+
+        concatenated_dfs = pd.concat(df_data, axis=0)
+
+    # Apply global normalization to ensure standardized variance for dataset
+    concatenated_dfs["y"] = (concatenated_dfs["y"]) / concatenated_dfs["y"].std()
+
+    return concatenated_dfs
+
+
+def gen_struc_break_mean(
+    series_length: int,
+    date_rng,
+    n_ts_groups: list,
+    offset_per_group: list,
+    amplitude_per_group: list,
+    proportion_break: list,
+) -> pd.DataFrame:
+    df_data = []
+    period = 24
+    np.random.seed(42)
+
+    proportion_season = 2
+    proportion_ar = 1
+    proportion_noise = 0.05
+
+    t = np.arange(series_length)
+    omega = 2 * np.pi / period
+    ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
+    ma_coeffs = np.array([1])  # MA coefficients (no MA component)
+    ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
+
+    for group_num in range(len(n_ts_groups)):  # looping over two groups
+        n_ts = n_ts_groups[group_num]
+        offset = offset_per_group[group_num]
+        amplitude = amplitude_per_group[group_num]
+
+        # generate season data with default scale 1
+        season_group = [
+            (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) for _ in range(n_ts)
+        ]
+        # generate ar data with default scale 1
+        ar_group = [ar_process.generate_sample(series_length) for _ in range(n_ts)]
+        # generate noise data with default scale 1
+        noise_group = [np.random.normal(loc=0, scale=1, size=series_length) for _ in range(n_ts)]
 
         # Define the step function
         step_function = np.zeros(series_length)
-        step_function[series_length // 2 :] = amplitude * 10  # Adjust the step size relative to the amplitude
+        step_function[series_length // 2 :] = (
+            amplitude * proportion_break[group_num]
+        )  # Adjust the step size relative to the amplitude
 
         for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
-            df["y"] = data_group[i] + noise_group[i] + offset + ar_data_group[i] + step_function
+            # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
+            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            # Add the noise according to desired proportion
+            combined_data += proportion_noise * noise_group[i]
+            # Scale the series with the amplitude and offset of the respective group
+            df["y"] = combined_data * amplitude + offset + step_function
             df["ID"] = str(i + n_ts_groups[0] * group_num)
-            df_seasons.append(df.reset_index(drop=True))
+            df_data.append(df.reset_index(drop=True))
 
-    concatenated_dfs = pd.concat(df_seasons, axis=0)
+    concatenated_dfs = pd.concat(df_data, axis=0)
+
+    # Apply global normalization to ensure standardized variance for dataset
+    concatenated_dfs["y"] = (concatenated_dfs["y"]) / concatenated_dfs["y"].std()
 
     return concatenated_dfs
 
 
-def generate_varaince_shift_and_ar_data(
+def gen_struc_break_var(
     series_length: int,
     date_rng,
     n_ts_groups: list,
     offset_per_group: list,
     amplitude_per_group: list,
+    proportion_break: list,
 ) -> pd.DataFrame:
-    df_seasons = []
+    df_data = []
     period = 24
     np.random.seed(42)
+
+    proportion_season = 2
+    proportion_ar = 1
+    proportion_noise = 0.05
 
     t = np.arange(series_length)
     omega = 2 * np.pi / period
@@ -519,81 +707,78 @@ def generate_varaince_shift_and_ar_data(
         offset = offset_per_group[group_num]
         amplitude = amplitude_per_group[group_num]
 
-        # Change amplitude in the second half of the series
-        amplitude_first_half = amplitude
-        amplitude_second_half = amplitude * 4
-
-        noise_group = [np.random.normal(loc=0, scale=amplitude / 5, size=series_length) for _ in range(n_ts)]
-        data_group = []
-        for _ in range(n_ts):
-            data_first_half = (
-                np.sin(omega * t[: series_length // 2])
-                + np.cos(omega * t[: series_length // 2])
-                + np.sin(2 * omega * t[: series_length // 2])
-                + np.cos(2 * omega * t[: series_length // 2])
-            ) * amplitude_first_half
-            data_second_half = (
-                np.sin(omega * t[series_length // 2 :])
-                + np.cos(omega * t[series_length // 2 :])
-                + np.sin(2 * omega * t[series_length // 2 :])
-                + np.cos(2 * omega * t[series_length // 2 :])
-            ) * amplitude_second_half
-            data_group.append(np.concatenate([data_first_half, data_second_half]))
-        ar_data_group = [ar_process.generate_sample(series_length) * amplitude / 2 for _ in range(n_ts)]
+        # generate season data with default scale 1
+        season_group = [
+            (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) for _ in range(n_ts)
+        ]
+        # generate ar data with default scale 1
+        ar_group = [ar_process.generate_sample(series_length) for _ in range(n_ts)]
+        # generate noise data with default scale 1
+        noise_group = [np.random.normal(loc=0, scale=1, size=series_length) for _ in range(n_ts)]
 
         for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
-            df["y"] = data_group[i] + noise_group[i] + offset + ar_data_group[i]
+            # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
+            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            # Add the noise according to desired proportion
+            combined_data += proportion_noise * noise_group[i]
+            # Change the variance in the second half of the series
+            combined_data[series_length // 2 :] *= proportion_break[group_num]
+            # Scale the series with the amplitude and offset of the respective group
+            df["y"] = combined_data * amplitude + offset
             df["ID"] = str(i + n_ts_groups[0] * group_num)
-            df_seasons.append(df.reset_index(drop=True))
+            df_data.append(df.reset_index(drop=True))
 
-    concatenated_dfs = pd.concat(df_seasons, axis=0)
+    concatenated_dfs = pd.concat(df_data, axis=0)
+
+    # Apply global normalization to ensure standardized variance for dataset
+    concatenated_dfs["y"] = (concatenated_dfs["y"]) / concatenated_dfs["y"].std()
 
     return concatenated_dfs
 
 
-def generate_ar(
-    series_length: int,
-    date_rng,
-    n_ts_groups: list,
-    offset_per_group: list,
-    amplitude_per_group: list,
-) -> pd.DataFrame:
-    # Create a DataFrame with the simulated data and date range
-    ar_dfs = []
-    np.random.seed(42)
-    # Define AR coefficients (AR(4) model with coefficients 0.5 and 0.3)
-    ar_coeffs = np.array([1, 0.5, -0.3, 0.02, 0.01])
-    ma_coeffs = np.array([1])  # MA coefficients (no MA component)
-    # Create an ARMA process with the specified coefficients
-    ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
-
-    ar_data_group_1 = [
-        ar_process.generate_sample(series_length) * amplitude_per_group[0] / 2 for _ in range(n_ts_groups[0])
-    ]
-    ar_data_norm_goup1 = [(ar_data_group_1[i] - np.mean(ar_data_group_1[i])) for i in range(n_ts_groups[0])]
-
-    for i in range(n_ts_groups[0]):
-        simulated_df = pd.DataFrame(date_rng, columns=["ds"])
-        simulated_df["y"] = ar_data_norm_goup1[i] + offset_per_group[0]
-        simulated_df["ID"] = str(i)
-        ar_dfs.append(simulated_df)
-
-    ar_data_group_2 = [
-        ar_process.generate_sample(series_length) * amplitude_per_group[1] / 2 for _ in range(n_ts_groups[1])
-    ]
-    ar_data_norm_goup2 = [(ar_data_group_2[i] - np.mean(ar_data_group_2[i])) for i in range(n_ts_groups[1])]
-
-    for j in range(n_ts_groups[1]):
-        simulated_df = pd.DataFrame(date_rng, columns=["ds"])
-        simulated_df["y"] = ar_data_norm_goup2[j] + offset_per_group[1]
-        simulated_df["ID"] = str(i + 1 + j)
-        ar_dfs.append(simulated_df)
-
-    concatenated_dfs = pd.DataFrame()
-    for i, df in enumerate(ar_dfs):
-        concatenated_dfs = pd.concat([concatenated_dfs, df], axis=0)
-    return concatenated_dfs
+# def generate_ar( #OUTDATED
+#     series_length: int,
+#     date_rng,
+#     n_ts_groups: list,
+#     offset_per_group: list,
+#     amplitude_per_group: list,
+# ) -> pd.DataFrame:
+#     # Create a DataFrame with the simulated data and date range
+#     ar_dfs = []
+#     np.random.seed(42)
+#     # Define AR coefficients (AR(4) model with coefficients 0.5 and 0.3)
+#     ar_coeffs = np.array([1, 0.5, -0.3, 0.02, 0.01])
+#     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
+#     # Create an ARMA process with the specified coefficients
+#     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
+#
+#     ar_data_group_1 = [
+#         ar_process.generate_sample(series_length) * amplitude_per_group[0] / 2 for _ in range(n_ts_groups[0])
+#     ]
+#     ar_data_norm_goup1 = [(ar_data_group_1[i] - np.mean(ar_data_group_1[i])) for i in range(n_ts_groups[0])]
+#
+#     for i in range(n_ts_groups[0]):
+#         simulated_df = pd.DataFrame(date_rng, columns=["ds"])
+#         simulated_df["y"] = ar_data_norm_goup1[i] + offset_per_group[0]
+#         simulated_df["ID"] = str(i)
+#         ar_dfs.append(simulated_df)
+#
+#     ar_data_group_2 = [
+#         ar_process.generate_sample(series_length) * amplitude_per_group[1] / 2 for _ in range(n_ts_groups[1])
+#     ]
+#     ar_data_norm_goup2 = [(ar_data_group_2[i] - np.mean(ar_data_group_2[i])) for i in range(n_ts_groups[1])]
+#
+#     for j in range(n_ts_groups[1]):
+#         simulated_df = pd.DataFrame(date_rng, columns=["ds"])
+#         simulated_df["y"] = ar_data_norm_goup2[j] + offset_per_group[1]
+#         simulated_df["ID"] = str(i + 1 + j)
+#         ar_dfs.append(simulated_df)
+#
+#     concatenated_dfs = pd.DataFrame()
+#     for i, df in enumerate(ar_dfs):
+#         concatenated_dfs = pd.concat([concatenated_dfs, df], axis=0)
+#     return concatenated_dfs
 
 
 def generate_intermittent(
@@ -603,6 +788,7 @@ def generate_intermittent(
 
     # Define the proportion of non-zero values
     proportion_non_zeros = 0.5
+    proportion_noise = 0.1
 
     # Define the length of the time series
     hours_per_day = 24
@@ -625,17 +811,23 @@ def generate_intermittent(
         np.random.exponential(scale=1, size=end_hour - start_hour) + 0.5  # * window
     )
 
+    # Apply min-max normalization to the common daily pattern
+    common_daily_pattern = (common_daily_pattern - common_daily_pattern.min()) / (
+        common_daily_pattern.max() - common_daily_pattern.min()
+    )
+
     # Generate time series for each group
     for group_idx, n_ts in enumerate(n_ts_groups):
         # Scale the common daily pattern by the group amplitude
-        daily_pattern = common_daily_pattern * amplitude_per_group[group_idx] / 2
+        daily_pattern = common_daily_pattern
 
         for ts_idx in range(n_ts):
             # Add noise to the non-zero values to create the time series
             data = np.tile(daily_pattern, days)
-            data[data != 0] += np.random.normal(
-                loc=0, scale=amplitude_per_group[group_idx] / 50, size=len(data[data != 0])
-            )
+            data[data != 0] += proportion_noise * np.random.normal(loc=0, scale=1, size=len(data[data != 0]))
+
+            # Scale the series with the amplitude and offset of the respective group
+            data[data != 0] = data[data != 0] * amplitude_per_group[group_idx] * 2 + offset_per_group[group_idx]
 
             # Create a DataFrame for this time series
             ts_df = pd.DataFrame()
@@ -648,67 +840,69 @@ def generate_intermittent(
 
             # Increment the ID counter
             id_counter += 1
+    # Apply global normalization to ensure standardized variance for dataset
+    all_series_df["y"] = (all_series_df["y"]) / all_series_df["y"].std()
 
     return all_series_df
 
 
-def generate_intermittent_multiple_shapes(
-    series_length: int, date_rng, n_ts_groups: list, amplitude_per_group: list, offset_per_group: list = []
-) -> pd.DataFrame:
-    np.random.seed(42)
+# def generate_intermittent_multiple_shapes( #OUTDATED
+#     series_length: int, date_rng, n_ts_groups: list, amplitude_per_group: list, offset_per_group: list =[0,0]
+# ) -> pd.DataFrame:
+#     np.random.seed(42)
+#
+#     # Define the proportion of non-zero values
+#     proportion_non_zeros = 0.5
+#
+#     # Define the length of the time series
+#     hours_per_day = 24
+#     days = series_length // hours_per_day
+#
+#     # Initialize an empty DataFrame to hold all time series
+#     all_series_df = pd.DataFrame()
+#
+#     # Initialize a counter for the ID
+#     id_counter = 0
+#
+#     # Define the start hour for non-zero values
+#     start_hour = np.random.choice(range(hours_per_day - int(hours_per_day * proportion_non_zeros)))
+#     end_hour = start_hour + int(hours_per_day * proportion_non_zeros)
+#
+#     # Generate a common daily pattern for all groups
+#     common_daily_pattern = np.zeros(hours_per_day)
+#     window = np.hanning(end_hour - start_hour)
+#
+#     # Generate time series for each group
+#     for group_idx, n_ts in enumerate(n_ts_groups):
+#         common_daily_pattern[start_hour:end_hour] = (
+#             np.random.exponential(scale=1, size=end_hour - start_hour) * window + 1
+#         )
+#         # Scale the common daily pattern by the group amplitude
+#         daily_pattern = common_daily_pattern * amplitude_per_group[group_idx] / 2
+#
+#         for ts_idx in range(n_ts):
+#             # Add noise to the non-zero values to create the time series
+#             data = np.tile(daily_pattern, days)
+#             data[data != 0] += np.random.normal(
+#                 loc=0, scale=amplitude_per_group[group_idx] / 50, size=len(data[data != 0])
+#             )
+#
+#             # Create a DataFrame for this time series
+#             ts_df = pd.DataFrame()
+#             ts_df["ds"] = date_rng[: len(data)]
+#             ts_df["y"] = data
+#             ts_df["ID"] = id_counter
+#
+#             # Append this time series to the overall DataFrame
+#             all_series_df = pd.concat([all_series_df, ts_df], ignore_index=True)
+#
+#             # Increment the ID counter
+#             id_counter += 1
+#
+#     return all_series_df
 
-    # Define the proportion of non-zero values
-    proportion_non_zeros = 0.5
 
-    # Define the length of the time series
-    hours_per_day = 24
-    days = series_length // hours_per_day
-
-    # Initialize an empty DataFrame to hold all time series
-    all_series_df = pd.DataFrame()
-
-    # Initialize a counter for the ID
-    id_counter = 0
-
-    # Define the start hour for non-zero values
-    start_hour = np.random.choice(range(hours_per_day - int(hours_per_day * proportion_non_zeros)))
-    end_hour = start_hour + int(hours_per_day * proportion_non_zeros)
-
-    # Generate a common daily pattern for all groups
-    common_daily_pattern = np.zeros(hours_per_day)
-    window = np.hanning(end_hour - start_hour)
-
-    # Generate time series for each group
-    for group_idx, n_ts in enumerate(n_ts_groups):
-        common_daily_pattern[start_hour:end_hour] = (
-            np.random.exponential(scale=1, size=end_hour - start_hour) * window + 1
-        )
-        # Scale the common daily pattern by the group amplitude
-        daily_pattern = common_daily_pattern * amplitude_per_group[group_idx] / 2
-
-        for ts_idx in range(n_ts):
-            # Add noise to the non-zero values to create the time series
-            data = np.tile(daily_pattern, days)
-            data[data != 0] += np.random.normal(
-                loc=0, scale=amplitude_per_group[group_idx] / 50, size=len(data[data != 0])
-            )
-
-            # Create a DataFrame for this time series
-            ts_df = pd.DataFrame()
-            ts_df["ds"] = date_rng[: len(data)]
-            ts_df["y"] = data
-            ts_df["ID"] = id_counter
-
-            # Append this time series to the overall DataFrame
-            all_series_df = pd.concat([all_series_df, ts_df], ignore_index=True)
-
-            # Increment the ID counter
-            id_counter += 1
-
-    return all_series_df
-
-
-def generate_one_shape_season_and_ar_and_trend_data(
+def gen_one_shape_ar_trend(
     series_length: int,
     date_rng,
     n_ts_groups: list,
@@ -716,55 +910,58 @@ def generate_one_shape_season_and_ar_and_trend_data(
     amplitude_per_group: list,
     trend_gradient_per_group: list,
 ) -> pd.DataFrame:
-    np.random.seed(42)
+    df_data = []
     period = 24
+    np.random.seed(42)
 
-    # Define AR coefficients (AR(4) model with coefficients 0.5 and -0.1)
+    proportion_season = 2
+    proportion_ar = 1
+    proportion_noise = 0.05
+
+    t = np.arange(series_length)
+    omega = 2 * np.pi / period
     ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
-    # Create an ARMA process with the specified coefficients
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
-    # Generate an array of time steps
-    t = np.arange(series_length)
-    # Define the angular frequency (omega) corresponding to the period
-    omega = 2 * np.pi / period
+    for group_num in range(len(n_ts_groups)):  # looping over two groups
+        n_ts = n_ts_groups[group_num]
+        offset = offset_per_group[group_num]
+        amplitude = amplitude_per_group[group_num]
 
-    df_seasons = []
-    for group_idx in range(2):
-        # Generate the seasonal, AR, and noise data for the group
-        seasonal_data = (
-            np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)
-        ) * amplitude_per_group[group_idx]
-        ar_data = ar_process.generate_sample(series_length) * amplitude_per_group[group_idx] / 2
-        noise = np.random.normal(
-            loc=0, scale=amplitude_per_group[group_idx] / 10, size=(n_ts_groups[group_idx], series_length)
-        )
-
+        # generate season data with default scale 1
+        season_group = [
+            (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) for _ in range(n_ts)
+        ]
+        # generate ar data with default scale 1
+        ar_group = [ar_process.generate_sample(series_length) for _ in range(n_ts)]
+        # generate noise data with default scale 1
+        noise_group = [np.random.normal(loc=0, scale=1, size=series_length) for _ in range(n_ts)]
         # Generate the trend for the group
-        trend = np.linspace(0, series_length * trend_gradient_per_group[group_idx], series_length)
+        trend = np.linspace(
+            0, trend_gradient_per_group[group_num] * 15, series_length
+        )  # sets the trend gradient to a proper range
 
-        # Generate the data for each time series in the group
-        group_data = [
-            seasonal_data + ar_data + noise[i] + trend + offset_per_group[group_idx]
-            for i in range(n_ts_groups[group_idx])
-        ]
+        for i in range(n_ts):
+            df = pd.DataFrame(date_rng, columns=["ds"])
+            # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
+            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            # Add the noise according to desired proportion
+            combined_data += proportion_noise * noise_group[i]
+            # Scale the series with the amplitude and offset of the respective group
+            df["y"] = combined_data * amplitude + offset + trend
+            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df_data.append(df.reset_index(drop=True))
 
-        # Create a dataframe for each time series and append it to the list
-        df_seasons.extend(
-            [
-                pd.DataFrame({"ds": date_rng, "y": data, "ID": str(group_idx * n_ts_groups[0] + i)})
-                for i, data in enumerate(group_data)
-            ]
-        )
+    concatenated_dfs = pd.concat(df_data, axis=0)
 
-    # Concatenate all the dataframes
-    concatenated_dfs = pd.concat(df_seasons, ignore_index=True)
+    # Apply global normalization to ensure standardized variance for dataset
+    concatenated_dfs["y"] = (concatenated_dfs["y"]) / concatenated_dfs["y"].std()
 
     return concatenated_dfs
 
 
-def generate_one_shape_season_and_ar_and_expo_trend_data(
+def gen_one_shape_ar_trend_cp(
     series_length: int,
     date_rng,
     n_ts_groups: list,
@@ -772,52 +969,249 @@ def generate_one_shape_season_and_ar_and_expo_trend_data(
     amplitude_per_group: list,
     trend_gradient_per_group: list,
 ) -> pd.DataFrame:
-    np.random.seed(42)
+    df_data = []
     period = 24
+    np.random.seed(42)
 
-    # Define AR coefficients (AR(4) model with coefficients 0.5 and -0.1)
+    proportion_season = 2
+    proportion_ar = 1
+    proportion_noise = 0.05
+
+    t = np.arange(series_length)
+    omega = 2 * np.pi / period
     ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
-    # Create an ARMA process with the specified coefficients
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
-    # Generate an array of time steps
-    t = np.arange(series_length)
-    # Define the angular frequency (omega) corresponding to the period
-    omega = 2 * np.pi / period
+    for group_num in range(len(n_ts_groups)):  # looping over two groups
+        n_ts = n_ts_groups[group_num]
+        offset = offset_per_group[group_num]
+        amplitude = amplitude_per_group[group_num]
 
-    df_seasons = []
-    for group_idx in range(2):
-        # Generate the seasonal, AR, and noise data for the group
-        seasonal_data = (
-            np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)
-        ) * amplitude_per_group[group_idx]
-        ar_data = ar_process.generate_sample(series_length) * amplitude_per_group[group_idx] / 2
-        noise = np.random.normal(
-            loc=0, scale=amplitude_per_group[group_idx] / 10, size=(n_ts_groups[group_idx], series_length)
-        )
-
-        # Generate the exponential trend for the group
-        trend = np.exp(np.linspace(0, trend_gradient_per_group[group_idx], series_length))
-
-        # Generate the data for each time series in the group
-        group_data = [
-            seasonal_data + ar_data + noise[i] + trend + offset_per_group[group_idx]
-            for i in range(n_ts_groups[group_idx])
+        # generate season data with default scale 1
+        season_group = [
+            (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) for _ in range(n_ts)
         ]
-
-        # Create a dataframe for each time series and append it to the list
-        df_seasons.extend(
+        # generate ar data with default scale 1
+        ar_group = [ar_process.generate_sample(series_length) for _ in range(n_ts)]
+        # generate noise data with default scale 1
+        noise_group = [np.random.normal(loc=0, scale=1, size=series_length) for _ in range(n_ts)]
+        # Generate the trend for the group
+        trend = np.concatenate(
             [
-                pd.DataFrame({"ds": date_rng, "y": data, "ID": str(group_idx * n_ts_groups[0] + i)})
-                for i, data in enumerate(group_data)
+                np.linspace(
+                    0, trend_gradient_per_group[group_num] * 15 / 2, series_length // 2
+                ),  # same gradient as without changepoint
+                np.linspace(
+                    trend_gradient_per_group[group_num] * 15 / 2, 0, series_length // 2
+                ),  # same gradient as without changepoint
             ]
         )
 
-    # Concatenate all the dataframes
-    concatenated_dfs = pd.concat(df_seasons, ignore_index=True)
+        for i in range(n_ts):
+            df = pd.DataFrame(date_rng, columns=["ds"])
+            # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
+            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            # Add the noise according to desired proportion
+            combined_data += proportion_noise * noise_group[i]
+            # Scale the series with the amplitude and offset of the respective group
+            df["y"] = combined_data * amplitude + offset + trend
+            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df_data.append(df.reset_index(drop=True))
+
+    concatenated_dfs = pd.concat(df_data, axis=0)
+
+    # Apply global normalization to ensure standardized variance for dataset
+    concatenated_dfs["y"] = (concatenated_dfs["y"]) / concatenated_dfs["y"].std()
 
     return concatenated_dfs
+
+
+def gen_one_shape_heteroscedacity(
+    series_length: int,
+    date_rng,
+    n_ts_groups: list,
+    offset_per_group: list,
+    amplitude_per_group: list,
+    trend_gradient_per_group: list,
+) -> pd.DataFrame:
+    df_data = []
+    period = 24
+    np.random.seed(42)
+
+    proportion_season = 2
+    proportion_ar = 1
+    proportion_noise = 0.05
+    proportion_var_trend = 0.05
+
+    t = np.arange(series_length)
+    omega = 2 * np.pi / period
+    ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
+    ma_coeffs = np.array([1])  # MA coefficients (no MA component)
+    ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
+
+    for group_num in range(len(n_ts_groups)):  # looping over two groups
+        n_ts = n_ts_groups[group_num]
+        offset = offset_per_group[group_num]
+        amplitude = amplitude_per_group[group_num]
+
+        # generate season data with default scale 1
+        season_group = [
+            (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) for _ in range(n_ts)
+        ]
+        # generate ar data with default scale 1
+        ar_group = [ar_process.generate_sample(series_length) for _ in range(n_ts)]
+        # generate noise data with default scale 1
+        noise_group = [np.random.normal(loc=0, scale=1, size=series_length) for _ in range(n_ts)]
+        # Generate the trend for the group
+        trend = np.linspace(
+            0, trend_gradient_per_group[group_num] * 5, series_length
+        )  # sets the trend gradient to a proper range
+
+        for i in range(n_ts):
+            df = pd.DataFrame(date_rng, columns=["ds"])
+            # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
+            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            # Add the noise according to desired proportion
+            combined_data += proportion_noise * noise_group[i]
+
+            # Add trend-dependent variance and scale with z-score, only if trend is not zero
+            if np.any(trend != 0):
+                combined_data = zscore(combined_data * np.sqrt(trend) * proportion_var_trend)
+
+            # Scale the series with the amplitude and offset of the respective group
+            df["y"] = combined_data * amplitude + trend + offset
+            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df_data.append(df.reset_index(drop=True))
+
+    concatenated_dfs = pd.concat(df_data, axis=0)
+
+    # Apply global normalization to ensure standardized variance for dataset
+    concatenated_dfs["y"] = (concatenated_dfs["y"]) / concatenated_dfs["y"].std()
+
+    return concatenated_dfs
+
+
+def gen_one_shape_heteroscedacity_op(
+    series_length: int,
+    date_rng,
+    n_ts_groups: list,
+    offset_per_group: list,
+    amplitude_per_group: list,
+    trend_gradient_per_group: list,
+) -> pd.DataFrame:
+    df_data = []
+    period = 24
+    np.random.seed(42)
+
+    proportion_season = 2
+    proportion_ar = 1
+    proportion_noise = 0.05
+    proportion_var_trend = 0.1
+
+    t = np.arange(series_length)
+    omega = 2 * np.pi / period
+    ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
+    ma_coeffs = np.array([1])  # MA coefficients (no MA component)
+    ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
+
+    for group_num in range(len(n_ts_groups)):  # looping over two groups
+        n_ts = n_ts_groups[group_num]
+        offset = offset_per_group[group_num]
+        amplitude = amplitude_per_group[group_num]
+
+        # generate season data with default scale 1
+        season_group = [
+            (np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)) for _ in range(n_ts)
+        ]
+        # generate ar data with default scale 1
+        ar_group = [ar_process.generate_sample(series_length) for _ in range(n_ts)]
+        # generate noise data with default scale 1
+        noise_group = [np.random.normal(loc=0, scale=1, size=series_length) for _ in range(n_ts)]
+        # Generate the trend for the group
+        trend = np.linspace(
+            0, trend_gradient_per_group[group_num] * 0.5, series_length
+        )  # sets the trend gradient to a proper range
+
+        # If the group number is even, make the trend negative and decrease the variance
+        if group_num % 2 == 0:
+            trend = trend[::-1]
+
+        for i in range(n_ts):
+            df = pd.DataFrame(date_rng, columns=["ds"])
+            # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
+            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            # Add the noise according to desired proportion
+            combined_data += proportion_noise * noise_group[i]
+            # Add trend-dependent variance and scale with z-score
+            combined_data = combined_data * ((-1) ** group_num) * np.sqrt(abs(trend)) * proportion_var_trend
+            # Scale the series with the amplitude and offset of the respective group
+            df["y"] = combined_data * amplitude + trend + offset
+            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df_data.append(df.reset_index(drop=True))
+
+    concatenated_dfs = pd.concat(df_data, axis=0)
+
+    # Apply global normalization to ensure standardized variance for dataset
+    concatenated_dfs["y"] = (concatenated_dfs["y"]) / concatenated_dfs["y"].std()
+
+    return concatenated_dfs
+
+
+# def generate_one_shape_season_and_ar_and_expo_trend_data( # OUTDATED
+#     series_length: int,
+#     date_rng,
+#     n_ts_groups: list,
+#     offset_per_group: list,
+#     amplitude_per_group: list,
+#     trend_gradient_per_group: list,
+# ) -> pd.DataFrame:
+#     np.random.seed(42)
+#     period = 24
+#
+#     # Define AR coefficients (AR(4) model with coefficients 0.5 and -0.1)
+#     ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])
+#     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
+#     # Create an ARMA process with the specified coefficients
+#     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
+#
+#     # Generate an array of time steps
+#     t = np.arange(series_length)
+#     # Define the angular frequency (omega) corresponding to the period
+#     omega = 2 * np.pi / period
+#
+#     df_seasons = []
+#     for group_idx in range(2):
+#         # Generate the seasonal, AR, and noise data for the group
+#         seasonal_data = (
+#             np.sin(omega * t) + np.cos(omega * t) + np.sin(2 * omega * t) + np.cos(2 * omega * t)
+#         ) * amplitude_per_group[group_idx]
+#         ar_data = ar_process.generate_sample(series_length) * amplitude_per_group[group_idx] / 2
+#         noise = np.random.normal(
+#             loc=0, scale=amplitude_per_group[group_idx] / 10, size=(n_ts_groups[group_idx], series_length)
+#         )
+#
+#         # Generate the exponential trend for the group
+#         trend = np.exp(np.linspace(0, trend_gradient_per_group[group_idx], series_length))
+#
+#         # Generate the data for each time series in the group
+#         group_data = [
+#             seasonal_data + ar_data + noise[i] + trend + offset_per_group[group_idx]
+#             for i in range(n_ts_groups[group_idx])
+#         ]
+#
+#         # Create a dataframe for each time series and append it to the list
+#         df_seasons.extend(
+#             [
+#                 pd.DataFrame({"ds": date_rng, "y": data, "ID": str(group_idx * n_ts_groups[0] + i)})
+#                 for i, data in enumerate(group_data)
+#             ]
+#         )
+#
+#     # Concatenate all the dataframes
+#     concatenated_dfs = pd.concat(df_seasons, ignore_index=True)
+#
+#     return concatenated_dfs
 
 
 def layout():
@@ -952,19 +1346,22 @@ def gen_model_and_params(common_params, model_class, scalers, scaling_levels, we
         model_classes_and_params[0][1].update({"learning_rate": 0.03})
     return model_classes_and_params
 
+
 def gen_model_and_params_norm(common_params, model_class, scalers, scaling_levels, weighted_los):
     model_classes_and_params = [(model_class, common_params)]
     if scalers == "default":
         scalers = ["batch", "instance"]
     for mode in scalers:
         params = common_params.copy()
-        params.update({"norm_mode": mode}) # scalers=["batch", "instance"]
+        params.update({"norm_mode": mode})  # scalers=["batch", "instance"]
         model_classes_and_params.append((model_class, params))
     return model_classes_and_params
+
 
 def gen_model_and_params_none(common_params, model_class, scalers, scaling_levels, weighted_los):
     model_classes_and_params = [(model_class, common_params)]
     return model_classes_and_params
+
 
 def save_params(params, dir, df_name, save=True):
     class CustomJSONEncoder(json.JSONEncoder):

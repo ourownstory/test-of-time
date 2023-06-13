@@ -9,40 +9,40 @@ from darts.models.forecasting.transformer_model import TransformerModel
 
 from experiments.pipeline_experiment import run
 from experiments.utils import (
-    generate_ar,
-    generate_canceling_shape_season_and_ar_data,
-    generate_canceling_shape_season_data,
-    generate_canceling_shape_season_and_ar_data_with_outlier,
-    generate_intermittent,
-    generate_intermittent_multiple_shapes,
-    generate_one_shape_season_and_ar_and_expo_trend_data,
-    generate_one_shape_season_and_ar_and_trend_data,
-    generate_one_shape_season_and_ar_data,
-    generate_one_shape_season_and_ar_data_with_outlier,
-    generate_one_shape_season_data,
-    generate_varaince_shift_and_ar_data,
-    generate_structural_break_and_ar_data,
+    gen_cancel_shape_ar,
+    gen_cancel_shape_ar_outlier_0p1,
+    gen_cancel_shape_ar_outlier_1p,
     gen_model_and_params,
-    gen_model_and_params_norm,
     gen_model_and_params_none,
+    gen_model_and_params_norm,
+    gen_one_shape_ar,
+    gen_one_shape_ar_outlier_0p1,
+    gen_one_shape_ar_outlier_1p,
+    gen_one_shape_ar_trend,
+    gen_one_shape_ar_trend_cp,
+    gen_one_shape_heteroscedacity,
+    gen_one_shape_heteroscedacity_op,
+    gen_struc_break_mean,
+    gen_struc_break_var,
+    generate_intermittent,
 )
 from tot.models import NaiveModel, NeuralProphetModel, SeasonalNaiveModel, TorchProphetModel
 from tot.models.models_darts import DartsForecastingModel
 
 FUNCTIONS = {
-    "generate_canceling_shape_season_and_ar_data": generate_canceling_shape_season_and_ar_data,
-    "generate_one_shape_season_and_ar_data": generate_one_shape_season_and_ar_data,
-    "generate_canceling_shape_season_data": generate_canceling_shape_season_data,
-    "generate_canceling_shape_season_and_ar_data_with_outlier": generate_canceling_shape_season_and_ar_data_with_outlier,
-    "generate_one_shape_season_data": generate_one_shape_season_data,
-    "generate_one_shape_season_and_ar_data_with_outlier": generate_one_shape_season_and_ar_data_with_outlier,
-    "generate_ar": generate_ar,
+    "gen_one_shape_ar": gen_one_shape_ar,
+    "gen_one_shape_ar_outlier_0p1": gen_one_shape_ar_outlier_0p1,
+    "gen_one_shape_ar_outlier_1p": gen_one_shape_ar_outlier_1p,
+    "gen_cancel_shape_ar": gen_cancel_shape_ar,
+    "gen_cancel_shape_ar_outlier_0p1": gen_cancel_shape_ar_outlier_0p1,
+    "gen_cancel_shape_ar_outlier_1p": gen_cancel_shape_ar_outlier_1p,
+    "gen_one_shape_ar_trend": gen_one_shape_ar_trend,
+    "gen_one_shape_ar_trend_cp": gen_one_shape_ar_trend_cp,
     "generate_intermittent": generate_intermittent,
-    "generate_intermittent_multiple_shapes": generate_intermittent_multiple_shapes,
-    "generate_one_shape_season_and_ar_and_trend_data": generate_one_shape_season_and_ar_and_trend_data,
-    "generate_one_shape_season_and_ar_and_expo_trend_data": generate_one_shape_season_and_ar_and_expo_trend_data,
-    "generate_varaince_shift_and_ar_data": generate_varaince_shift_and_ar_data,
-    "generate_structural_break_and_ar_data": generate_structural_break_and_ar_data,
+    "gen_one_shape_heteroscedacity": gen_one_shape_heteroscedacity,
+    "gen_one_shape_heteroscedacity_op": gen_one_shape_heteroscedacity_op,
+    "gen_struc_break_mean": gen_struc_break_mean,
+    "gen_struc_break_var": gen_struc_break_var,
 }
 
 PARAMS = {
@@ -190,6 +190,7 @@ def run_benchmark(
     gen_func,
     offset_per_group=[0, 0],
     data_trend_gradient_per_group=None,
+    proportion_break=None,
 ):
     start_time = time.time()
     PLOT = False
@@ -203,7 +204,7 @@ def run_benchmark(
     DIR_NAME = "{}_{}_n_ts_{}_am_{}_of_{}_gr_{}".format(
         data_func, params, n_ts_groups, amplitude_per_group, offset_per_group, data_trend_gradient_per_group
     )
-    if params == "TF" or params == "RNN":
+    if params == "TF" or params == "RNN" or params == "RNN_wb":
         NUM_PROCESSES = 1
     else:
         NUM_PROCESSES = 19
@@ -216,6 +217,15 @@ def run_benchmark(
             offset_per_group=offset_per_group,
             amplitude_per_group=amplitude_per_group,
             trend_gradient_per_group=data_trend_gradient_per_group,
+        )
+    elif proportion_break is not None:
+        df = FUNCTIONS[data_func](
+            series_length=SERIES_LENGTH,
+            date_rng=DATE_RNG,
+            n_ts_groups=n_ts_groups,
+            offset_per_group=offset_per_group,
+            amplitude_per_group=amplitude_per_group,
+            proportion_break=proportion_break,
         )
     else:
         df = FUNCTIONS[data_func](
@@ -275,9 +285,18 @@ if __name__ == "__main__":
         default=None,
         help="Optional argument - Trend gradient per group in data ",
     )
+    parser.add_argument(
+        "--proportion_break",
+        type=str,
+        required=False,
+        default=None,
+        help="Optional argument - Proportion of breaks in data function",
+    )
     parser.add_argument("--model", type=str, required=True, help="Model class")
     parser.add_argument("--params", type=str, required=True, help="Model parameters")
-    parser.add_argument("--gen_func", type=str, required=False, default="gen_model_and_params", help="")
+    parser.add_argument(
+        "--gen_func", type=str, required=False, default="gen_model_and_params", help="Param generation function"
+    )
 
     args = parser.parse_args()
 
@@ -293,6 +312,7 @@ if __name__ == "__main__":
         if args.data_trend_gradient_per_group is not None
         else None
     )
+    args.proportion_break = [int(i) for i in args.proportion_break.split(",")]
 
     # Running benchmark
     run_benchmark(
@@ -304,4 +324,5 @@ if __name__ == "__main__":
         amplitude_per_group=args.data_amplitude_per_group,
         data_trend_gradient_per_group=args.data_trend_gradient_per_group,
         gen_func=args.gen_func,
+        proportion_break=args.proportion_break,
     )
