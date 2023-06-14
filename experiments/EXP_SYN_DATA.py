@@ -312,7 +312,9 @@ if __name__ == "__main__":
         if args.data_trend_gradient_per_group is not None
         else None
     )
-    args.proportion_break = [int(i) for i in args.proportion_break.split(",")]
+    args.proportion_break = (
+        [int(i) for i in args.proportion_break.split(",")] if args.proportion_break is not None else None
+    )
 
     # Running benchmark
     run_benchmark(
