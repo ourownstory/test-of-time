@@ -214,8 +214,8 @@ def run_benchmark(
     # The data_func, model, and params arguments are now provided as arguments
     MODEL = MODELS[model]
     MODEL_PARAMS = PARAMS[params]
-    DIR_NAME = "{}_{}_n_ts_{}_am_{}_of_{}_gr_{}".format(
-        data_func, params, n_ts_groups, amplitude_per_group, offset_per_group, data_trend_gradient_per_group
+    DIR_NAME = "{}_{}_n_ts_{}_am_{}_of_{}_gr_{}_{}".format(
+        data_func, params, n_ts_groups, amplitude_per_group, offset_per_group, data_trend_gradient_per_group, proportion_break
     )
     if params == "TF" or params == "RNN" or params == "RNN_wb" or params == "LGBM":
         NUM_PROCESSES = 1
