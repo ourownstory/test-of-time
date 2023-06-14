@@ -263,9 +263,10 @@ python_commands=("${commands_NP_FNN_SEASON[@]}" "${commands_NP_FNN_SEASHAPE[@]}"
 job_counter=1
 
 # loop through the python commands
-for command in "${python_commands[@]}"; do
+for idx in "${!python_commands[@]}"; do
+    command="${python_commands[$idx]}"
     # create a job name based on the counter
-    job_name="job_wn_$job_counter"
+    job_name="job_hsc_$job_counter"
     echo "Submitting $job_name"
 
     # create a temporary Slurm script
@@ -273,7 +274,7 @@ for command in "${python_commands[@]}"; do
     echo "#SBATCH --job-name=$job_name" >> temp.sh
     echo "#SBATCH --output=res_$job_name" >> temp.sh
 
-     # check if "Transformer" or "RNN" is in the command
+    # check if "Transformer" or "RNN" is in the command
     if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
         echo "#SBATCH --time=02:00:00" >> temp.sh
         echo "#SBATCH -p gpu" >> temp.sh
@@ -296,6 +297,7 @@ for command in "${python_commands[@]}"; do
     # increment the job counter
     ((job_counter++))
 done
+g
 
 #install RNN nonlearnable instance normalization
 pip install -e git+https://github.com/LeonieFreisinger/darts.git@revin_nonlearnable#egg=darts
