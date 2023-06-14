@@ -20,7 +20,7 @@ pip install -e git+https://github.com/LeonieFreisinger/darts.git@revin_learnable
 
 ### NP_FNN SEASON
 commands_NP_FNN_SEASON=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN_wb --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN_wb --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN_wb --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN_wb --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN_wb --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
@@ -257,7 +257,7 @@ commands_RNN_HETEROSC=(
 
 
 #combine the command lists
-python_commands=("${commands_NP_FNN_SEASON[@]}" "${commands_NP_FNN_SEASHAPE[@]}"  "${commands_NP_FNN_TREND[@]}" "${commands_NP_FNN_STRUCBREAK[@]} "${commands_NP_FNN_HETEROSC[@]}" "${commands_NP_FNN_SW_SEASON[@]}" "${commands_NP_FNN_SW_SEASHAPE[@]}"  "${commands_NP_FNN_SW_TREND[@]}" "${commands_NP_FNN_SW_STRUCBREAK[@]} "${commands_NP_FNN_SW_HETEROSC[@]}" "${commands_RNN_SEASON[@]}" "${commands_RNN_SEASHAPE[@]}" "${commands_RNN_TREND[@]}" "${commands_RNN_HETEROSC[@]}" "${commands_RNN_STRUCBREAK[@]}")
+python_commands=("${commands_NP_FNN_SEASON[@]}" "${commands_NP_FNN_SEASHAPE[@]}" "${commands_NP_FNN_TREND[@]}" "${commands_NP_FNN_STRUCBREAK[@]}" "${commands_NP_FNN_HETEROSC[@]}" "${commands_NP_FNN_SW_SEASON[@]}" "${commands_NP_FNN_SW_SEASHAPE[@]}" "${commands_NP_FNN_SW_TREND[@]}" "${commands_NP_FNN_SW_STRUCBREAK[@]}" "${commands_NP_FNN_SW_HETEROSC[@]}" "${commands_RNN_SEASON[@]}" "${commands_RNN_SEASHAPE[@]}" "${commands_RNN_TREND[@]}" "${commands_RNN_HETEROSC[@]}" "${commands_RNN_STRUCBREAK[@]}")
 
 # initialize job counter
 job_counter=1
@@ -273,7 +273,7 @@ for command in "${python_commands[@]}"; do
     echo "#SBATCH --job-name=$job_name" >> temp.sh
     echo "#SBATCH --output=res_$job_name" >> temp.sh
 
-     # check if "Transformer" or "RNN" is in the command
+    # check if "Transformer" or "RNN" is in the command
     if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
         echo "#SBATCH --time=02:00:00" >> temp.sh
         echo "#SBATCH -p gpu" >> temp.sh
@@ -298,45 +298,4 @@ for command in "${python_commands[@]}"; do
 done
 
 
-##install RNN nonlearnable instance normalization
-#pip install -e git+https://github.com/LeonieFreisinger/darts.git@revin_nonlearnable#egg=darts
-#
-#python_commands_step2=("${commands_RNN_SEASON[@]}" "${commands_RNN_SEASHAPE[@]}" "${commands_RNN_TREND[@]}" "${commands_RNN_HETEROSC[@]}" "${commands_RNN_STRUCBREAK[@]}")
-#
-## initialize job counter
-#job_counter=1000
-#
-## loop through the python commands
-#for command in "${python_commands_step2[@]}"; do
-#    # create a job name based on the counter
-#    job_name="job_wn_$job_counter"
-#    echo "Submitting $job_name"
-#
-#    # create a temporary Slurm script
-#    echo "#!/bin/bash" > temp.sh
-#    echo "#SBATCH --job-name=$job_name" >> temp.sh
-#    echo "#SBATCH --output=res_$job_name" >> temp.sh
-#
-#     # check if "Transformer" or "RNN" is in the command
-#    if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
-#        echo "#SBATCH --time=02:00:00" >> temp.sh
-#        echo "#SBATCH -p gpu" >> temp.sh
-#        echo "#SBATCH -G 1" >> temp.sh
-#    else
-#        echo "#SBATCH --time=00:20:00" >> temp.sh
-#        echo "#SBATCH --cpus-per-task=19" >> temp.sh
-#        echo "#SBATCH --mem-per-cpu=1G" >> temp.sh
-#    fi
-#
-#    # add the python command to the Slurm script
-#    echo $command >> temp.sh
-#
-#    # submit the Slurm job
-#    sbatch temp.sh
-#
-#    # remove the temporary Slurm script
-#    rm temp.sh
-#
-#    # increment the job counter
-#    ((job_counter++))
-#done
+
