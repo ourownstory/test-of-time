@@ -69,7 +69,7 @@ commands_NP_FNN=(
 
 ### TP
 commands_TP=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
@@ -85,7 +85,7 @@ commands_TP=(
 )
 
 ### TP_localST
-comannds_TP_localST=(
+commands_TP_localST=(
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
@@ -211,7 +211,7 @@ for command in "${python_commands[@]}"; do
 
     # check if "Transformer" or "RNN" is in the command
     if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
-        echo "#SBATCH --time=02:00:00" >> temp.sh
+        echo "#SBATCH --time=02:20:00" >> temp.sh
         echo "#SBATCH -p gpu" >> temp.sh
         echo "#SBATCH -G 1" >> temp.sh
     else

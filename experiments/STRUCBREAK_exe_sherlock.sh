@@ -86,7 +86,7 @@ commands_TP=(
 )
 
 ### TP_localST
-comannds_TP_localST=(
+commands_TP_localST=(
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TorchProphetModel --params TP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TorchProphetModel --params TP_localST --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'

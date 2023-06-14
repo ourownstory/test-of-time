@@ -87,7 +87,7 @@ commands_TP=(
 )
 
 ### TP_localST
-comannds_TP_localST=(
+commands_TP_localST=(
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
