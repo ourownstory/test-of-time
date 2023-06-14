@@ -303,7 +303,7 @@ pip install -e git+https://github.com/LeonieFreisinger/darts.git@revin_nonlearna
 python_commands_step2=("${commands_RNN_SEASON[@]}" "${commands_RNN_SEASHAPE[@]}" "${commands_RNN_TREND[@]}" "${commands_RNN_HETEROSC[@]}" "${commands_RNN_STRUCBREAK[@]}")
 
 # initialize job counter
-job_counter=1
+job_counter=1000
 
 # loop through the python commands
 for command in "${python_commands_step2[@]}"; do
