@@ -15,50 +15,50 @@ pip install -e git+https://github.com/LeonieFreisinger/darts.git@lgbm_for_server
 
 ### NP
 commands_NP=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
 )
 
 ### NP_localST
 commands_NP_localST=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
  )
 
 ### NP_FNN
 commands_NP_FNN=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
  )
 
 ### TP
 commands_TP=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
  )
 #
 ### TP_localST
@@ -75,62 +75,62 @@ commands_TP_localST=(
 
 ### TF
 commands_TF=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TransformerModel --params TF --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TransformerModel --params TF --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
  )
 
 ### RNN
 commands_RNN=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
  )
 
 ### LGBM
 commands_LGBM=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
  )
 
 ### Naive
 commands_Naive=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
  )
 
 ### SNaive
 commands_SNaive=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
  )
 
 # combine the command lists
