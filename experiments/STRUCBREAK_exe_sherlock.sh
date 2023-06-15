@@ -43,7 +43,7 @@ commands_NP_localST=(
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
@@ -109,16 +109,16 @@ commands_TF=(
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TransformerModel --params TF --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TransformerModel --params TF --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TransformerModel --params TF --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
-#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TransformerModel --params TF --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TransformerModel --params TF --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TransformerModel --params TF --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
-#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TransformerModel --params TF --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
-#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
-#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TransformerModel --params TF --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TransformerModel --params TF --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TransformerModel --params TF --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TransformerModel --params TF --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TransformerModel --params TF --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TransformerModel --params TF --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TransformerModel --params TF --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TransformerModel --params TF --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
-#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TransformerModel --params TF --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TransformerModel --params TF --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
 )
 
 ### RNN
@@ -141,20 +141,20 @@ commands_RNN=(
 
 ### LGBM
 commands_LGBM=(
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
 )
 
 ### Naive
@@ -187,8 +187,8 @@ commands_SNaive=(
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
 #'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
 )
@@ -212,7 +212,7 @@ for command in "${python_commands[@]}"; do
 
     # check if "Transformer" or "RNN" is in the command
     if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
-        echo "#SBATCH --time=01:45:00" >> temp.sh
+        echo "#SBATCH --time=03:30:00" >> temp.sh
         echo "#SBATCH -p gpu" >> temp.sh
         echo "#SBATCH -G 1" >> temp.sh
     else

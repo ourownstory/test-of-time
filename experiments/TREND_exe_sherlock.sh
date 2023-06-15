@@ -21,14 +21,14 @@ commands_NP=(
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 )
 
 ### NP_localST
@@ -39,14 +39,14 @@ commands_NP_localST=(
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 )
 
 ### NP_FNN
@@ -55,16 +55,16 @@ commands_NP_FNN=(
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1"--data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 )
 
 ### TP
@@ -75,14 +75,14 @@ commands_TP=(
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 )
 
 ### TP_localST
@@ -93,14 +93,14 @@ commands_TP_localST=(
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP_localST --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model TorchProphetModel --params TP_localST --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP_localST --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model TorchProphetModel --params TP_localST --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 )
 
 ### TF
@@ -125,18 +125,18 @@ commands_TF=(
 commands_RNN=(
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 )
 
 ### LGBM
@@ -147,14 +147,14 @@ commands_LGBM=(
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model LightGBMModel --params LGBM --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model LightGBMModel --params LGBM --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model LightGBMModel --params LGBM --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model LightGBMModel --params LGBM --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model LightGBMModel --params LGBM --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model LightGBMModel --params LGBM --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model LightGBMModel --params LGBM --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model LightGBMModel --params LGBM --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model LightGBMModel --params LGBM --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model LightGBMModel --params LGBM --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 )
 
 ### Naive
@@ -165,14 +165,14 @@ commands_Naive=(
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NaiveModel --params Naive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NaiveModel --params Naive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NaiveModel --params Naive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NaiveModel --params Naive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model NaiveModel --params Naive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NaiveModel --params Naive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NaiveModel --params Naive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NaiveModel --params Naive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NaiveModel --params Naive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NaiveModel --params Naive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NaiveModel --params Naive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model NaiveModel --params Naive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 )
 
 ### SNaive
@@ -181,16 +181,16 @@ commands_SNaive=(
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0"'
 )
 
 # combine the command lists
@@ -212,7 +212,7 @@ for command in "${python_commands[@]}"; do
 
     # check if "Transformer" or "RNN" is in the command
     if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
-        echo "#SBATCH --time=02:20:00" >> temp.sh
+        echo "#SBATCH --time=03:30:00" >> temp.sh
         echo "#SBATCH -p gpu" >> temp.sh
         echo "#SBATCH -G 1" >> temp.sh
     else
