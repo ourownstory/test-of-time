@@ -227,6 +227,7 @@ def gen_cancel_shape_ar(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
+    counter = 0
     for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
@@ -251,8 +252,9 @@ def gen_cancel_shape_ar(
             combined_data += proportion_noise * noise_group[i]
             # Scale the series with the amplitude and offset of the respective group
             df["y"] = combined_data * amplitude + offset
-            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df["ID"] = str(counter)
             df_data.append(df.reset_index(drop=True))
+            counter += 1
 
     concatenated_dfs = pd.concat(df_data, axis=0)
 
@@ -285,6 +287,7 @@ def gen_cancel_shape_ar_outlier_0p1(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
+    counter = 0
     for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
@@ -318,8 +321,9 @@ def gen_cancel_shape_ar_outlier_0p1(
             combined_data[outlier_positions[i]] += proportion_outliers * outlier_group[i]
             # Scale the series with the amplitude and offset of the respective group
             df["y"] = combined_data * amplitude + offset
-            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df["ID"] = str(counter)
             df_data.append(df.reset_index(drop=True))
+            counter += 1
 
         concatenated_dfs = pd.concat(df_data, axis=0)
 
@@ -352,6 +356,7 @@ def gen_cancel_shape_ar_outlier_1p(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
+    counter = 0
     for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
@@ -385,8 +390,9 @@ def gen_cancel_shape_ar_outlier_1p(
             combined_data[outlier_positions[i]] += proportion_outliers * outlier_group[i]
             # Scale the series with the amplitude and offset of the respective group
             df["y"] = combined_data * amplitude + offset
-            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df["ID"] = str(counter)
             df_data.append(df.reset_index(drop=True))
+            counter += 1
 
         concatenated_dfs = pd.concat(df_data, axis=0)
 
@@ -412,6 +418,7 @@ def generate_one_shape_season_data(  # OUTDATED
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)  # Create an ARMA process
 
+    counter = 0
     for group in range(len(n_ts_groups)):
         noise_group = [
             np.random.normal(loc=0, scale=amplitude_per_group[group] / 5, size=series_length)
@@ -425,8 +432,9 @@ def generate_one_shape_season_data(  # OUTDATED
         for i in range(n_ts_groups[group]):
             df = pd.DataFrame(date_rng, columns=["ds"])
             df["y"] = data_group[i] + noise_group[i] + offset_per_group[group]
-            df["ID"] = str(i + sum(n_ts_groups[:group]))
+            df["ID"] = str(counter)
             df_seasons.append(df.reset_index(drop=True))
+            counter += 1
 
     concatenated_dfs = pd.concat(df_seasons, axis=0)
     return concatenated_dfs
@@ -456,6 +464,7 @@ def gen_one_shape_ar(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
+    counter = 0
     for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
@@ -478,8 +487,9 @@ def gen_one_shape_ar(
             combined_data += proportion_noise * noise_group[i]
             # Scale the series with the amplitude and offset of the respective group
             df["y"] = combined_data * amplitude + offset
-            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df["ID"] = str(counter)
             df_data.append(df.reset_index(drop=True))
+            counter += 1
 
     concatenated_dfs = pd.concat(df_data, axis=0)
 
@@ -512,6 +522,7 @@ def gen_one_shape_ar_outlier_0p1(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
+    counter = 0
     for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
@@ -543,8 +554,9 @@ def gen_one_shape_ar_outlier_0p1(
             combined_data[outlier_positions[i]] += proportion_outliers * outlier_group[i]
             # Scale the series with the amplitude and offset of the respective group
             df["y"] = combined_data * amplitude + offset
-            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df["ID"] = str(counter)
             df_data.append(df.reset_index(drop=True))
+            counter += 1
 
         concatenated_dfs = pd.concat(df_data, axis=0)
 
@@ -577,6 +589,7 @@ def gen_one_shape_ar_outlier_1p(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
+    counter = 0
     for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
@@ -608,8 +621,9 @@ def gen_one_shape_ar_outlier_1p(
             combined_data[outlier_positions[i]] += proportion_outliers * outlier_group[i]
             # Scale the series with the amplitude and offset of the respective group
             df["y"] = combined_data * amplitude + offset
-            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df["ID"] = str(counter)
             df_data.append(df.reset_index(drop=True))
+            counter += 1
 
         concatenated_dfs = pd.concat(df_data, axis=0)
 
@@ -641,6 +655,7 @@ def gen_struc_break_mean(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
+    counter = 0
     for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
@@ -669,8 +684,9 @@ def gen_struc_break_mean(
             combined_data += proportion_noise * noise_group[i]
             # Scale the series with the amplitude and offset of the respective group
             df["y"] = combined_data * amplitude + offset + step_function
-            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df["ID"] = str(counter)
             df_data.append(df.reset_index(drop=True))
+            counter += 1
 
     concatenated_dfs = pd.concat(df_data, axis=0)
 
@@ -702,6 +718,7 @@ def gen_struc_break_var(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
+    counter = 0
     for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
@@ -726,8 +743,9 @@ def gen_struc_break_var(
             combined_data[series_length // 2 :] *= proportion_break[group_num]
             # Scale the series with the amplitude and offset of the respective group
             df["y"] = combined_data * amplitude + offset
-            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df["ID"] = str(counter)
             df_data.append(df.reset_index(drop=True))
+            counter += 1
 
     concatenated_dfs = pd.concat(df_data, axis=0)
 
@@ -924,6 +942,7 @@ def gen_one_shape_ar_trend(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
+    counter = 0
     for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
@@ -950,8 +969,9 @@ def gen_one_shape_ar_trend(
             combined_data += proportion_noise * noise_group[i]
             # Scale the series with the amplitude and offset of the respective group
             df["y"] = combined_data * amplitude + offset + trend
-            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df["ID"] = str(counter)
             df_data.append(df.reset_index(drop=True))
+            counter += 1
 
     concatenated_dfs = pd.concat(df_data, axis=0)
 
@@ -983,6 +1003,7 @@ def gen_one_shape_ar_trend_cp(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
+    counter = 0
     for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
@@ -1016,8 +1037,9 @@ def gen_one_shape_ar_trend_cp(
             combined_data += proportion_noise * noise_group[i]
             # Scale the series with the amplitude and offset of the respective group
             df["y"] = combined_data * amplitude + offset + trend
-            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df["ID"] = str(counter)
             df_data.append(df.reset_index(drop=True))
+            counter += 1
 
     concatenated_dfs = pd.concat(df_data, axis=0)
 
@@ -1050,6 +1072,7 @@ def gen_one_shape_heteroscedacity(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
+    counter = 0
     for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
@@ -1081,8 +1104,9 @@ def gen_one_shape_heteroscedacity(
 
             # Scale the series with the amplitude and offset of the respective group
             df["y"] = combined_data * amplitude + trend + offset
-            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df["ID"] = str(counter)
             df_data.append(df.reset_index(drop=True))
+            counter += 1
 
     concatenated_dfs = pd.concat(df_data, axis=0)
 
@@ -1115,6 +1139,7 @@ def gen_one_shape_heteroscedacity_op(
     ma_coeffs = np.array([1])  # MA coefficients (no MA component)
     ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)
 
+    counter = 0
     for group_num in range(len(n_ts_groups)):  # looping over two groups
         n_ts = n_ts_groups[group_num]
         offset = offset_per_group[group_num]
@@ -1147,8 +1172,9 @@ def gen_one_shape_heteroscedacity_op(
             combined_data = combined_data * ((-1) ** group_num) * np.sqrt(abs(trend)) * proportion_var_trend
             # Scale the series with the amplitude and offset of the respective group
             df["y"] = combined_data * amplitude + trend + offset
-            df["ID"] = str(i + n_ts_groups[0] * group_num)
+            df["ID"] = str(counter)
             df_data.append(df.reset_index(drop=True))
+            counter += 1
 
     concatenated_dfs = pd.concat(df_data, axis=0)
 
