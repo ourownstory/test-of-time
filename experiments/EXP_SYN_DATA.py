@@ -220,7 +220,7 @@ def run_benchmark(
     if params == "TF" or params == "RNN" or params == "RNN_wb" or params == "LGBM" or params == "NP_FNN_sw_wb":
         NUM_PROCESSES = 1
     else:
-        NUM_PROCESSES = 19
+        NUM_PROCESSES = 10
 
     if data_trend_gradient_per_group is not None:
         df = FUNCTIONS[data_func](

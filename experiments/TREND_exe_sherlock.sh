@@ -217,7 +217,7 @@ for command in "${python_commands[@]}"; do
         echo "#SBATCH -G 1" >> temp.sh
     else
         echo "#SBATCH --time=00:20:00" >> temp.sh
-        echo "#SBATCH --cpus-per-task=19" >> temp.sh
+        echo "#SBATCH --cpus-per-task=10" >> temp.sh
         echo "#SBATCH --mem-per-cpu=1G" >> temp.sh
     fi
 
