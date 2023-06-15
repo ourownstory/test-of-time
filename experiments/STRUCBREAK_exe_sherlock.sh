@@ -14,75 +14,75 @@ pip install -e git+https://github.com/LeonieFreisinger/darts.git@lgbm_for_server
 
 ### NP
 commands_NP=(
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
 
 )
 
 ### NP_localST
 commands_NP_localST=(
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
 )
 
 ### NP_FNN
 commands_NP_FNN=(
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
 )
 
 ### TP
 commands_TP=(
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TorchProphetModel --params TP --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TorchProphetModel --params TP --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TorchProphetModel --params TP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TorchProphetModel --params TP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TorchProphetModel --params TP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model TorchProphetModel --params TP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TorchProphetModel --params TP --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TorchProphetModel --params TP --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TorchProphetModel --params TP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TorchProphetModel --params TP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TorchProphetModel --params TP --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TorchProphetModel --params TP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model TorchProphetModel --params TP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
 )
 
 ### TP_localST
@@ -123,20 +123,20 @@ commands_TF=(
 
 ### RNN
 commands_RNN=(
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
 )
 
 ### LGBM
@@ -159,38 +159,38 @@ commands_LGBM=(
 
 ### Naive
 commands_Naive=(
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NaiveModel --params Naive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NaiveModel --params Naive --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NaiveModel --params Naive --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NaiveModel --params Naive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NaiveModel --params Naive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NaiveModel --params Naive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NaiveModel --params Naive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model NaiveModel --params Naive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NaiveModel --params Naive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NaiveModel --params Naive --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NaiveModel --params Naive --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NaiveModel --params Naive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NaiveModel --params Naive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NaiveModel --params Naive --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NaiveModel --params Naive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model NaiveModel --params Naive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
 )
 
 ### SNaive
 commands_SNaive=(
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
 'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
+#'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2"'
 )
 
 # combine the command lists
