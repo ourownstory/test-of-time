@@ -23,7 +23,7 @@ commands_NP=(
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP --data_n_ts_groups "10,1" --data_offset_per_group "10,1"--data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-#)
+)
 
 ### NP_localST
 commands_NP_localST=(
