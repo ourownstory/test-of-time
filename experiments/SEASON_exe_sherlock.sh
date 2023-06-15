@@ -63,14 +63,14 @@ commands_TP=(
 #
 ### TP_localST
 commands_TP_localST=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,10"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model TorchProphetModel --params TP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
  )
 
 ### TF
@@ -94,7 +94,7 @@ commands_RNN=(
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1"'
  )
 
 ### LGBM

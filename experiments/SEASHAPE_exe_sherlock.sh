@@ -112,32 +112,32 @@ commands_TF=(
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TransformerModel --params TF --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model TransformerModel --params TF --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model TransformerModel --params TF --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model TransformerModel --params TF --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model TransformerModel --params TF --data_n_ts_groups "+10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model TransformerModel --params TF --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model TransformerModel --params TF --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model TransformerModel --params TF --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model TransformerModel --params TF --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model TransformerModel --params TF --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TransformerModel --params TF --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TransformerModel --params TF --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TransformerModel --params TF --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TransformerModel --params TF --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
 )
 
 ### RNN
 commands_RNN=(
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model RNNModel --params RNN --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model RNNModel --params RNN --data_n_ts_groups "+10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model RNNModel --params RNN --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model RNNModel --params RNN --data_n_ts_groups "+10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model RNNModel --params RNN --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
 )
 
 ### LGBM
@@ -154,8 +154,8 @@ commands_LGBM=(
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model LightGBMModel --params LGBM --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model LightGBMModel --params LGBM --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
 )
 
 ### Naive
@@ -171,27 +171,27 @@ commands_Naive=(
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model NaiveModel --params Naive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model NaiveModel --params Naive --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model NaiveModel --params Naive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
 )
 
 ### SNaive
 commands_SNaive=(
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "+10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1"'
-#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,10"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_0p1 --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "+10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,2" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar_outlier_1p --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1"'
+'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1"'
 )
 
 # combine the command lists
@@ -213,7 +213,7 @@ for command in "${python_commands[@]}"; do
 
     # check if "Transformer" or "RNN" is in the command
     if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
-        echo "#SBATCH --time=01:45:00" >> temp.sh
+        echo "#SBATCH --time=01:55:00" >> temp.sh
         echo "#SBATCH -p gpu" >> temp.sh
         echo "#SBATCH -G 1" >> temp.sh
     else
