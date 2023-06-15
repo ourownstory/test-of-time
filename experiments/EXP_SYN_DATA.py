@@ -217,7 +217,7 @@ def run_benchmark(
     DIR_NAME = "{}_{}_n_ts_{}_am_{}_of_{}_gr_{}_{}".format(
         data_func, params, n_ts_groups, amplitude_per_group, offset_per_group, data_trend_gradient_per_group, proportion_break
     )
-    if params == "TF" or params == "RNN" or params == "RNN_wb" or params == "LGBM":
+    if params == "TF" or params == "RNN" or params == "RNN_wb" or params == "LGBM" or params == "NP_FNN_sw_wb":
         NUM_PROCESSES = 1
     else:
         NUM_PROCESSES = 19
