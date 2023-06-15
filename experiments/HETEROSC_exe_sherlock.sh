@@ -15,50 +15,50 @@ pip install -e git+https://github.com/LeonieFreisinger/darts.git@lgbm_for_server
 
 ### NP
 commands_NP=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP --data_n_ts_groups "10,1" --data_offset_per_group "10,1"--data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-)
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#)
 
 ### NP_localST
 commands_NP_localST=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1" --data_offset_per_group "10,1"--data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP_localST --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP_localST --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
 )
 
 ### NP_FNN
 commands_NP_FNN=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1"--data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
 )
 
 ### TP
 commands_TP=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TorchProphetModel --params TP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TorchProphetModel --params TP --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TorchProphetModel --params TP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TorchProphetModel --params TP --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TorchProphetModel --params TP --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "10,1"--data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model TorchProphetModel --params TP --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model TorchProphetModel --params TP --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
 )
 
 ### TP_localST
@@ -75,26 +75,26 @@ commands_TP_localST=(
 
 ### TF
 commands_TF=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TransformerModel --params TF --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TransformerModel --params TF --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TransformerModel --params TF --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TransformerModel --params TF --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TransformerModel --params TF --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TransformerModel --params TF --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TransformerModel --params TF --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model TransformerModel --params TF --data_n_ts_groups "10,1" --data_offset_per_group "10,1"--data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model TransformerModel --params TF --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model TransformerModel --params TF --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
 )
 
 ### RNN
 commands_RNN=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "10,1"--data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model RNNModel --params RNN --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
 )
 
 ### LGBM
@@ -111,26 +111,26 @@ commands_LGBM=(
 
 ### Naive
 commands_Naive=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NaiveModel --params Naive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NaiveModel --params Naive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NaiveModel --params Naive --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NaiveModel --params Naive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NaiveModel --params Naive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NaiveModel --params Naive --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NaiveModel --params Naive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model NaiveModel --params Naive --data_n_ts_groups "10,1" --data_offset_per_group "10,1"--data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NaiveModel --params Naive --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NaiveModel --params Naive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model NaiveModel --params Naive --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
 )
 
 ### SNaive
 commands_SNaive=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
 'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "10,1"--data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
+#'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1"'
 )
 
 # combine the command lists
