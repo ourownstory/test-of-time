@@ -274,11 +274,11 @@ for command in "${python_commands[@]}"; do
 
     # check if "Transformer" or "RNN" is in the command
     if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
-        echo "#SBATCH --time=00:40:00" >> temp.sh
+        echo "#SBATCH --time=00:30:00" >> temp.sh
         echo "#SBATCH -p gpu" >> temp.sh
         echo "#SBATCH -G 1" >> temp.sh
     else
-        echo "#SBATCH --time=00:35:00" >> temp.sh
+        echo "#SBATCH --time=00:10:00" >> temp.sh
         echo "#SBATCH --cpus-per-task=10" >> temp.sh
         echo "#SBATCH --mem-per-cpu=1G" >> temp.sh
     fi
@@ -367,7 +367,7 @@ for command in "${python_commands_2[@]}"; do
 
     # check if "Transformer" or "RNN" is in the command
     if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
-        echo "#SBATCH --time=02:00:00" >> temp.sh
+        echo "#SBATCH --time=00:10:00" >> temp.sh
         echo "#SBATCH -p gpu" >> temp.sh
         echo "#SBATCH -G 1" >> temp.sh
     else
