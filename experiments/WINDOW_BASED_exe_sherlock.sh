@@ -9,7 +9,7 @@ source ../../tot4/bin/activate
 
 # re-install the packages
 pip uninstall -y neuralprophet
-pip install git+https://github.com/ourownstory/neural_prophet.git@instance-batch-normalization
+pip install git+https://github.com/ourownstory/neural_prophet.git@normalization-layer
 pip uninstall -y darts
 pip install git+https://github.com/LeonieFreisinger/darts.git@revin_nonlearnable#egg=darts
 #

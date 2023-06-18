@@ -9,7 +9,7 @@ source ../../tot4/bin/activate
 
 # re-install the packages
 pip uninstall -y neuralprophet
-pip install git+https://github.com/ourownstory/neural_prophet.git@weighted-loss
+pip install git+https://github.com/ourownstory/neural_prophet.git@normalization-layer
 pip install -e git+https://github.com/LeonieFreisinger/darts.git@lgbm_for_server#egg=darts
 
 ### NP

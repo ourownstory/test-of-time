@@ -62,9 +62,7 @@ class Benchmark(ABC):
             log.info("finished exp {}: {}".format(exp_num, exp.experiment_name))
             log.info("test results {}: {}".format(exp_num, res_test))
             log.info("--------------------------------------------------------")
-        # del exp
-        # gc.collect()
-        return (fcst_train, fcst_test, res_train, res_test, elapsed_time)
+        return fcst_train, fcst_test, res_train, res_test, elapsed_time
 
     def _log_result(self, results):
         if type(results) != list:
@@ -119,7 +117,14 @@ class Benchmark(ABC):
         else:
             args_list = [(exp, verbose, i + 1) for i, exp in enumerate(self.experiments)]
             for args in args_list:
-                self._log_result(self._run_exp(args))
+                try:
+                    self._log_result(self._run_exp(args))
+                except Exception as e:
+                    exp, verbose, exp_num = args
+                    log.error("--------------------------------------------------------")
+                    log.error("exception occurred in exp {}: {}".format(exp_num, exp.experiment_name))
+                    log.error(e)
+                    log.error("--------------------------------------------------------")
                 gc.collect()
 
         return self.df_metrics_train, self.df_metrics_test
@@ -226,16 +231,22 @@ class SimpleBenchmark(Benchmark):
     def setup_experiments(self):
         experiments = []
         for ts in self.datasets:
-            for model_class, params in self.model_classes_and_params:
-                exp = SimpleExperiment(
-                    model_class=model_class,
-                    params=params.copy(),
-                    data=ts,
-                    metrics=self.metrics,
-                    test_percentage=self.test_percentage,
-                    save_dir=self.save_dir,
-                )
-                experiments.append(exp)
+            for i, (model_class, params) in enumerate(self.model_classes_and_params):
+                try:
+                    exp = SimpleExperiment(
+                        model_class=model_class,
+                        params=params.copy(),
+                        data=ts,
+                        metrics=self.metrics,
+                        test_percentage=self.test_percentage,
+                        save_dir=self.save_dir,
+                    )
+                    experiments.append(exp)
+                except Exception as e:
+                    log.error("--------------------------------------------------------")
+                    log.error("Unable to create exp {}".format(i + 1))
+                    log.error(e)
+                    log.error("--------------------------------------------------------")
         return experiments
 
 

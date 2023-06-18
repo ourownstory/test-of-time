@@ -8,7 +8,7 @@ from darts import TimeSeries
 
 from tot.df_utils import _validate_single_ID_df
 
-log = logging.getLogger("tot.utils")
+log = logging.getLogger("tot.pipeline")
 
 FREQ_TO_SEASON_STEP_MAPPING = {
     "MS": {"yearly": 12},

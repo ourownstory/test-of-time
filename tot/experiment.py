@@ -7,7 +7,6 @@ from dataclasses import dataclass
 from multiprocessing.pool import Pool
 from typing import List, Optional
 
-import numpy as np
 import pandas as pd
 from neuralprophet import set_random_seed
 from sklearn.preprocessing import MinMaxScaler
@@ -61,25 +60,28 @@ class Experiment(ABC):
         params_repr = self.params.copy()
         params_repr.pop("model", None)
         if not hasattr(self, "experiment_name") or self.experiment_name is None:
+            components = [
+                model_name,
+                self.params.get("norm_mode", None),
+                self.params.get("norm_type", None),
+                "affine" if self.params.get("norm_affine", False) else None,
+                self.params.get("scaler", None),
+                self.params.get("scaling_level", None),
+                self.params.get("weighted_loss", None),
+            ]
+
+            components = [c for c in components if c is not None]
+
             self.experiment_name = (
-                "{}_{}_{}_{}_{}_{}".format(
-                    self.data.name,
-                    model_name,
-                    self.params.get("norm_mode", "none"),
-                    self.params.get("scaler", "no scaler"),
-                    self.params.get("scaling_level", "none"),
-                    self.params.get("weighted_loss", "none"),
-                )
-                .replace("(", "")
-                .replace(")", "")
-                .replace("*", "")
-                .replace(",", "")
+                "_".join(components).replace("(", "").replace(")", "").replace("*", "").replace(",", "")
             )
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
                 "data": self.data.name,
                 "model": model_name,
                 "norm_mode": self.params.get("norm_mode", "none"),
+                "norm_type": self.params.get("norm_type", "none"),
+                "norm_affine": self.params.get("norm_affine", "none"),
                 "scaler": self.params.get("scaler", "no scaler"),
                 "scaling level": self.params.get("scaling_level", "none"),
                 "weighted": self.params.get("weighted_loss", "none"),
@@ -90,6 +92,8 @@ class Experiment(ABC):
             scaling_level = self.params.pop("scaling_level", "per_dataset")
             self.scaler = Scaler(transformer=scaler, scaling_level=scaling_level)
         self.weighted_loss = self.params.pop("weighted_loss", None)
+
+        self.model_class(self.params)
 
     def write_results_to_csv(self, df, prefix, current_fold=None):
         """
@@ -315,6 +319,7 @@ class CrossValidationExperiment(Experiment):
     num_folds: int = 5
     fold_overlap_pct: float = 0
     global_model_cv_type: str = "global-time"
+
     # results_cv_train: dict = field(init=False)
     # results_cv_test: dict = field(init=False)
 
