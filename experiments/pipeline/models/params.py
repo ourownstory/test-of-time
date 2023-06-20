@@ -24,14 +24,14 @@ def get_params_for_model(model_name, params_name):
 
 
 # NeuralProphetModel pre-defined params
-NP = {
+NP = {  # NeuralProphetModel with global trend, global seasonality and autoregression enabled.
     "n_forecasts": 1,
     "epochs": 30,
     "global_normalization": True,
     "normalize": "off",
     "n_lags": 4,
 }
-NP_localST = {
+NP_localST = {  # NeuralProphetModel with local trend, local seasonality and autoregression enabled.
     "n_forecasts": 1,
     "epochs": 30,
     "global_normalization": True,
@@ -40,7 +40,7 @@ NP_localST = {
     "season_global_local": "local",
     "n_lags": 4,
 }
-NP_FNN = {
+NP_FNN = {  # NeuralProphetModel with only autoregression enabled.
     "n_forecasts": 1,
     "epochs": 30,
     "global_normalization": True,
@@ -52,7 +52,7 @@ NP_FNN = {
     "growth": "off",
     "n_lags": 4,
 }
-NP_FNN_wb = {
+NP_FNN_wb = {  # NeuralProphetModel with only autoregression enabled used for window-based normalization.
     "n_forecasts": 1,
     "epochs": 30,
     "global_normalization": True,
@@ -64,28 +64,30 @@ NP_FNN_wb = {
     "growth": "off",
     "n_lags": 24,
 }
-NP_FNN_sw_wb = {
-    "n_forecasts": 1,
-    "epochs": 30,
-    "global_normalization": True,
-    "normalize": "off",
-    "yearly_seasonality": False,
-    "weekly_seasonality": False,
-    "daily_seasonality": False,
-    "n_changepoints": 0,
-    "growth": "off",
-    "n_lags": 24,
-    "ar_layers": [128],
-}
+NP_FNN_sw_wb = (
+    {  # NeuralProphetModel with only autoregression with 1 hidden layer enabled used for window-based normalization.
+        "n_forecasts": 1,
+        "epochs": 30,
+        "global_normalization": True,
+        "normalize": "off",
+        "yearly_seasonality": False,
+        "weekly_seasonality": False,
+        "daily_seasonality": False,
+        "n_changepoints": 0,
+        "growth": "off",
+        "n_lags": 24,
+        "ar_layers": [128],
+    }
+)
 
 # TorchProphetModel pre-defined params
-TP = {
+TP = {  # TorchProphetModel with global trend and global seasonality enabled.
     "n_forecasts": 1,
     "epochs": 30,
     "global_normalization": True,
     "normalize": "off",
 }
-TP_localST = {
+TP_localST = {  # TorchProphetModel with local trend and local seasonality enabled.
     "n_forecasts": 1,
     "epochs": 30,
     "global_normalization": True,
@@ -122,7 +124,7 @@ RNN = {
     "_data_params": {},
 }
 
-RNN_wb = {
+RNN_wb_in = {  # RNN params used for window-based instance normalization.
     "model": RNNModel,
     "input_chunk_length": 24,
     "hidden_dim": 16,
@@ -136,7 +138,7 @@ RNN_wb = {
     "n_forecasts": 1,
     "_data_params": {},
 }
-RNN_wb_nl = {
+RNN_wb_ba = {  # RNN params used for window-based batch normalization.
     "model": RNNModel,
     "input_chunk_length": 4,
     "hidden_dim": 16,
@@ -196,8 +198,8 @@ PARAMS = {
     "LightGBMModel": {"LGBM": LGBM},
     "RNNModel": {
         "RNN": RNN,
-        "RNN_wb": RNN_wb,
-        "RNN_wb_nl": RNN_wb_nl,
+        "RNN_wb": RNN_wb_in,
+        "RNN_wb_nl": RNN_wb_ba,
     },
     "TransformerModel": {"TF": TF},
     "NaiveModel": {"Naive": Naive},
