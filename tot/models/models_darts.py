@@ -6,6 +6,7 @@ from typing import Type
 import pandas as pd
 
 from tot.df_utils import _check_min_df_len, add_first_inputs_to_df, drop_first_inputs_from_df
+from tot.error_utils import raise_if
 from tot.models.models import Model
 from tot.models.utils import _predict_darts_model, convert_df_to_TimeSeries
 
@@ -79,6 +80,15 @@ class DartsForecastingModel(Model):
         model_params.pop("n_forecasts")
         model_params.pop("n_lags")
         model_params.pop("retrain", None)
+
+        norm_mode = model_params.pop("norm_mode", None)
+        norm_type = model_params.pop("norm_type", None)
+        norm_affine = model_params.pop("norm_affine", None)
+        raise_if(
+            norm_mode is not None or norm_type is not None or norm_affine is not None,
+            "Normalization layer not supported in darts models.",
+        )
+
         model = model_params.pop("model")
         self.model = model(**model_params)
 
@@ -172,6 +182,10 @@ class DartsRegressionModel(DartsForecastingModel):
         params.pop("_data_params")
         # n_forecasts is not a parameter of the model
         params.pop("n_forecasts")
+        params.pop("retrain", None)
+        params.pop("norm_mode", None)
+        params.pop("norm_type", None)
+        params.pop("norm_affine", None)
         # overwrite output_chunk_length with n_forecasts
         params.update({"output_chunk_length": self.params["n_forecasts"]})
         model = self.regression_class(n_jobs=-1)  # n_jobs=-1 indicates to use all processors

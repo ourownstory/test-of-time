@@ -9,12 +9,11 @@ source ../../tot4/bin/activate
 
 # re-install the packages
 pip uninstall -y neuralprophet
-pip install git+https://github.com/ourownstory/neural_prophet.git@instance-batch-normalization
+pip install git+https://github.com/ourownstory/neural_prophet.git@normalization-layer
 pip uninstall -y darts
 pip install git+https://github.com/LeonieFreisinger/darts.git@revin_nonlearnable#egg=darts
-#
-##git checkout evolution_experiments_1
-##git pull upstream evolution_experiments_1
+
+
 
 
 ### NP_FNN SEASON
@@ -207,50 +206,50 @@ commands_RNN_SEASHAPE=(
 
 ### RNN TREND
 commands_RNN_TREND=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_in --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_in --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_in --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_in --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_in --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_in --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_in --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_in --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_in --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_in --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_in --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_in --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_in --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_in --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0" --gen_func "gen_model_and_params_none"'
 )
 
 ### RNN STRUCBREAK
 commands_RNN_STRUCBREAK=(
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_in --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_in --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_in --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_in --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_in --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_in --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_in --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_in --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_in --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_in --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_in --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_in --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_in --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_in --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2" --gen_func "gen_model_and_params_none"'
 )
 
 ### RNN HETEROSC
 commands_RNN_HETEROSC=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model RNNModel --params RNN_wb --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model RNNModel --params RNN_wb --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_in --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_in --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_in --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_in --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_in --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_in --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model RNNModel --params RNN_wb_in --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model RNNModel --params RNN_wb_in --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1" --gen_func "gen_model_and_params_none"'
 )
 
 
@@ -301,55 +300,55 @@ pip uninstall -y darts
 pip install git+https://github.com/LeonieFreisinger/darts.git@revba_nonlearnable#egg=darts
 
 ### RNN TREND
-commands_RNN_NL_TREND=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_nl --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_nl --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_nl --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_nl --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_nl --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_nl --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_nl --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_nl --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_nl --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_nl --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_nl --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_nl --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_nl --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_nl --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0" --gen_func "gen_model_and_params_none"'
+commands_RNN_BA_TREND=(
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_ba --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_ba --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_ba --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_ba --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_ba --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_ba --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend --model RNNModel --params RNN_wb_ba --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_ba --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_ba --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_ba --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "10,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_ba --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_ba --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_ba --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "10,0,10,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_trend_cp --model RNNModel --params RNN_wb_ba --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10, 1, 1" --data_amplitude_per_group "10,10,1,1" --data_trend_gradient_per_group "1,0,1,0" --gen_func "gen_model_and_params_none"'
 )
 
 ### RNN STRUCBREAK
-commands_RNN_NL_STRUCBREAK=(
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_nl --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_nl --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_nl --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_nl --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_nl --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_nl --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_nl --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_nl --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_nl --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_nl --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_nl --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_nl --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_nl --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_nl --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2" --gen_func "gen_model_and_params_none"'
+commands_RNN_BA_STRUCBREAK=(
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_ba --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_ba --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_ba --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_ba --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_ba --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_ba --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "0,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_mean --model RNNModel --params RNN_wb_ba --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "0,0,2,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_ba --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --proportion_break "2,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_ba --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_ba --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_ba --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "2,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_ba --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_ba --data_n_ts_groups "10,1"  --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --proportion_break "1,2" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_struc_break_var --model RNNModel --params RNN_wb_ba --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "1,10,1,10" --proportion_break "1,1,2,2" --gen_func "gen_model_and_params_none"'
 )
 
 ### RNN HETEROSC
-commands_RNN_NL_HETEROSC=(
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_nl --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_nl --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_nl --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_nl --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_nl --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_nl --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model RNNModel --params RNN_wb_nl --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1" --gen_func "gen_model_and_params_none"'
-'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model RNNModel --params RNN_wb_nl --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1" --gen_func "gen_model_and_params_none"'
+commands_RNN_BA_HETEROSC=(
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_ba --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_ba --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_ba --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_ba --data_n_ts_groups "2,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "1,0" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_ba --data_n_ts_groups "1,10" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity --model RNNModel --params RNN_wb_ba --data_n_ts_groups "10,1" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --data_trend_gradient_per_group "0,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model RNNModel --params RNN_wb_ba --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1" --gen_func "gen_model_and_params_none"'
+'python3 EXP_SYN_DATA.py --data_func gen_one_shape_heteroscedacity_op --model RNNModel --params RNN_wb_ba --data_n_ts_groups "10,1" --data_offset_per_group "0,0" --data_amplitude_per_group "1,1" --data_trend_gradient_per_group "1,1" --gen_func "gen_model_and_params_none"'
 )
 
 #combine the command lists
-python_commands_2=( "${commands_RNN_NL_TREND[@]}" "${commands_RNN_NL_HETEROSC[@]}" "${commands_RNN_NL_STRUCBREAK[@]}")
+python_commands_2=( "${commands_RNN_BA_TREND[@]}" "${commands_RNN_BA_HETEROSC[@]}" "${commands_RNN_BA_STRUCBREAK[@]}")
 
 # initialize job counter
 job_counter=1000
