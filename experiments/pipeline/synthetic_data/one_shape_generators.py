@@ -53,9 +53,6 @@ def generate_one_shape_season_data(  # OUTDATED
     return concatenated_dfs
 
 
-from scipy.stats import zscore
-
-
 def gen_one_shape_ar(
     series_length: int,
     date_rng,
@@ -95,7 +92,10 @@ def gen_one_shape_ar(
         for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
             # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
-            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            combined_data = proportion_season * season_group[i] + proportion_ar * ar_group[i]
+            mean = np.mean(combined_data)
+            std_dev = np.std(combined_data)
+            combined_data = (combined_data - mean) / std_dev
             # Add the noise according to desired proportion
             combined_data += proportion_noise * noise_group[i]
             # Scale the series with the amplitude and offset of the respective group
@@ -159,7 +159,10 @@ def gen_one_shape_ar_outlier_0p1(
         for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
             # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
-            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            combined_data = proportion_season * season_group[i] + proportion_ar * ar_group[i]
+            mean = np.mean(combined_data)
+            std_dev = np.std(combined_data)
+            combined_data = (combined_data - mean) / std_dev
             # Add the noise according to desired proportion
             # Add the noise according to desired proportion
             combined_data += proportion_noise * noise_group[i]
@@ -226,7 +229,10 @@ def gen_one_shape_ar_outlier_1p(
         for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
             # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
-            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            combined_data = proportion_season * season_group[i] + proportion_ar * ar_group[i]
+            mean = np.mean(combined_data)
+            std_dev = np.std(combined_data)
+            combined_data = (combined_data - mean) / std_dev
             # Add the noise according to desired proportion
             # Add the noise according to desired proportion
             combined_data += proportion_noise * noise_group[i]
@@ -290,7 +296,10 @@ def gen_one_shape_ar_trend(
         for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
             # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
-            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            combined_data = proportion_season * season_group[i] + proportion_ar * ar_group[i]
+            mean = np.mean(combined_data)
+            std_dev = np.std(combined_data)
+            combined_data = (combined_data - mean) / std_dev
             # Add the noise according to desired proportion
             combined_data += proportion_noise * noise_group[i]
             # Scale the series with the amplitude and offset of the respective group
@@ -358,7 +367,10 @@ def gen_one_shape_ar_trend_cp(
         for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
             # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
-            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            combined_data = proportion_season * season_group[i] + proportion_ar * ar_group[i]
+            mean = np.mean(combined_data)
+            std_dev = np.std(combined_data)
+            combined_data = (combined_data - mean) / std_dev
             # Add the noise according to desired proportion
             combined_data += proportion_noise * noise_group[i]
             # Scale the series with the amplitude and offset of the respective group
@@ -420,13 +432,19 @@ def gen_one_shape_heteroscedacity(
         for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
             # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
-            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            combined_data = proportion_season * season_group[i] + proportion_ar * ar_group[i]
+            mean = np.mean(combined_data)
+            std_dev = np.std(combined_data)
+            combined_data = (combined_data - mean) / std_dev
             # Add the noise according to desired proportion
             combined_data += proportion_noise * noise_group[i]
 
             # Add trend-dependent variance and scale with z-score, only if trend is not zero
             if np.any(trend != 0):
-                combined_data = zscore(combined_data * np.sqrt(trend) * proportion_var_trend)
+                combined_data = combined_data * np.sqrt(trend) * proportion_var_trend
+                mean = np.mean(combined_data)
+                std_dev = np.std(combined_data)
+                combined_data = (combined_data - mean) / std_dev
 
             # Scale the series with the amplitude and offset of the respective group
             df["y"] = combined_data * amplitude + trend + offset
@@ -491,7 +509,10 @@ def gen_one_shape_heteroscedacity_op(
         for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
             # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
-            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            combined_data = proportion_season * season_group[i] + proportion_ar * ar_group[i]
+            mean = np.mean(combined_data)
+            std_dev = np.std(combined_data)
+            combined_data = (combined_data - mean) / std_dev
             # Add the noise according to desired proportion
             combined_data += proportion_noise * noise_group[i]
             # Add trend-dependent variance and scale with z-score

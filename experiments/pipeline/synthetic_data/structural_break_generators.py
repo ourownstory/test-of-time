@@ -53,7 +53,7 @@ def gen_struc_break_mean(
         for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
             # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
-            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            combined_data = proportion_season * season_group[i] + proportion_ar * ar_group[i]
             # Add the noise according to desired proportion
             combined_data += proportion_noise * noise_group[i]
             # Scale the series with the amplitude and offset of the respective group
@@ -110,7 +110,10 @@ def gen_struc_break_var(
         for i in range(n_ts):
             df = pd.DataFrame(date_rng, columns=["ds"])
             # Add the season_group and ar_group according to desired proportion, then scale them individually with z-score
-            combined_data = zscore(proportion_season * season_group[i] + proportion_ar * ar_group[i])
+            combined_data = proportion_season * season_group[i] + proportion_ar * ar_group[i]
+            mean = np.mean(combined_data)
+            std_dev = np.std(combined_data)
+            combined_data = (combined_data - mean) / std_dev
             # Add the noise according to desired proportion
             combined_data += proportion_noise * noise_group[i]
             # Change the variance in the second half of the series
