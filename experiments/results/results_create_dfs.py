@@ -51,10 +51,10 @@ def check_problem(row):
         return 'WAHR'
     elif row['no scaler_MASE'] <= row['experiment_winner'] + 0.1:
         return 'FALSE'
-    elif row['best per_time_series_MASE'] < row['no scaler_MASE'] and row['best per_time_series_MASE'] >= row['no scaler_MASE'] - 0.05:
-        return 'NEUTRAL'
-    else:
+    elif row['best per_time_series_MASE'] > row['no scaler_MASE']:
         return 'BAD'
+    else:
+        return 'NEUTRAL'
 
 def filter_selected_rows(selected_rows, id_models, group_list, metric):
     # Initialize a list to store the results for each model
@@ -139,6 +139,11 @@ def filter_selected_rows(selected_rows, id_models, group_list, metric):
                                                           'criteria': 'containing',
                                                           'value': 'TRUE',
                                                           'format': format_true})
+                # Freeze the first row
+                worksheet.freeze_panes(1, 0)
+
+                # Set autofilter
+                worksheet.autofilter(0, 1, df.shape[0], df.shape[1])
 
     return results
 
