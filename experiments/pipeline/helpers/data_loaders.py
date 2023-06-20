@@ -99,6 +99,6 @@ DATASETS = {
     "EIA": {"load": load_EIA, "freq": "H"},
     "London": {"load": load_London, "freq": "H"},
     "ERCOT": {"load": load_ERCOT, "freq": "H"},
-    "Australian": {"load": load_Australian, "freq": "H"},
-    "Solar": {"load": load_Solar, "freq": "H"},
+    "Australian": {"load": load_Australian, "freq": "30min"},
+    "Solar": {"load": load_Solar, "freq": "10min"},
 }
