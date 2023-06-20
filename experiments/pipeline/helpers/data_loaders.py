@@ -10,7 +10,7 @@ DATA_DIR = os.path.join(Path(__file__).parent.parent.parent.parent.absolute(), "
 
 
 def load(path, n_samples=None, ids=None, n_ids=None):
-    df = pd.read_csv(DATA_DIR + path)
+    df = pd.read_csv(path)
 
     raise_if(
         ids is not None and n_ids is not None, "Remove specified ids from input if you want to select a number of ids."
