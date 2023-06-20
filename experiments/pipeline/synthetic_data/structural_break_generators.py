@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from plotly_resampler import unregister_plotly_resampler
+from scipy.stats import zscore
 
 from statsmodels.tsa.arima_process import ArmaProcess
 

@@ -49,6 +49,7 @@ def get_synth_data_arg_parser():
 def get_real_data_arg_parser():
     parser = argparse.ArgumentParser(description="Run a benchmark on real data")
     parser.add_argument("--dataset", type=str, required=True, help="Dataset", choices=DATASETS.keys())
+    parser.add_argument("--data_path", type=str, required=False, help="Dataset path")
     add_common_args(parser)
     return parser.parse_args()
 

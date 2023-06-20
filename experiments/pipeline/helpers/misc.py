@@ -54,19 +54,18 @@ def save_params(params, dir_name, save=True):
         def default(self, obj):
             if isinstance(obj, ABCMeta):
                 return obj.__name__
-            if isinstance(obj, StandardScaler):
-                return str(obj)
-            if isinstance(obj, MinMaxScaler):
-                return str(obj)
-            if isinstance(obj, RobustScaler):
-                return str(obj)
-            if isinstance(obj, LogTransformer):
-                return str(obj)
-            if isinstance(obj, PowerTransformer):
-                return str(obj)
-            if isinstance(obj, QuantileTransformer):
-                return str(obj)
-            if isinstance(obj, FunctionTransformer):
+            if isinstance(
+                obj,
+                (
+                    StandardScaler,
+                    MinMaxScaler,
+                    RobustScaler,
+                    LogTransformer,
+                    PowerTransformer,
+                    QuantileTransformer,
+                    FunctionTransformer,
+                ),
+            ):
                 return str(obj)
             return super().default(obj)
 
@@ -99,8 +98,10 @@ def build_synth_data_name(
 def build_real_data_name(
     dataset_name,
     gen_fun_name,
+    params_name,
 ):
     return "{}_{}".format(
         dataset_name,
         gen_fun_name,
+        params_name,
     )

@@ -11,7 +11,7 @@ from sklearn.preprocessing import (
 __all__ = [
     "gen_model_and_params_default",
     "gen_model_and_params_pytorch_batch_norm",
-    "gen_model_and_params_norm",
+    "gen_model_and_params_norm",  # norm layers all
     "gen_model_and_params_none",
     "gen_model_and_params_scalers",
     "gen_model_and_params_scalers_reweighting",
@@ -24,7 +24,7 @@ log = logging.getLogger("experiments")
 
 
 def validate_param_generator(model_class, param_gen_name):
-    default = ["gen_model_and_params_none", "gen_model_and_params_scalers"]
+    default = ["gen_model_and_params_none", "gen_model_and_params_scalers", "gen_model_and_params_default"]
     allowed = default
     if model_class == NeuralProphetModel:
         allowed = __all__

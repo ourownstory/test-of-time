@@ -55,6 +55,7 @@ class Pipeline:
         name="",
         **kwargs,
     ):
+        self.reset()
         if metrics is None:
             metrics = ["MAE", "RMSE", "MASE"]
         self.kwargs = kwargs

@@ -3,7 +3,7 @@ import pathlib as pathlib
 import time
 
 from experiments.pipeline.helpers.arg_parsers import get_real_data_arg_parser
-from experiments.pipeline.helpers.data_loaders import DATASETS
+from experiments.pipeline.helpers.data_loaders import DATASETS, load
 from experiments.pipeline.helpers.misc import build_real_data_name
 from experiments.pipeline.pipeline import Pipeline
 
@@ -13,9 +13,12 @@ if __name__ == "__main__":
     # Freezing support for multiprocessing
     multiprocessing.freeze_support()
 
-    data = DATASETS[args.dataset]["load"]()
+    if args.dataset == "custom":
+        data = load(args.data_path)
+    else:
+        data = DATASETS[args.dataset]["load"]()
 
-    pipeline_name = build_real_data_name(args.dataset, args.gen_func)
+    pipeline_name = build_real_data_name(args.dataset, args.gen_func, args.params)
 
     pipeline = Pipeline(
         model_name=args.model,

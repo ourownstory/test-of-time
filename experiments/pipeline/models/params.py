@@ -180,11 +180,8 @@ TF = {
 }
 
 # Naive pre-defined params
-Naive = ({"n_forecasts": 1},)
-SNaive = ({"n_forecasts": 1, "season_length": 24},)
-
-
-#  TODO: Maybe set more meaningful names for pre-defined params
+Naive = {"n_forecasts": 1}
+SNaive = {"n_forecasts": 1, "season_length": 24}
 
 PARAMS = {
     "NeuralProphetModel": {
