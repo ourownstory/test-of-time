@@ -65,7 +65,7 @@ class Experiment(ABC):
                 self.params.get("norm_mode", None),
                 self.params.get("norm_type", None),
                 "affine" if self.params.get("norm_affine", False) else None,
-                self.params.get("scaler", None),
+                str(self.params.get("scaler", None)),
                 self.params.get("scaling_level", None),
                 self.params.get("weighted_loss", None),
             ]
