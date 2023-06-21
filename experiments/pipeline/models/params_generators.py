@@ -35,7 +35,7 @@ def validate_param_generator(model_class, param_gen_name):
 SCALERS_DEFAULT = [
     None,
     StandardScaler(),
-    # MinMaxScaler(feature_range=(-0.5, 0.5)),
+    MinMaxScaler(feature_range=(-0.5, 0.5)),
     # MinMaxScaler(feature_range=(0, 1)),
     RobustScaler(quantile_range=(5, 95)),
     # ShiftedBoxCoxTransformer(),

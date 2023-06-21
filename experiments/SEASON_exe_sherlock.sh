@@ -94,7 +94,7 @@ commands_TF=(
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model TransformerModel --params TF --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model TransformerModel --params TF --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1" --gen_func "gen_model_and_params_scalers"'
 )
 
@@ -106,7 +106,7 @@ commands_RNN=(
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model RNNModel --params RNN --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1" --gen_func "gen_model_and_params_scalers"'
 )
 
@@ -118,7 +118,7 @@ commands_LGBM=(
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_0p1 --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar_outlier_1p --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "10,1" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func generate_intermittent --model LightGBMModel --params LGBM --data_n_ts_groups "5,5" --data_offset_per_group "0,0" --data_amplitude_per_group "10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_one_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "1,10,1,10" --data_amplitude_per_group "10,10,1,1" --gen_func "gen_model_and_params_scalers"'
  )
 

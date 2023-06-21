@@ -29,8 +29,8 @@ commands_NP=(
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers_reweighting"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers_reweighting"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers_reweighting"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers_reweighting"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers_reweighting"'
 )
 
 ### NP_localST
@@ -49,8 +49,8 @@ commands_NP_localST=(
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers_reweighting"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers_reweighting"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers_reweighting"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers_reweighting"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers_reweighting"'
 )
 
 ### NP_FNN
@@ -69,8 +69,8 @@ commands_NP_FNN=(
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers_reweighting"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers_reweighting"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers_reweighting"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers_reweighting"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NeuralProphetModel --params NP_FNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers_reweighting"'
 )
 
 ### NP_FNN_sw
@@ -109,8 +109,8 @@ commands_TP=(
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
 )
 
 ### TP_localST
@@ -129,8 +129,8 @@ commands_TP_localST=(
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TorchProphetModel --params TP_localST --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
 )
 
 ### TF
@@ -149,8 +149,8 @@ commands_TF=(
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TransformerModel --params TF --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TransformerModel --params TF --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TransformerModel --params TF --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TransformerModel --params TF --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TransformerModel --params TF --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TransformerModel --params TF --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model TransformerModel --params TF --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
 )
 
 ### RNN
@@ -169,8 +169,8 @@ commands_RNN=(
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model RNNModel --params RNN --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
 
 )
 
@@ -190,8 +190,8 @@ commands_LGBM=(
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model LightGBMModel --params LGBM --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
 )
 
 ### Naive
@@ -210,8 +210,8 @@ commands_Naive=(
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model NaiveModel --params Naive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
 )
 
 ### SNaive
@@ -230,8 +230,8 @@ commands_SNaive=(
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,1,4,4" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "1,1,2,2" --data_offset_per_group "10,10,1,1"  --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
 #'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "4,4,1,1" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "10,1,10,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,1,10,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_SYN_DATA.py --data_func gen_cancel_shape_ar --model SeasonalNaiveModel --params SNaive --data_n_ts_groups "2,2,2,2" --data_offset_per_group "10,10,1,1" --data_amplitude_per_group "1,1,1,1" --gen_func "gen_model_and_params_scalers"'
 )
 
 # combine the command lists
