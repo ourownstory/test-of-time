@@ -212,8 +212,8 @@ PARAMS = {
     "LightGBMModel": {"LGBM": LGBM},
     "RNNModel": {
         "RNN": RNN,
-        "RNN_wb": RNN_wb_in,
-        "RNN_wb_nl": RNN_wb_ba,
+        "RNN_wb_in": RNN_wb_in,
+        "RNN_wb_ba": RNN_wb_ba,
     },
     "TransformerModel": {"TF": TF},
     "NaiveModel": {"Naive": Naive},
