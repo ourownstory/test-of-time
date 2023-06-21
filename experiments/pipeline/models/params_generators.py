@@ -36,11 +36,11 @@ SCALERS_DEFAULT = [
     None,
     StandardScaler(),
     # MinMaxScaler(feature_range=(-0.5, 0.5)),
-    MinMaxScaler(feature_range=(0, 1)),
+    # MinMaxScaler(feature_range=(0, 1)),
     RobustScaler(quantile_range=(5, 95)),
     # ShiftedBoxCoxTransformer(),
     PowerTransformer(method="yeo-johnson", standardize=True),
-    QuantileTransformer(output_distribution="normal"),
+    # QuantileTransformer(output_distribution="normal"),
     LogTransformer(),
 ]
 

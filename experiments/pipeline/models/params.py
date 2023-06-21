@@ -11,7 +11,7 @@ log = logging.getLogger("experiments")
 
 
 def get_num_processes(params_name):
-    if params_name in ["TF", "RNN", "RNN_wb", "LGBM", "NP_FNN_sw_wb"]:
+    if params_name in ["TF", "RNN", "RNN_wb", "RNN_wb_in", "RNN_wb_ba" "LGBM", "NP_FNN_sw", "NP_FNN_sw_wb"]:
         return 1
     return 10
 
@@ -52,21 +52,19 @@ NP_FNN = {  # NeuralProphetModel with only autoregression enabled.
     "growth": "off",
     "n_lags": 4,
 }
-NP_FNN_sw = (
-    {  # NeuralProphetModel with only autoregression with 1 hidden layer enabled
-        "n_forecasts": 1,
-        "epochs": 30,
-        "global_normalization": True,
-        "normalize": "off",
-        "yearly_seasonality": False,
-        "weekly_seasonality": False,
-        "daily_seasonality": False,
-        "n_changepoints": 0,
-        "growth": "off",
-        "n_lags": 4,
-        "ar_layers": [128],
-    }
-)
+NP_FNN_sw = {  # NeuralProphetModel with only autoregression with 1 hidden layer enabled
+    "n_forecasts": 1,
+    "epochs": 30,
+    "global_normalization": True,
+    "normalize": "off",
+    "yearly_seasonality": False,
+    "weekly_seasonality": False,
+    "daily_seasonality": False,
+    "n_changepoints": 0,
+    "growth": "off",
+    "n_lags": 4,
+    "ar_layers": [128],
+}
 NP_FNN_wb = {  # NeuralProphetModel with only autoregression enabled used for window-based normalization.
     "n_forecasts": 1,
     "epochs": 30,
