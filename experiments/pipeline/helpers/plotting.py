@@ -133,7 +133,7 @@ def plot_forecast(df, plot=True, save=True, file_name=None, file_name_fcst=None)
         figure.update_layout(autosize=False, width=500, height=1400)
         pio.write_image(figure, file_name)
         del figure
-        fcst_df.to_csv(file_name_fcst)
+        df.to_csv(file_name_fcst)
 
 
 def plot_forecasts(benchmark, dir_name, plot=False, save=True):
