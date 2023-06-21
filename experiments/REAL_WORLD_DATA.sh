@@ -80,7 +80,7 @@ commands_TP_localST=(
 commands_TF=(
 'python3 EXP_REAL_DATA.py --dataset EIA --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset London --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
-#'python3 EXP_REAL_DATA.py --dataset ERCOT --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
+'python3 EXP_REAL_DATA.py --dataset ERCOT --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
@@ -91,7 +91,7 @@ commands_TF=(
 commands_RNN=(
 'python3 EXP_REAL_DATA.py --dataset EIA --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset London --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
-#'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
+'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
@@ -103,7 +103,7 @@ commands_RNN=(
 commands_LGBM=(
 'python3 EXP_REAL_DATA.py --dataset EIA --model LightGBMModel --params LGBM --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset London --model LightGBMModel --params LGBM --gen_func "gen_model_and_params_scalers"'
-#'python3 EXP_REAL_DATA.py --dataset ERCOT --model LightGBMModel --params LGBM --gen_func "gen_model_and_params_scalers"'
+'python3 EXP_REAL_DATA.py --dataset ERCOT --model LightGBMModel --params LGBM --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model LightGBMModel --params LGBM --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model LightGBMModel --params LGBM --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model LightGBMModel --params LGBM --gen_func "gen_model_and_params_scalers"'
@@ -198,7 +198,7 @@ commands_NP_FNN_sw_wb=(
 commands_RNN_wb_in=(
 'python3 EXP_REAL_DATA.py --dataset EIA --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset London --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
-#'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
+'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
@@ -252,7 +252,7 @@ pip install git+https://github.com/LeonieFreisinger/darts.git@revba_nonlearnable
 commands_RNN_wb_ba=(
 'python3 EXP_REAL_DATA.py --dataset EIA --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset London --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
-#'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
+'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
