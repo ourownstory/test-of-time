@@ -277,7 +277,7 @@ for command in "${python_commands[@]}"; do
         echo "#SBATCH -p gpu" >> temp.sh
         echo "#SBATCH -G 1" >> temp.sh
     else
-        echo "#SBATCH --time=00:10:00" >> temp.sh
+        echo "#SBATCH --time=00:15:00" >> temp.sh
         echo "#SBATCH --cpus-per-task=10" >> temp.sh
         echo "#SBATCH --mem-per-cpu=1G" >> temp.sh
     fi
