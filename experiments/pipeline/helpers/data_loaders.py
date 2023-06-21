@@ -17,7 +17,7 @@ def load(path, n_samples=None, ids=None, n_ids=None):
     )
     if ids is None and n_ids is not None:
         unique_ids = df["ID"].unique()
-        ids = random.sample(list(unique_ids), k=10)
+        ids = random.sample(list(unique_ids), k=n_ids)
 
     if ids is not None:
         df = df[df["ID"].isin(ids)].reset_index(drop=True)
@@ -31,7 +31,7 @@ def load_EIA():
 
 
 def load_London():
-    return load(DATA_DIR + "/london_electricity_hourly.csv")
+    return load(DATA_DIR + "/london_electricity_hourly.csv", n_ids=10)
 
 
 def load_ERCOT():
@@ -43,7 +43,11 @@ def load_Australian():
 
 
 def load_Solar():
-    return load(DATA_DIR + "/solar_10_minutes_dataset.csv")
+    return load(DATA_DIR + "/solar_10_minutes_dataset.csv", n_ids=10)
+
+
+def load_ETTh():
+    return load(DATA_DIR + "/ETTh_panel.csv", n_samples=52560)
 
 
 DATASETS = {
@@ -52,5 +56,5 @@ DATASETS = {
     "ERCOT": {"load": load_ERCOT, "freq": "H"},
     "Australian": {"load": load_Australian, "freq": "30min"},
     "Solar": {"load": load_Solar, "freq": "10min"},
-    "custom": {"load": load}
+    "ETTH_panel": {"load": load_ETTh, "freq": "H"},
 }
