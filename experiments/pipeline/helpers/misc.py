@@ -100,7 +100,7 @@ def build_real_data_name(
     gen_fun_name,
     params_name,
 ):
-    return "{}_{}".format(
+    return "{}_{}_{}".format(
         dataset_name,
         gen_fun_name,
         params_name,
