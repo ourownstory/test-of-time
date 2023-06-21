@@ -52,6 +52,21 @@ NP_FNN = {  # NeuralProphetModel with only autoregression enabled.
     "growth": "off",
     "n_lags": 4,
 }
+NP_FNN_sw = (
+    {  # NeuralProphetModel with only autoregression with 1 hidden layer enabled
+        "n_forecasts": 1,
+        "epochs": 30,
+        "global_normalization": True,
+        "normalize": "off",
+        "yearly_seasonality": False,
+        "weekly_seasonality": False,
+        "daily_seasonality": False,
+        "n_changepoints": 0,
+        "growth": "off",
+        "n_lags": 4,
+        "ar_layers": [128],
+    }
+)
 NP_FNN_wb = {  # NeuralProphetModel with only autoregression enabled used for window-based normalization.
     "n_forecasts": 1,
     "epochs": 30,
@@ -136,6 +151,7 @@ RNN_wb_in = {  # RNN params used for window-based instance normalization.
     "force_reset": True,
     "n_lags": 24,
     "n_forecasts": 1,
+    "pl_trainer_kwargs": {"accelerator": "gpu", "devices": 1},
     "_data_params": {},
 }
 RNN_wb_ba = {  # RNN params used for window-based batch normalization.
@@ -188,6 +204,7 @@ PARAMS = {
         "NP": NP,
         "NP_localST": NP_localST,
         "NP_FNN": NP_FNN,
+        "NP_FNN_sw": NP_FNN_sw,
         "NP_FNN_wb": NP_FNN_wb,
         "NP_FNN_sw_wb": NP_FNN_sw_wb,
     },
