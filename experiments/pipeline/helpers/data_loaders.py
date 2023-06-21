@@ -27,11 +27,11 @@ def load(path, n_samples=None, ids=None, n_ids=None):
 
 
 def load_EIA():
-    return load(DATA_DIR + "/eia_electricity_hourly.csv")
+    return load(DATA_DIR + "/eia_electricity_hourly.csv", n_ids=8, n_samples=26280)
 
 
 def load_London():
-    return load(DATA_DIR + "/london_electricity_hourly.csv", n_ids=10)
+    return load(DATA_DIR + "/london_electricity_hourly.csv", n_ids=10, n_samples=26280)
 
 
 def load_ERCOT():
@@ -39,15 +39,15 @@ def load_ERCOT():
 
 
 def load_Australian():
-    return load(DATA_DIR + "/australian_electricity_half_hourly.csv")
+    return load(DATA_DIR + "/australian_electricity_half_hourly.csv", n_ids=5, n_samples=52560)
 
 
 def load_Solar():
-    return load(DATA_DIR + "/solar_10_minutes_dataset.csv", n_ids=10)
+    return load(DATA_DIR + "/solar_10_minutes_dataset.csv", n_ids=10, n_samples=26280)
 
 
 def load_ETTh():
-    return load(DATA_DIR + "/ETTh_panel.csv", n_samples=52560)
+    return load(DATA_DIR + "/ETTh_panel.csv", n_ids=14, n_samples=26280)
 
 
 DATASETS = {
