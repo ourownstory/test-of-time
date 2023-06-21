@@ -21,7 +21,7 @@ commands_NP=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model NeuralProphetModel --params NP --gen_func "gen_model_and_params_scalers_reweighting"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP --gen_func "gen_model_and_params_scalers_reweighting"'
 )
 
 ### NP_localST
@@ -31,7 +31,7 @@ commands_NP_localST=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_localST --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_localST --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP_localST --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model NeuralProphetModel --params NP_localST --gen_func "gen_model_and_params_scalers_reweighting"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --data_path "../datasets/ETTh_panel.csv" --model NeuralProphetModel --params NP_localST --gen_func "gen_model_and_params_scalers_reweighting"'
 
 )
 
@@ -42,7 +42,7 @@ commands_NP_FNN=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP_FNN --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model NeuralProphetModel --params NP_FNN --gen_func "gen_model_and_params_scalers_reweighting"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP_FNN --gen_func "gen_model_and_params_scalers_reweighting"'
 )
 
 ### NP_FNN_sw
@@ -52,7 +52,7 @@ commands_NP_FNN_sw=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN_sw --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN_sw --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP_FNN_sw --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model NeuralProphetModel --params NP_FNN_sw --gen_func "gen_model_and_params_scalers_reweighting"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP_FNN_sw --gen_func "gen_model_and_params_scalers_reweighting"'
 )
 
 
@@ -63,7 +63,7 @@ commands_TP=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model TorchProphetModel --params TP --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model TorchProphetModel --params TP --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model TorchProphetModel --params TP --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model TorchProphetModel --params TP --gen_func "gen_model_and_params_scalers"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model TorchProphetModel --params TP --gen_func "gen_model_and_params_scalers"'
 )
 
 ### TP_localST
@@ -73,7 +73,7 @@ commands_TP_localST=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model TorchProphetModel --params TP_localST --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model TorchProphetModel --params TP_localST --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model TorchProphetModel --params TP_localST --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model TorchProphetModel --params TP_localST --gen_func "gen_model_and_params_scalers"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model TorchProphetModel --params TP_localST --gen_func "gen_model_and_params_scalers"'
 )
 
 ### TF
@@ -83,7 +83,7 @@ commands_TF=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
 
 )
 
@@ -94,7 +94,7 @@ commands_RNN=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
 
 
 )
@@ -106,7 +106,7 @@ commands_LGBM=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model LightGBMModel --params LGBM --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model LightGBMModel --params LGBM --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model LightGBMModel --params LGBM --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model LightGBMModel --params LGBM --gen_func "gen_model_and_params_scalers"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model LightGBMModel --params LGBM --gen_func "gen_model_and_params_scalers"'
 
 )
 
@@ -117,7 +117,7 @@ commands_Naive=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model NaiveModel --params Naive --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model NaiveModel --params Naive --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model NaiveModel --params Naive --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model NaiveModel --params Naive --gen_func "gen_model_and_params_scalers"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NaiveModel --params Naive --gen_func "gen_model_and_params_scalers"'
 )
 
 ### SNaive
@@ -127,7 +127,7 @@ commands_SNaive=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model SeasonalNaiveModel --params SNaive --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model SeasonalNaiveModel --params SNaive --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model SeasonalNaiveModel --params SNaive --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model SeasonalNaiveModel --params SNaive --gen_func "gen_model_and_params_scalers"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model SeasonalNaiveModel --params SNaive --gen_func "gen_model_and_params_scalers"'
 )
 
 # combine the command lists
@@ -149,11 +149,11 @@ for command in "${python_commands[@]}"; do
 
     # check if "Transformer" or "RNN" is in the command
     if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
-        echo "#SBATCH --time=03:30:00" >> temp.sh
+        echo "#SBATCH --time=04:00:00" >> temp.sh
         echo "#SBATCH -p gpu" >> temp.sh
         echo "#SBATCH -G 1" >> temp.sh
     else
-        echo "#SBATCH --time=00:40:00" >> temp.sh
+        echo "#SBATCH --time=1:00:00" >> temp.sh
         echo "#SBATCH --cpus-per-task=10" >> temp.sh
         echo "#SBATCH --mem-per-cpu=1G" >> temp.sh
     fi
