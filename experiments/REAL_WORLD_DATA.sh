@@ -181,7 +181,7 @@ commands_NP_FNN_wb=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
+'python3 EXP_REAL_DATA.py--dataset ETTH_panel --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
 )
 
 ### NP_FNN_sw_wb
@@ -191,7 +191,7 @@ commands_NP_FNN_sw_wb=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
 )
 
 ### RNN_wb_in
@@ -201,7 +201,7 @@ commands_RNN_wb_in=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
 )
 
 # combine the command lists
@@ -255,7 +255,7 @@ commands_RNN_wb_ba=(
 'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
-'python3 EXP_REAL_DATA.py --dataset custom --data_path "../datasets/ETTh_panel.csv" --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
 )
 
 # combine the command lists
