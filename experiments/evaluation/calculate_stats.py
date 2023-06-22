@@ -2,9 +2,10 @@ import os
 import pandas as pd
 from shutil import copyfile
 import pathlib
+from tot.experimentsevaluation.utils.params import get_model_params_list
 
 parent_dir = pathlib.Path(__file__).parent.absolute()
-df_results_all = pd.read_csv(os.path.join(parent_dir, "results_all.csv"))
+df_results_all = pd.read_csv(os.path.join(parent_dir, "tables/results_all.csv"))
 # Exclude 'QuantileTransformer' rows when 'ID_GROUP' is 'TRE'
 df_results_all = df_results_all[~((df_results_all['ID_GROUP'] == 'TRE') & (df_results_all['scaler'] == 'QuantileTransformer'))]
 df_results_all_reset = df_results_all.reset_index(drop=True)
@@ -12,7 +13,7 @@ df_results_all_reset = df_results_all.reset_index(drop=True)
 df_results_all_reset = df_results_all.drop(columns=['Unnamed: 0', 'data'], errors='ignore')
 
 # Replace model names with empty string
-model_names = [ "NP_localST_", "NP_FNN_sw_wb_", "NP_FNN_wb_", "NP_FNN_", "NP_", "TP_localST_", "TP_", "LGBM_", "RNN_wb_nl_", "RNN_wb_", "RNN_", "TF_",  "SNaive_", "Naive_"]
+model_names = get_model_params_list()
 
 
 # Copy the DataFrame to avoid altering the original DataFrame
@@ -133,8 +134,8 @@ selected_rows = pd.merge(selected_rows, experiment_winner_df, on='ID_EXP', how='
 
 
 # Save to file
-selected_rows.to_csv(os.path.join(parent_dir, "selected_rows.csv"), index=False)
-selected_rows.to_excel(os.path.join(parent_dir, "selected_rows.xlsx"), index=False)
+selected_rows.to_csv(os.path.join(parent_dir, "tables/selected_rows.csv"), index=False)
+selected_rows.to_excel(os.path.join(parent_dir, "tables/selected_rows.xlsx"), index=False)
 
 
 
