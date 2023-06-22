@@ -171,130 +171,130 @@ for command in "${python_commands[@]}"; do
     ((job_counter++))
 done
 
-pip uninstall -y darts
-pip install git+https://github.com/LeonieFreisinger/darts.git@revin_nonlearnable#egg=darts
-
-### NP_FNN_wb
-commands_NP_FNN_wb=(
-#'python3 EXP_REAL_DATA.py --dataset EIA --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
-'python3 EXP_REAL_DATA.py --dataset London --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
-#'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
-#'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
-'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
-'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
-)
-
-### NP_FNN_sw_wb
-commands_NP_FNN_sw_wb=(
-#'python3 EXP_REAL_DATA.py --dataset EIA --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
-'python3 EXP_REAL_DATA.py --dataset London --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
-#'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
-#'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
-'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
-#'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
-)
-
-### RNN_wb_in
-commands_RNN_wb_in=(
-#'python3 EXP_REAL_DATA.py --dataset EIA --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
-'python3 EXP_REAL_DATA.py --dataset London --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
-#'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
-#'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
-'python3 EXP_REAL_DATA.py --dataset Solar --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
-#'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
-)
-
-# combine the command lists
-python_commands_wn_1=( "${commands_NP_FNN_wb[@]}" "${commands_NP_FNN_sw_wb[@]}" "${commands_RNN_wb_in[@]}")
-
-# initialize job counter
-job_counter=1000
-
-# loop through the python commands
-for command in "${python_commands_wn_1[@]}"; do
-    # create a job name based on the counter
-    job_name="job_hsc_$job_counter"
-    echo "Submitting $job_name"
-
-    # create a temporary Slurm script
-    echo "#!/bin/bash" > temp.sh
-    echo "#SBATCH --job-name=$job_name" >> temp.sh
-    echo "#SBATCH --output=res_$job_name" >> temp.sh
-
-    # check if "Transformer" or "RNN" is in the command
-    if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
-        echo "#SBATCH --time=04:30:00" >> temp.sh
-        echo "#SBATCH -p gpu" >> temp.sh
-        echo "#SBATCH -G 1" >> temp.sh
-    else
-        echo "#SBATCH --time=01:00:00" >> temp.sh
-        echo "#SBATCH --cpus-per-task=10" >> temp.sh
-        echo "#SBATCH --mem-per-cpu=1G" >> temp.sh
-    fi
-
-    # add the python command to the Slurm script
-    echo $command >> temp.sh
-
-    # submit the Slurm job
-    sbatch temp.sh
-
-    # remove the temporary Slurm script
-    rm temp.sh
-
-    # increment the job counter
-    ((job_counter++))
-done
-
-pip uninstall -y darts
-pip install git+https://github.com/LeonieFreisinger/darts.git@revba_nonlearnable#egg=darts
-
-### RNN_wb_ba
-commands_RNN_wb_ba=(
-#'python3 EXP_REAL_DATA.py --dataset EIA --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
-'python3 EXP_REAL_DATA.py --dataset London --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
-#'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
-#'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
-'python3 EXP_REAL_DATA.py --dataset Solar --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
-#'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
-)
-
-# combine the command lists
-python_commands_wn_2=( "${commands_RNN_wb_ba[@]}")
-
-# initialize job counter
-job_counter=2000
-
-# loop through the python commands
-for command in "${python_commands_wn_2[@]}"; do
-    # create a job name based on the counter
-    job_name="job_hsc_$job_counter"
-    echo "Submitting $job_name"
-
-    # create a temporary Slurm script
-    echo "#!/bin/bash" > temp.sh
-    echo "#SBATCH --job-name=$job_name" >> temp.sh
-    echo "#SBATCH --output=res_$job_name" >> temp.sh
-
-    # check if "Transformer" or "RNN" is in the command
-    if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
-        echo "#SBATCH --time=04:30:00" >> temp.sh
-        echo "#SBATCH -p gpu" >> temp.sh
-        echo "#SBATCH -G 1" >> temp.sh
-    else
-        echo "#SBATCH --time=01:00:00" >> temp.sh
-        echo "#SBATCH --cpus-per-task=10" >> temp.sh
-        echo "#SBATCH --mem-per-cpu=1G" >> temp.sh
-    fi
-
-    # add the python command to the Slurm script
-    echo $command >> temp.sh
-
-    # submit the Slurm job
-    sbatch temp.sh
-
-    # remove the temporary Slurm script
-    rm temp.sh
-
-    # increment the job counter
-    ((job_counter++))
-done
+#pip uninstall -y darts
+#pip install git+https://github.com/LeonieFreisinger/darts.git@revin_nonlearnable#egg=darts
+#
+#### NP_FNN_wb
+#commands_NP_FNN_wb=(
+##'python3 EXP_REAL_DATA.py --dataset EIA --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
+#'python3 EXP_REAL_DATA.py --dataset London --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
+##'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
+##'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
+#'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
+#'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
+#)
+#
+#### NP_FNN_sw_wb
+#commands_NP_FNN_sw_wb=(
+##'python3 EXP_REAL_DATA.py --dataset EIA --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
+#'python3 EXP_REAL_DATA.py --dataset London --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
+##'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
+##'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
+#'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
+##'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
+#)
+#
+#### RNN_wb_in
+#commands_RNN_wb_in=(
+##'python3 EXP_REAL_DATA.py --dataset EIA --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
+#'python3 EXP_REAL_DATA.py --dataset London --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
+##'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
+##'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
+#'python3 EXP_REAL_DATA.py --dataset Solar --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
+##'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
+#)
+#
+## combine the command lists
+#python_commands_wn_1=( "${commands_NP_FNN_wb[@]}" "${commands_NP_FNN_sw_wb[@]}" "${commands_RNN_wb_in[@]}")
+#
+## initialize job counter
+#job_counter=1000
+#
+## loop through the python commands
+#for command in "${python_commands_wn_1[@]}"; do
+#    # create a job name based on the counter
+#    job_name="job_hsc_$job_counter"
+#    echo "Submitting $job_name"
+#
+#    # create a temporary Slurm script
+#    echo "#!/bin/bash" > temp.sh
+#    echo "#SBATCH --job-name=$job_name" >> temp.sh
+#    echo "#SBATCH --output=res_$job_name" >> temp.sh
+#
+#    # check if "Transformer" or "RNN" is in the command
+#    if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
+#        echo "#SBATCH --time=04:30:00" >> temp.sh
+#        echo "#SBATCH -p gpu" >> temp.sh
+#        echo "#SBATCH -G 1" >> temp.sh
+#    else
+#        echo "#SBATCH --time=01:00:00" >> temp.sh
+#        echo "#SBATCH --cpus-per-task=10" >> temp.sh
+#        echo "#SBATCH --mem-per-cpu=1G" >> temp.sh
+#    fi
+#
+#    # add the python command to the Slurm script
+#    echo $command >> temp.sh
+#
+#    # submit the Slurm job
+#    sbatch temp.sh
+#
+#    # remove the temporary Slurm script
+#    rm temp.sh
+#
+#    # increment the job counter
+#    ((job_counter++))
+#done
+#
+#pip uninstall -y darts
+#pip install git+https://github.com/LeonieFreisinger/darts.git@revba_nonlearnable#egg=darts
+#
+#### RNN_wb_ba
+#commands_RNN_wb_ba=(
+##'python3 EXP_REAL_DATA.py --dataset EIA --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
+#'python3 EXP_REAL_DATA.py --dataset London --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
+##'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
+##'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
+#'python3 EXP_REAL_DATA.py --dataset Solar --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
+##'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
+#)
+#
+## combine the command lists
+#python_commands_wn_2=( "${commands_RNN_wb_ba[@]}")
+#
+## initialize job counter
+#job_counter=2000
+#
+## loop through the python commands
+#for command in "${python_commands_wn_2[@]}"; do
+#    # create a job name based on the counter
+#    job_name="job_hsc_$job_counter"
+#    echo "Submitting $job_name"
+#
+#    # create a temporary Slurm script
+#    echo "#!/bin/bash" > temp.sh
+#    echo "#SBATCH --job-name=$job_name" >> temp.sh
+#    echo "#SBATCH --output=res_$job_name" >> temp.sh
+#
+#    # check if "Transformer" or "RNN" is in the command
+#    if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
+#        echo "#SBATCH --time=04:30:00" >> temp.sh
+#        echo "#SBATCH -p gpu" >> temp.sh
+#        echo "#SBATCH -G 1" >> temp.sh
+#    else
+#        echo "#SBATCH --time=01:00:00" >> temp.sh
+#        echo "#SBATCH --cpus-per-task=10" >> temp.sh
+#        echo "#SBATCH --mem-per-cpu=1G" >> temp.sh
+#    fi
+#
+#    # add the python command to the Slurm script
+#    echo $command >> temp.sh
+#
+#    # submit the Slurm job
+#    sbatch temp.sh
+#
+#    # remove the temporary Slurm script
+#    rm temp.sh
+#
+#    # increment the job counter
+#    ((job_counter++))
+#done
