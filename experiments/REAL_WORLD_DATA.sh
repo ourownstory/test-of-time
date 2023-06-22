@@ -139,7 +139,7 @@ job_counter=1
 # loop through the python commands
 for command in "${python_commands[@]}"; do
     # create a job name based on the counter
-    job_name="job_hsc_$job_counter"
+    job_name="job_rw_$job_counter"
     echo "Submitting $job_name"
 
     # create a temporary Slurm script
