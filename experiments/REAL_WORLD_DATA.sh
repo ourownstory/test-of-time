@@ -18,10 +18,10 @@ pip install git+https://github.com/LeonieFreisinger/darts.git@lgbm_for_server#eg
 commands_NP=(
 'python3 EXP_REAL_DATA.py --dataset EIA --model NeuralProphetModel --params NP --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset London --model NeuralProphetModel --params NP --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP --gen_func "gen_model_and_params_scalers_reweighting"'
+#'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP --gen_func "gen_model_and_params_scalers_reweighting"'
+#'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP --gen_func "gen_model_and_params_scalers_reweighting"'
 )
 
 ### NP_localST
@@ -39,7 +39,7 @@ commands_NP_localST=(
 commands_NP_FNN=(
 'python3 EXP_REAL_DATA.py --dataset EIA --model NeuralProphetModel --params NP_FNN --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset London --model NeuralProphetModel --params NP_FNN --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN --gen_func "gen_model_and_params_scalers_reweighting"'
+#'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP_FNN --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP_FNN --gen_func "gen_model_and_params_scalers_reweighting"'
@@ -49,10 +49,10 @@ commands_NP_FNN=(
 commands_NP_FNN_sw=(
 'python3 EXP_REAL_DATA.py --dataset EIA --model NeuralProphetModel --params NP_FNN_sw --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset London --model NeuralProphetModel --params NP_FNN_sw --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN_sw --gen_func "gen_model_and_params_scalers_reweighting"'
+#'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN_sw --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN_sw --gen_func "gen_model_and_params_scalers_reweighting"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP_FNN_sw --gen_func "gen_model_and_params_scalers_reweighting"'
-'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP_FNN_sw --gen_func "gen_model_and_params_scalers_reweighting"'
+#'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP_FNN_sw --gen_func "gen_model_and_params_scalers_reweighting"'
 )
 
 
@@ -80,7 +80,7 @@ commands_TP_localST=(
 commands_TF=(
 'python3 EXP_REAL_DATA.py --dataset EIA --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset London --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_REAL_DATA.py --dataset ERCOT --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_REAL_DATA.py --dataset ERCOT --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model TransformerModel --params TF --gen_func "gen_model_and_params_scalers"'
@@ -91,10 +91,10 @@ commands_TF=(
 commands_RNN=(
 'python3 EXP_REAL_DATA.py --dataset EIA --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset London --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
-'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
+#'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN --gen_func "gen_model_and_params_scalers"'
 
 
 )
@@ -149,11 +149,11 @@ for command in "${python_commands[@]}"; do
 
     # check if "Transformer" or "RNN" is in the command
     if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
-        echo "#SBATCH --time=08:00:00" >> temp.sh
+        echo "#SBATCH --time=10:00:00" >> temp.sh
         echo "#SBATCH -p gpu" >> temp.sh
         echo "#SBATCH -G 1" >> temp.sh
     else
-        echo "#SBATCH --time=3:00:00" >> temp.sh
+        echo "#SBATCH --time=4:00:00" >> temp.sh
         echo "#SBATCH --cpus-per-task=10" >> temp.sh
         echo "#SBATCH --mem-per-cpu=1G" >> temp.sh
     fi
@@ -176,32 +176,32 @@ pip install git+https://github.com/LeonieFreisinger/darts.git@revin_nonlearnable
 
 ### NP_FNN_wb
 commands_NP_FNN_wb=(
-'python3 EXP_REAL_DATA.py --dataset EIA --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
+#'python3 EXP_REAL_DATA.py --dataset EIA --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
 'python3 EXP_REAL_DATA.py --dataset London --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
-'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
-'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
+#'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
+#'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
-'python3 EXP_REAL_DATA.py--dataset ETTH_panel --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
+'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP_FNN_wb --gen_func "gen_model_and_params_norm"'
 )
 
 ### NP_FNN_sw_wb
 commands_NP_FNN_sw_wb=(
-'python3 EXP_REAL_DATA.py --dataset EIA --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
+#'python3 EXP_REAL_DATA.py --dataset EIA --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
 'python3 EXP_REAL_DATA.py --dataset London --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
-'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
-'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
+#'python3 EXP_REAL_DATA.py --dataset ERCOT --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
+#'python3 EXP_REAL_DATA.py --dataset Australian --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
-'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
+#'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model NeuralProphetModel --params NP_FNN_sw_wb --gen_func "gen_model_and_params_norm"'
 )
 
 ### RNN_wb_in
 commands_RNN_wb_in=(
-'python3 EXP_REAL_DATA.py --dataset EIA --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
+#'python3 EXP_REAL_DATA.py --dataset EIA --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset London --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
-'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
-'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
+#'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
+#'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
-'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
+#'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN_wb_in --gen_func "gen_model_and_params_none"'
 )
 
 # combine the command lists
@@ -223,7 +223,7 @@ for command in "${python_commands_wn_1[@]}"; do
 
     # check if "Transformer" or "RNN" is in the command
     if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
-        echo "#SBATCH --time=03:30:00" >> temp.sh
+        echo "#SBATCH --time=04:30:00" >> temp.sh
         echo "#SBATCH -p gpu" >> temp.sh
         echo "#SBATCH -G 1" >> temp.sh
     else
@@ -250,12 +250,12 @@ pip install git+https://github.com/LeonieFreisinger/darts.git@revba_nonlearnable
 
 ### RNN_wb_ba
 commands_RNN_wb_ba=(
-'python3 EXP_REAL_DATA.py --dataset EIA --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
+#'python3 EXP_REAL_DATA.py --dataset EIA --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset London --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
-'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
-'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
+#'python3 EXP_REAL_DATA.py --dataset ERCOT --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
+#'python3 EXP_REAL_DATA.py --dataset Australian --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
 'python3 EXP_REAL_DATA.py --dataset Solar --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
-'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
+#'python3 EXP_REAL_DATA.py --dataset ETTH_panel --model RNNModel --params RNN_wb_ba --gen_func "gen_model_and_params_none"'
 )
 
 # combine the command lists
@@ -277,7 +277,7 @@ for command in "${python_commands_wn_2[@]}"; do
 
     # check if "Transformer" or "RNN" is in the command
     if [[ $command == *"Transformer"* ]] || [[ $command == *"RNN"* ]]; then
-        echo "#SBATCH --time=03:30:00" >> temp.sh
+        echo "#SBATCH --time=04:30:00" >> temp.sh
         echo "#SBATCH -p gpu" >> temp.sh
         echo "#SBATCH -G 1" >> temp.sh
     else
