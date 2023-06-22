@@ -57,7 +57,7 @@ def generate_intermittent(
             ts_df = pd.DataFrame()
             ts_df["ds"] = date_rng[: len(data)]
             ts_df["y"] = data
-            ts_df["ID"] = id_counter
+            ts_df["ID"] = str(id_counter)
 
             # Append this time series to the overall DataFrame
             all_series_df = pd.concat([all_series_df, ts_df], ignore_index=True)
