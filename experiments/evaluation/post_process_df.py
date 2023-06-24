@@ -1,8 +1,9 @@
 import os
 import pandas as pd
 import pathlib
-from experiments.evaluation.utils.params import get_model_params_list, get_data_group_keyword, get_rnn_norm_type_keyword, get_window_based_model_name_keyword
+from experiments.evaluation.utils.params import get_model_params_list,get_all_model_params_list, get_data_group_keyword, get_rnn_norm_type_keyword, get_window_based_model_name_keyword
 import numpy as np
+
 
 parent_dir = pathlib.Path(__file__).parent.absolute()
 tables_dir = os.path.join(parent_dir, "tables")
@@ -22,8 +23,8 @@ def pop_model_name_from_exp_name(df, model_names):
     df = df.assign(model_id='')
     for model in model_names:
         mask = df['exp_id'].str.contains(model)
-        df.loc[mask, 'exp_id'] = df.loc[mask, 'exp_id'].str.replace(model, '', regex=False)
-        df.loc[mask, 'model_id'] = model[:-1]
+        df.loc[mask, 'exp_id'] = df.loc[mask, 'exp_id'].str.replace(model+'_', '', regex=False)
+        df.loc[mask, 'model_id'] = model
     return df
 
 def remove_pytorch_norm_mode(df):
@@ -70,7 +71,7 @@ def drop_duplicates_minmax(df):
 results_merged = results_merged.copy()
 results_merged = remove_selected_scaler_from_df(results_merged, "QuantileTransformer(output_distribution='normal')")
 results_merged = rename_minmax_scaler(results_merged)
-results_merged = pop_model_name_from_exp_name(results_merged, model_names=get_model_params_list())
+results_merged = pop_model_name_from_exp_name(results_merged, model_names=get_all_model_params_list())
 results_merged = replace_window_based_data_group(results_merged, data_group_keywords = get_data_group_keyword())
 results_merged = remove_pytorch_norm_mode(results_merged)
 results_merged = set_norm_type_for_RNN(results_merged, RNN_norm_type_keywords=get_rnn_norm_type_keyword())

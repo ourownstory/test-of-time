@@ -58,6 +58,7 @@ df_merged['scaling_level'] = df_merged['scaling_level'].fillna('None')
 df_merged['scaling_level'] = df_merged['scaling_level'].replace('none', 'None')
 df_merged['scaler'] = df_merged['scaler'].fillna('None')
 df_merged['scaler'] = df_merged['scaler'].replace('none', 'None')
+df_merged['scaler'] = df_merged['scaler'].replace('no scaler', 'None')
 
 # write to a csv file
 df_merged.to_excel(file_name_xlsx, index=False)
