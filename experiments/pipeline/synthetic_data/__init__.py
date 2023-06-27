@@ -1,7 +1,7 @@
-from experiments.pipeline.synthetic_data.cancelling_shape_generator import *
-from experiments.pipeline.synthetic_data.intermittent_generators import *
-from experiments.pipeline.synthetic_data.one_shape_generators import *
-from experiments.pipeline.synthetic_data.structural_break_generators import *
+from tot.synthetic_data.cancelling_shape_generator import *
+from tot.synthetic_data.intermittent_generators import *
+from tot.synthetic_data.one_shape_generators import *
+from tot.synthetic_data.structural_break_generators import *
 
 __all__ = [
     "gen_one_shape_ar",
