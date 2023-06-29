@@ -1,17 +1,4 @@
 import logging
-
-# make version number accessible
-from ._version import __version__  # noqa: F401 to evade flake8
-from .benchmark import (  # noqa: F401 to evade flake8
-    CrossValidationBenchmark,
-    ManualBenchmark,
-    ManualCVBenchmark,
-    SimpleBenchmark,
-)
-
-# make classes available upon package import
-from .experiment import SimpleExperiment  # noqa: F401
-
 # logger handling
 log = logging.getLogger("tot.benchmark")
 log.setLevel("INFO")
