@@ -1,0 +1,59 @@
+ID_EXP,ID_model,ID_GROUP,experiment_winner,no scaler_MASE,best per_time_series_MASE,best per_dataset_MASE,per_series_not_effective,per_series_scaler_type,has_problem
+"generate_intermittent_n_ts_[5, 5]_am_[10, 1]_of_[0, 0]_gr_None_None",NP_,SEA,0.2295,0.7732,0.3944,0.7626,False,StandardScaler(),WAHR
+"gen_one_shape_ar_n_ts_[2, 2, 2, 2]_am_[10, 10, 1, 1]_of_[1, 10, 1, 10]_gr_None_None",NP_,SEA,0.3944,0.771,0.4011,0.4012,True,StandardScaler(),WAHR
+"gen_one_shape_ar_n_ts_[5, 5]_am_[10, 10]_of_[0, 0]_gr_None_None",NP_,SEA,0.4009,0.4009,0.4011,0.482,True,StandardScaler(),FALSE
+"gen_one_shape_ar_n_ts_[5, 5]_am_[10, 10]_of_[10, 1]_gr_None_None",NP_,SEA,0.4011,0.4819,0.4007,0.6748,False,StandardScaler(),WAHR
+"gen_one_shape_ar_n_ts_[5, 5]_am_[10, 1]_of_[0, 0]_gr_None_None",NP_,SEA,0.4006,0.6751,0.4007,0.6952,False,StandardScaler(),WAHR
+"gen_one_shape_ar_n_ts_[5, 5]_am_[10, 1]_of_[10, 1]_gr_None_None",NP_,SEA,0.4007,0.7768,0.4355,0.7208,False,StandardScaler(),WAHR
+"gen_one_shape_ar_outlier_0p1_n_ts_[5, 5]_am_[10, 1]_of_[10, 1]_gr_None_None",NP_,SEA,0.4355,0.804,0.5737,0.7822,False,StandardScaler(),WAHR
+"gen_one_shape_ar_outlier_1p_n_ts_[5, 5]_am_[10, 1]_of_[10, 1]_gr_None_None",NP_,SEA,0.5737,0.8569,0.3991,0.5827,False,StandardScaler(),WAHR
+"gen_cancel_shape_ar_n_ts_[1, 1, 2, 2]_am_[10, 1, 10, 1]_of_[10, 10, 1, 1]_gr_None_None",NP_,SEASH,0.3961,0.814,0.6026,0.8014,False,StandardScaler(),WAHR
+"gen_cancel_shape_ar_n_ts_[1, 1, 4, 4]_am_[10, 1, 10, 1]_of_[10, 10, 1, 1]_gr_None_None",NP_,SEASH,0.4002,0.7982,0.6039,0.7983,False,StandardScaler(),WAHR
+"gen_cancel_shape_ar_n_ts_[1, 10]_am_[10, 1]_of_[10, 1]_gr_None_None",NP_,SEASH,0.4014,0.7023,0.6973,0.7024,True,StandardScaler(),NEUTRAL
+"gen_cancel_shape_ar_n_ts_[1, 2]_am_[10, 1]_of_[10, 1]_gr_None_None",NP_,SEASH,0.397,0.8573,0.6528,0.8041,False,StandardScaler(),WAHR
+"gen_cancel_shape_ar_n_ts_[10, 1]_am_[10, 1]_of_[10, 1]_gr_None_None",NP_,SEASH,0.4052,0.5546,0.4739,0.5546,True,QuantileTransformer(output_distribution='normal'),WAHR
+"gen_cancel_shape_ar_n_ts_[4, 4, 1, 1]_am_[10, 1, 10, 1]_of_[10, 10, 1, 1]_gr_None_None",NP_,SEASH,0.4018,0.7981,0.6064,0.7817,False,StandardScaler(),WAHR
+"gen_cancel_shape_ar_n_ts_[5, 5]_am_[10, 10]_of_[0, 0]_gr_None_None",NP_,SEASH,0.4017,0.6487,0.6486,0.6487,True,PowerTransformer(),NEUTRAL
+"gen_cancel_shape_ar_n_ts_[5, 5]_am_[10, 1]_of_[10, 1]_gr_None_None",NP_,SEASH,0.4006,0.8183,0.6065,0.7786,False,StandardScaler(),WAHR
+"gen_cancel_shape_ar_outlier_0p1_n_ts_[1, 10]_am_[10, 1]_of_[10, 1]_gr_None_None",NP_,SEASH,0.4289,0.7142,0.7167,0.7143,True,MinMaxScaler(),BAD
+"gen_cancel_shape_ar_outlier_0p1_n_ts_[1, 2]_am_[10, 1]_of_[10, 1]_gr_None_None",NP_,SEASH,0.4203,0.85,0.6645,0.8209,False,PowerTransformer(),WAHR
+"gen_cancel_shape_ar_outlier_0p1_n_ts_[10, 1]_am_[10, 1]_of_[10, 1]_gr_None_None",NP_,SEASH,0.4408,0.5818,0.4985,0.5814,True,QuantileTransformer(output_distribution='normal'),WAHR
+"gen_cancel_shape_ar_outlier_1p_n_ts_[1, 10]_am_[10, 1]_of_[10, 1]_gr_None_None",NP_,SEASH,0.5864,0.7665,0.8186,0.7663,True,"RobustScaler(quantile_range=(5, 95))",BAD
+"gen_cancel_shape_ar_outlier_1p_n_ts_[1, 2]_am_[10, 1]_of_[10, 1]_gr_None_None",NP_,SEASH,0.5802,0.8545,0.7557,0.8481,True,"RobustScaler(quantile_range=(5, 95))",WAHR
+"gen_cancel_shape_ar_outlier_1p_n_ts_[10, 1]_am_[10, 1]_of_[10, 1]_gr_None_None",NP_,SEASH,0.595,0.6839,0.6087,0.6814,True,QuantileTransformer(output_distribution='normal'),FALSE
+"gen_one_shape_ar_trend_cp_n_ts_[1, 1, 2, 2]_am_[10, 10, 1, 1]_of_[10, 10, 1, 1]_gr_[1.0, 0.0, 1.0, 0.0]_None",NP_,TRE,0.4219,0.8216,0.5453,0.713,False,MinMaxScaler(),WAHR
+"gen_one_shape_ar_trend_cp_n_ts_[1, 10]_am_[10, 1]_of_[10, 1]_gr_[0.0, 1.0]",NP_,TRE,0.4329,0.66,0.5774,0.6645,True,MinMaxScaler(),WAHR
+"gen_one_shape_ar_trend_cp_n_ts_[1, 10]_am_[10, 1]_of_[10, 1]_gr_[10.0, 0.0]",NP_,TRE,0.4196,0.7673,0.6684,0.6684,True,LogTransformer(),WAHR
+"gen_one_shape_ar_trend_cp_n_ts_[10, 1]_am_[10, 1]_of_[10, 1]_gr_[0.0, 1.0]_None",NP_,TRE,0.4056,0.5327,0.4639,0.5328,True,StandardScaler(),BAD
+"gen_one_shape_ar_trend_cp_n_ts_[10, 1]_am_[10, 1]_of_[10, 1]_gr_[10.0, 0.0]",NP_,TRE,0.4873,0.5836,0.4873,0.5806,True,StandardScaler(),WAHR
+"gen_one_shape_ar_trend_cp_n_ts_[2, 2, 2, 2]_am_[10, 10, 1, 1]_of_[10, 10, 1, 1]_gr_[10.0, 0.0, 10.0, 0.0]",NP_,TRE,0.4645,0.8436,0.7543,0.781,True,MinMaxScaler(),WAHR
+"gen_one_shape_ar_trend_cp_n_ts_[5, 5]_am_[10, 1]_of_[10, 1]_gr_[10.0, 1.0]",NP_,TRE,0.4235,0.8574,0.4235,0.6774,False,"RobustScaler(quantile_range=(5, 95))",WAHR
+"gen_one_shape_ar_trend_n_ts_[1, 1, 2, 2]_am_[10, 10, 1, 1]_of_[10, 10, 1, 1]_gr_[1.0, 0.0, 1.0, 0.0]_None",NP_,TRE,0.4198,0.9087,0.5759,0.8837,False,QuantileTransformer(output_distribution='normal'),WAHR
+"gen_one_shape_ar_trend_n_ts_[1, 10]_am_[10, 1]_of_[10, 1]_gr_[0.0, 1.0]",NP_,TRE,0.4247,0.6324,0.6382,0.6287,True,QuantileTransformer(output_distribution='normal'),BAD
+"gen_one_shape_ar_trend_n_ts_[1, 10]_am_[10, 1]_of_[10, 1]_gr_[10.0, 0.0]",NP_,TRE,0.4054,0.7686,0.6073,0.6073,True,LogTransformer(),WAHR
+"gen_one_shape_ar_trend_n_ts_[10, 1]_am_[10, 1]_of_[10, 1]_gr_[0.0, 1.0]_None",NP_,TRE,0.4057,0.5283,0.4907,0.5283,True,QuantileTransformer(output_distribution='normal'),NEUTRAL
+"gen_one_shape_ar_trend_n_ts_[10, 1]_am_[10, 1]_of_[10, 1]_gr_[10.0, 0.0]",NP_,TRE,0.4294,0.5788,0.4294,0.4811,True,QuantileTransformer(output_distribution='normal'),WAHR
+"gen_one_shape_ar_trend_n_ts_[2, 2, 2, 2]_am_[10, 10, 1, 1]_of_[10, 10, 1, 1]_gr_[10.0, 0.0, 10.0, 0.0]",NP_,TRE,0.4385,0.8439,0.5928,0.7028,False,QuantileTransformer(output_distribution='normal'),WAHR
+"gen_one_shape_ar_trend_n_ts_[5, 5]_am_[10, 1]_of_[10, 1]_gr_[10.0, 1.0]",NP_,TRE,0.401,0.8551,0.4097,0.6741,False,"RobustScaler(quantile_range=(5, 95))",WAHR
+"gen_struc_break_mean_n_ts_[1, 10]_am_[10, 1]_of_[10, 1]_gr_None_[0, 2]",NP_,STRU,0.4465,0.6623,0.5169,0.6583,False,MinMaxScaler(),WAHR
+"gen_struc_break_mean_n_ts_[1, 10]_am_[10, 1]_of_[10, 1]_gr_None_[2, 0]",NP_,STRU,0.4312,0.7511,0.5576,0.6867,False,MinMaxScaler(),WAHR
+"gen_struc_break_mean_n_ts_[10, 1]_am_[10, 1]_of_[10, 1]_gr_None_[0, 2]",NP_,STRU,0.4063,0.5345,0.4436,0.5345,True,"RobustScaler(quantile_range=(5, 95))",WAHR
+"gen_struc_break_mean_n_ts_[10, 1]_am_[10, 1]_of_[10, 1]_gr_None_[2, 0]",NP_,STRU,0.45,0.5804,0.4666,0.573,False,StandardScaler(),WAHR
+"gen_struc_break_mean_n_ts_[2, 1]_am_[10, 1]_of_[10, 1]_gr_None",NP_,STRU,0.4807,0.7466,0.4807,0.6539,False,MinMaxScaler(),WAHR
+"gen_struc_break_mean_n_ts_[2, 2, 2, 2]_am_[1, 10, 1, 10]_of_[1, 10, 1, 10]_gr_None",NP_,STRU,0.4378,0.8386,0.511,0.7629,False,StandardScaler(),WAHR
+"gen_struc_break_mean_n_ts_[5, 5]_am_[1, 1]_of_[0, 0]_gr_None",NP_,STRU,0.4529,0.5158,0.4529,0.453,True,StandardScaler(),FALSE
+"gen_struc_break_var_n_ts_[1, 10]_am_[10, 1]_of_[10, 1]_gr_None_[1, 2]",NP_,STRU,0.5903,0.7917,0.6295,0.7631,False,StandardScaler(),WAHR
+"gen_struc_break_var_n_ts_[1, 10]_am_[10, 1]_of_[10, 1]_gr_None_[2, 1]",NP_,STRU,0.5634,0.8708,0.5634,0.8172,False,MinMaxScaler(),WAHR
+"gen_struc_break_var_n_ts_[10, 1]_am_[10, 1]_of_[10, 1]_gr_None_[1, 2]",NP_,STRU,0.4106,0.5327,0.4106,0.532,False,StandardScaler(),WAHR
+"gen_struc_break_var_n_ts_[10, 1]_am_[10, 1]_of_[10, 1]_gr_None_[2, 1]",NP_,STRU,0.658,0.852,0.7513,0.8313,True,MinMaxScaler(),WAHR
+"gen_struc_break_var_n_ts_[2, 1]_am_[10, 1]_of_[10, 1]_gr_None",NP_,STRU,0.695,0.9975,0.695,0.9431,False,MinMaxScaler(),WAHR
+"gen_struc_break_var_n_ts_[2, 2, 2, 2]_am_[1, 10, 1, 10]_of_[1, 10, 1, 10]_gr_None",NP_,STRU,0.5943,0.9294,0.5943,0.8453,False,MinMaxScaler(),WAHR
+"gen_struc_break_var_n_ts_[5, 5]_am_[1, 1]_of_[0, 0]_gr_None",NP_,STRU,0.7444,0.7484,0.7446,0.7444,True,"RobustScaler(quantile_range=(5, 95))",FALSE
+"gen_one_shape_heteroscedacity_n_ts_[1, 10]_am_[10, 1]_of_[10, 1]_gr_[0.0, 1.0]_None",NP_,HET,0.5643,0.7943,0.7259,0.784,True,MinMaxScaler(),BAD
+"gen_one_shape_heteroscedacity_n_ts_[1, 10]_am_[10, 1]_of_[10, 1]_gr_[1.0, 0.0]",NP_,HET,0.6164,0.8902,0.6164,0.8261,False,MinMaxScaler(),WAHR
+"gen_one_shape_heteroscedacity_n_ts_[10, 1]_am_[10, 1]_of_[10, 1]_gr_[0.0, 1.0]_None",NP_,HET,0.4107,0.5254,0.4611,0.5254,True,StandardScaler(),BAD
+"gen_one_shape_heteroscedacity_n_ts_[10, 1]_am_[10, 1]_of_[10, 1]_gr_[1.0, 0.0]",NP_,HET,0.8282,0.9628,0.8282,0.9153,True,MinMaxScaler(),WAHR
+"gen_one_shape_heteroscedacity_n_ts_[2, 1]_am_[10, 1]_of_[10, 1]_gr_[1.0, 0.0]",NP_,HET,0.7775,1.1221,0.7775,1.0044,False,MinMaxScaler(),WAHR
+"gen_one_shape_heteroscedacity_n_ts_[5, 5]_am_[1, 1]_of_[0, 0]_gr_[1.0, 1.0]",NP_,HET,0.6943,0.826,0.6944,0.6943,True,PowerTransformer(),WAHR
+"gen_one_shape_heteroscedacity_op_n_ts_[10, 1]_am_[1, 1]_of_[0, 0]_gr_[1.0, 1.0]",NP_,HET,0.2416,0.491,0.3104,0.3942,True,QuantileTransformer(output_distribution='normal'),WAHR
+"gen_one_shape_heteroscedacity_op_n_ts_[5, 5]_am_[1, 1]_of_[0, 0]_gr_[1.0, 1.0]",NP_,HET,0.4495,0.8279,0.6406,0.7847,False,QuantileTransformer(output_distribution='normal'),WAHR
