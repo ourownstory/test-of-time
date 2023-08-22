@@ -139,7 +139,7 @@ class CVBenchmark(Benchmark, ABC):
             os.makedirs(save_dir)
         models = [
             "{}-{}".format(
-                e.metadata["model"],
+                e.metadata["Dmodel"],
                 "".join(["_{0}_{1}".format(k, v) for k, v in e.params.items()]),
             )
             for e in self.experiments
@@ -248,6 +248,20 @@ class SimpleBenchmark(Benchmark):
                     log.error(e)
                     log.error("--------------------------------------------------------")
         return experiments
+    # def setup_experiments(self):
+    #     experiments = []
+    #     for ts in self.datasets:
+    #         for model_class, params in self.model_classes_and_params:
+    #             exp = SimpleExperiment(
+    #                 model_class=model_class,
+    #                 params=params,
+    #                 data=ts,
+    #                 metrics=self.metrics,
+    #                 test_percentage=self.test_percentage,
+    #                 save_dir=self.save_dir,
+    #             )
+    #             experiments.append(exp)
+    #     return experiments
 
 
 @dataclass

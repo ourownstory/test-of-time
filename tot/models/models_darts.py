@@ -89,7 +89,7 @@ class DartsForecastingModel(Model):
             f"Normalization layer not supported in darts models.",
         )
 
-        model = model_params.pop("model")
+        model = model_params.pop("Dmodel")
         self.model = model(**model_params)
 
     def fit(self, df: pd.DataFrame, freq: str, ids_weights: dict) -> None:
@@ -192,7 +192,7 @@ class DartsRegressionModel(DartsForecastingModel):
         params.update({"model": model})  # assign model
         self.model = self.model_class(**params)
         self.n_forecasts = self.params["n_forecasts"]
-        self.n_lags = params["n_lags"]
+        self.n_lags = params["lags"]
         # input checks are provided by model itself
 
 

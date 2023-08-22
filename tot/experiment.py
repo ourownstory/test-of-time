@@ -24,6 +24,8 @@ from tot.df_utils import (
 )
 from tot.evaluation.metric_utils import calculate_averaged_metrics_per_experiment
 from tot.models.models import Model
+from tot.data_processing.scaler import Scaler
+from sklearn.preprocessing import StandardScaler
 
 log = logging.getLogger("tot.benchmark")
 log.debug(
@@ -56,9 +58,9 @@ class Experiment(ABC):
         if hasattr(self.data, "freq") and self.data.freq is not None:
             data_params["freq"] = self.data.freq
         self.params.update({"_data_params": data_params})
-        model_name = self.params.get("model", self.model_class).__name__
+        model_name = self.params.get("Dmodel", self.model_class).__name__
         params_repr = self.params.copy()
-        params_repr.pop("model", None)
+        params_repr.pop("Dmodel", None)
         if not hasattr(self, "experiment_name") or self.experiment_name is None:
             components = [
                 model_name,
@@ -78,7 +80,7 @@ class Experiment(ABC):
         if not hasattr(self, "metadata") or self.metadata is None:
             self.metadata = {
                 "data": self.data.name,
-                "model": model_name,
+                "Dmodel": model_name,
                 "norm_mode": self.params.get("norm_mode", "none"),
                 "norm_type": self.params.get("norm_type", "none"),
                 "norm_affine": self.params.get("norm_affine", "none"),
@@ -245,6 +247,8 @@ class SimpleExperiment(Experiment):
             local_split=False,
         )
 
+        self. scaler = Scaler(transformer=StandardScaler(), scaling_level="per_dataset")
+
         avgs = df_train.groupby(["ID"])["y"].mean().array
         stds = df_train.groupby(["ID"])["y"].std().array
 
@@ -273,7 +277,8 @@ class SimpleExperiment(Experiment):
         # fit model
         model = self.model_class(self.params)
         time_start = time.time()
-        model.fit(df=df_train, freq=self.data.freq, ids_weights=ids_weights)
+        model.fit(df=df_train, freq=self.data.freq)
+        #model.fit(df=df_train, freq=self.data.freq, ids_weights=ids_weights)
         # predict model
         fcst_train, fcst_test = self._make_forecast(
             model=model,
