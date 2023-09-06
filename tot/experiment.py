@@ -394,7 +394,7 @@ class CrossValidationExperiment(Experiment):
             None
         """
 
-        if type(results) != list:
+        if not isinstance(results, list):
             results = [results]
         for res in results:
             fcst_train, fcst_test, result_train, result_test = res

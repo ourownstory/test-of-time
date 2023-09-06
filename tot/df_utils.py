@@ -110,7 +110,7 @@ def _calculate_n_train(n_samples: int, test_size: Union[float, int]) -> int:
         n_valid = max(1, int(n_samples * test_size))
     else:
         raise_if(
-            type(test_size) != int or not 1 < test_size < n_samples,
+            not (isinstance(test_size, int) and 1 < test_size < n_samples),
             "Test size should be a float in range (0.0, " "1.0) or an integer < len(df)",
         )
         n_valid = test_size

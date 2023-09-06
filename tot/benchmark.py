@@ -65,7 +65,7 @@ class Benchmark(ABC):
         return fcst_train, fcst_test, res_train, res_test, elapsed_time
 
     def _log_result(self, results):
-        if type(results) != list:
+        if not isinstance(results, list):
             results = [results]
         for res in results:
             fcst_train, fcst_test, res_train, res_test, elapsed_time = res
