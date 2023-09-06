@@ -1,5 +1,6 @@
-from experiments.pipeline import synthetic_data
 import pandas as pd
+
+from experiments.pipeline import synthetic_data
 
 
 def generate(

@@ -2,11 +2,11 @@ import os
 
 from neuralprophet.utils import set_log_level
 
-from experiments.pipeline.helpers.misc import save_results, save_params
+from experiments.pipeline.helpers.misc import save_params, save_results
 from experiments.pipeline.helpers.plotting import plot_and_save, plot_forecasts
 from experiments.pipeline.models import params_generators
 from experiments.pipeline.models.models import get_tot_model_class
-from experiments.pipeline.models.params import get_params_for_model, get_num_processes
+from experiments.pipeline.models.params import get_num_processes, get_params_for_model
 from experiments.pipeline.models.params_generators import validate_param_generator
 from tot.benchmark import SimpleBenchmark
 from tot.datasets import Dataset
@@ -97,7 +97,7 @@ class Pipeline:
         print(f"Pipeline {self.pipeline_name}.")
         print(f"Model: {self.model_name} with kwargs: {self.kwargs}")
         print(f"Dataset: {self.df_name}")
-        print(f"Results train:")
+        print("Results train:")
         print(f"{self.results_train}")
-        print(f"Results test:")
+        print("Results test:")
         print(f"{self.results_test}")

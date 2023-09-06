@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-from plotly_resampler import unregister_plotly_resampler
 
 __all__ = ["generate_intermittent"]
 
@@ -30,7 +29,6 @@ def generate_intermittent(
 
     # Generate a common daily pattern for all groups
     common_daily_pattern = np.zeros(hours_per_day)
-    window = np.hanning(end_hour - start_hour)
     common_daily_pattern[start_hour:end_hour] = (
         np.random.exponential(scale=1, size=end_hour - start_hour) + 0.5  # * window
     )

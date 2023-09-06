@@ -1,12 +1,6 @@
 import logging
 
-from sklearn.preprocessing import (
-    MinMaxScaler,
-    PowerTransformer,
-    QuantileTransformer,
-    RobustScaler,
-    StandardScaler,
-)
+from sklearn.preprocessing import MinMaxScaler, PowerTransformer, QuantileTransformer, RobustScaler, StandardScaler
 
 __all__ = [
     "gen_model_and_params_default",
@@ -46,7 +40,7 @@ SCALERS_DEFAULT = [
 
 SCALING_LEVELS_DEFAULT = ["per_time_series", "per_dataset"]
 WEIGHTED_LOSS_DEFAULT = ["none", "std"]  # "std*avg", "std"
-NORM_MODES_DEFAULT = ["revin"] #'pytorch'
+NORM_MODES_DEFAULT = ["revin"]  # 'pytorch'
 NORM_TYPES_DEFAULT = ["batch", "instance"]
 NORM_AFFINES_DEFAULT = [True, False]
 

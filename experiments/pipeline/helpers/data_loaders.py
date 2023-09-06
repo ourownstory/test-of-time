@@ -3,8 +3,8 @@ import random
 from pathlib import Path
 
 import pandas as pd
-from tot.error_utils import raise_if
 
+from tot.error_utils import raise_if
 
 DATA_DIR = os.path.join(Path(__file__).parent.parent.parent.parent.absolute(), "datasets")
 
@@ -31,7 +31,11 @@ def load_EIA():
 
 
 def load_London():
-    return load(DATA_DIR + "/london_electricity_hourly.csv", ids=['T1', 'T33', 'T67', 'T89', 'T122', 'T156', 'T180', 'T209', 'T281', 'T307'], n_samples=26280)
+    return load(
+        DATA_DIR + "/london_electricity_hourly.csv",
+        ids=["T1", "T33", "T67", "T89", "T122", "T156", "T180", "T209", "T281", "T307"],
+        n_samples=26280,
+    )
 
 
 def load_ERCOT():
@@ -43,7 +47,11 @@ def load_Australian():
 
 
 def load_Solar():
-    return load(DATA_DIR + "/solar_10_minutes_dataset.csv", ids=['T1', 'T19', 'T34', 'T59', 'T66', 'T83', 'T91', 'T111', 'T124', 'T134'], n_samples=26280)
+    return load(
+        DATA_DIR + "/solar_10_minutes_dataset.csv",
+        ids=["T1", "T19", "T34", "T59", "T66", "T83", "T91", "T111", "T124", "T134"],
+        n_samples=26280,
+    )
 
 
 def load_ETTh():

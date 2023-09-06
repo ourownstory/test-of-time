@@ -3,13 +3,12 @@ import random
 
 import plotly
 import plotly.graph_objects as go
+import plotly.io as pio
 from plotly_resampler import unregister_plotly_resampler
 
-unregister_plotly_resampler()
-
-import plotly.io as pio
-
 from tot.plotting import plot_plotly
+
+unregister_plotly_resampler()
 
 
 def layout():
@@ -31,11 +30,6 @@ def layout():
         "mirror": True,
         "linewidth": 1.5,
     }
-    prediction_color = "black"
-    actual_color = "black"
-    trend_color = "#B23B00"
-    line_width = 2
-    marker_size = 4
     figsize = (900, 450)
     layout = go.Layout(
         showlegend=True,
