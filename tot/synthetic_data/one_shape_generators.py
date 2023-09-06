@@ -25,9 +25,6 @@ def generate_one_shape_season_data(  # OUTDATED
     np.random.seed(42)
     t = np.arange(series_length)  # Generate an array of time steps
     omega = 2 * np.pi / period  # Define the angular frequency (omega) corresponding to the period
-    ar_coeffs = np.array([1, 0.5, -0.1, 0.02, 0.3])  # Define AR coefficients (AR(4) model)
-    ma_coeffs = np.array([1])  # MA coefficients (no MA component)
-    ar_process = ArmaProcess(ar_coeffs, ma_coeffs, nobs=series_length)  # Create an ARMA process
 
     counter = 0
     for group in range(len(n_ts_groups)):

@@ -86,7 +86,7 @@ class DartsForecastingModel(Model):
         model_params.pop("norm_affine", None)
         raise_if(
             norm_mode is not None or norm_type is not None,
-            f"Normalization layer not supported in darts models.",
+            "Normalization layer not supported in darts models.",
         )
 
         model = model_params.pop("model")
