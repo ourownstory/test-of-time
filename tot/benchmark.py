@@ -125,6 +125,7 @@ class Benchmark(ABC):
                     log.error("exception occurred in exp {}: {}".format(exp_num, exp.experiment_name))
                     log.error(e)
                     log.error("--------------------------------------------------------")
+                    raise
                 gc.collect()
 
         return self.df_metrics_train, self.df_metrics_test
@@ -247,6 +248,7 @@ class SimpleBenchmark(Benchmark):
                     log.error("Unable to create exp {}".format(i + 1))
                     log.error(e)
                     log.error("--------------------------------------------------------")
+                    raise
         return experiments
 
 

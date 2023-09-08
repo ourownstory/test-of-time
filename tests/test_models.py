@@ -200,16 +200,15 @@ def test_seasonal_naive_model_invalid_input(dataset_input, model_classes_and_par
         (SeasonalNaiveModel, model_classes_and_params_input),
     ]
 
-    benchmark = SimpleBenchmark(
-        model_classes_and_params=model_classes_and_params,
-        datasets=dataset_list,
-        metrics=list(ERROR_FUNCTIONS.keys()),
-        test_percentage=0.25,
-        save_dir=SAVE_DIR,
-        num_processes=1,
-    )
-
     with pytest.raises(ValueError):
+        benchmark = SimpleBenchmark(
+            model_classes_and_params=model_classes_and_params,
+            datasets=dataset_list,
+            metrics=list(ERROR_FUNCTIONS.keys()),
+            test_percentage=0.25,
+            save_dir=SAVE_DIR,
+            num_processes=1,
+        )
         _, _ = benchmark.run()
 
     log.info("#### Done with test_seasonal_naive_model_invalid_input")
