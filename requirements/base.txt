@@ -1,6 +1,7 @@
 arrow>=1.2.3
 dataclasses>=0.6;python_version<'3.7'
-neuralprophet>=1.0.0rc1
+#neuralprophet>=1.0.0rc1
+neuralprophet @git+https://github.com/ourownstory/neural_prophet.git@91256797adbabbefe65aa0ff56393b5b4c4f1721 # relevant version not merged yet in np
 numpy>=1.22.0,<1.24.0
 pandas>=1.3.5
 arrow
