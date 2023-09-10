@@ -58,7 +58,7 @@ def test_simple_experiment():
         metrics=list(ERROR_FUNCTIONS.keys()),
         test_percentage=0.25,
     )
-    fcst_train, fcst_test, result_train, result_val = exp.run()
+    fcst_train, fcst_test, result_train, result_val, _ = exp.run()
     log.debug(result_val)
     log.info("#### Done with test_simple_experiment")
 
@@ -79,6 +79,6 @@ def test_cv_experiment():
         fold_overlap_pct=0,
         save_dir=SAVE_DIR,
     )
-    fcst_train, fcst_test, result_train, result_val = exp_cv.run()
+    fcst_train, fcst_test, result_train, result_val, _ = exp_cv.run()
     log.debug(result_val)
     log.info("#### Done with test_cv_experiment")

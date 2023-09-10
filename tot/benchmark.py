@@ -56,21 +56,19 @@ class Benchmark(ABC):
             log.info("starting exp {}: {}".format(exp_num, exp.experiment_name))
             log.info("--------------------------------------------------------")
         exp.metrics = self.metrics
-        fcst_train, fcst_test, res_train, res_test = exp.run()
+        fcst_train, fcst_test, res_train, res_test, elapsed_time = exp.run()
         if verbose:
             log.info("--------------------------------------------------------")
             log.info("finished exp {}: {}".format(exp_num, exp.experiment_name))
             log.info("test results {}: {}".format(exp_num, res_test))
             log.info("--------------------------------------------------------")
-        # del exp
-        # gc.collect()
-        return (fcst_train, fcst_test, res_train, res_test)
+        return fcst_train, fcst_test, res_train, res_test, elapsed_time
 
     def _log_result(self, results):
-        if type(results) != list:
+        if not isinstance(results, list):
             results = [results]
         for res in results:
-            fcst_train, fcst_test, res_train, res_test = res
+            fcst_train, fcst_test, res_train, res_test, elapsed_time = res
             self.df_metrics_train = pd.concat(
                 [self.df_metrics_train, pd.DataFrame([res_train])],
                 ignore_index=True,
@@ -81,6 +79,7 @@ class Benchmark(ABC):
             )
             self.fcst_train.append(fcst_train)
             self.fcst_test.append(fcst_test)
+            self.elapsed_times.append(elapsed_time)
 
     def _log_error(self, error):
         log.error(repr(error))
@@ -92,6 +91,7 @@ class Benchmark(ABC):
         self.df_metrics_test = pd.DataFrame(columns=cols)
         self.fcst_train = []
         self.fcst_test = []
+        self.elapsed_times = []
 
         if verbose:
             log.info("Experiment list:")
@@ -117,7 +117,15 @@ class Benchmark(ABC):
         else:
             args_list = [(exp, verbose, i + 1) for i, exp in enumerate(self.experiments)]
             for args in args_list:
-                self._log_result(self._run_exp(args))
+                try:
+                    self._log_result(self._run_exp(args))
+                except Exception as e:
+                    exp, verbose, exp_num = args
+                    log.error("--------------------------------------------------------")
+                    log.error("exception occurred in exp {}: {}".format(exp_num, exp.experiment_name))
+                    log.error(e)
+                    log.error("--------------------------------------------------------")
+                    raise
                 gc.collect()
 
         return self.df_metrics_train, self.df_metrics_test
@@ -224,16 +232,23 @@ class SimpleBenchmark(Benchmark):
     def setup_experiments(self):
         experiments = []
         for ts in self.datasets:
-            for model_class, params in self.model_classes_and_params:
-                exp = SimpleExperiment(
-                    model_class=model_class,
-                    params=params,
-                    data=ts,
-                    metrics=self.metrics,
-                    test_percentage=self.test_percentage,
-                    save_dir=self.save_dir,
-                )
-                experiments.append(exp)
+            for i, (model_class, params) in enumerate(self.model_classes_and_params):
+                try:
+                    exp = SimpleExperiment(
+                        model_class=model_class,
+                        params=params.copy(),
+                        data=ts,
+                        metrics=self.metrics,
+                        test_percentage=self.test_percentage,
+                        save_dir=self.save_dir,
+                    )
+                    experiments.append(exp)
+                except Exception as e:
+                    log.error("--------------------------------------------------------")
+                    log.error("Unable to create exp {}".format(i + 1))
+                    log.error(e)
+                    log.error("--------------------------------------------------------")
+                    raise
         return experiments
 
 

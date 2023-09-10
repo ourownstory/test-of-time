@@ -216,3 +216,7 @@ class Scaler:
         else:
             rescale_method = self._rescale
         return self._inverse_transform(df_train, rescale_method), self._inverse_transform(df_test, rescale_method)
+
+
+class NoScaler:
+    pass

@@ -6,6 +6,7 @@ from typing import Type
 import pandas as pd
 
 from tot.df_utils import _check_min_df_len
+from tot.error_utils import raise_if
 from tot.models.models import Model
 from tot.models.utils import _get_seasons
 
@@ -46,6 +47,16 @@ class ProphetModel(Model):
             raise NotImplementedError(
                 "Quantiles for Prophet not supported in Test-of-Time. Remove interval_width from model input."
             )
+        model_params.pop("retrain", None)
+
+        norm_mode = model_params.pop("norm_mode", None)
+        norm_type = model_params.pop("norm_type", None)
+        norm_affine = model_params.pop("norm_affine", None)
+        raise_if(
+            norm_mode is not None or norm_type is not None or norm_affine is not None,
+            "Normalization layer not supported in darts models.",
+        )
+
         self.model = self.model_class(**model_params)
         if custom_seasonalities is not None:
             for seasonality in custom_seasonalities:
@@ -56,7 +67,7 @@ class ProphetModel(Model):
         self.n_forecasts = 1
         self.n_lags = 0
 
-    def fit(self, df: pd.DataFrame, freq: str):
+    def fit(self, df: pd.DataFrame, freq: str, ids_weights: dict):
         """Fits the model.
 
         Parameters
@@ -65,6 +76,8 @@ class ProphetModel(Model):
             DataFrame with columns "ds" and "y" and optionally "ID"
         freq : str
             Frequency of the time series
+        ids_weights : dict
+            Weights to apply to the loss function per ID
 
         Returns
         -------

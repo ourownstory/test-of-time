@@ -71,7 +71,7 @@ class SeasonalNaiveModel(Model):
             "season_length must be >1 for SeasonalNaiveModel. For season_length=1 select NaiveModel " "instead.",
         )
 
-    def fit(self, df: pd.DataFrame, freq: str):
+    def fit(self, df: pd.DataFrame, freq: str, ids_weights: dict):
         pass
 
     def predict(self, df: pd.DataFrame, received_single_time_series, df_historic: pd.DataFrame = None):
