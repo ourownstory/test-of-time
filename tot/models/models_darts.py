@@ -50,7 +50,7 @@ class DartsForecastingModel(Model):
     >>> model_classes_and_params = [
     >>>     (
     >>>         DartsForecastingModel,
-    >>>         {"model": NaiveDrift, "retrain": True, "n_lags": 12, "n_forecasts": 4},
+    >>>         {"model": NaiveDrift, "retrain": True, "lags": 12, "n_forecasts": 4},
     >>>     ),
     >>> ]
     >>>
