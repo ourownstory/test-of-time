@@ -1,10 +1,3 @@
-arrow>=1.2.3
-dataclasses>=0.6;python_version<'3.7'
-#neuralprophet>=1.0.0rc1
-neuralprophet @git+https://github.com/ourownstory/neural_prophet.git@91256797adbabbefe65aa0ff56393b5b4c4f1721 # relevant version not merged yet in np
-numpy>=1.22.0,<1.24.0
-pandas>=1.3.5
-arrow
 black[jupyter]
 flake8>=5.0.4, <6.0.0
 isort>=5.11.5, <6.0.0
@@ -12,7 +5,5 @@ pyright
 pytest>=7.2.2, <8.0.0
 pytest-cov>=4.0.0, <5.0.0
 u8darts[torch]>= 0.23.1
-Cython>=0.22
-pystan==2.19.1.1
-prophet==1.0.0 # required for python3.10
+prophet
 
