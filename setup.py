@@ -16,14 +16,13 @@ with open("tot/_version.py") as f:
     exec(f.read())
 
 setuptools.setup(
-    name="test-of-time",
+    name="tot",
     version=__version__,
     description="Evaluate forecasting models",
     author="Oskar Triebe",
     author_email="trieb@stanford.edu",
     url="https://github.com/ourownstory/test-of-time",
     license="MIT",
-    packages=["tot"],
     python_requires=">=3.6",
     install_requires=requirements,
     extras_require={
@@ -35,6 +34,7 @@ setuptools.setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     include_package_data=True,
+    packages=["tot", "tot.models", "tot.datasets", "tot.synthetic_data", "tot.evaluation", "tot.data_processing", "tot.evaluation"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: MIT License",
