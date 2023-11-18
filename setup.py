@@ -34,7 +34,15 @@ setuptools.setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     include_package_data=True,
-    packages=["tot", "tot.models", "tot.datasets", "tot.synthetic_data", "tot.evaluation", "tot.data_processing", "tot.evaluation"],
+    packages=[
+        "tot",
+        "tot.models",
+        "tot.datasets",
+        "tot.synthetic_data",
+        "tot.evaluation",
+        "tot.data_processing",
+        "tot.evaluation",
+    ],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: MIT License",
