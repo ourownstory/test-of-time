@@ -1,5 +1,5 @@
-neuralprophet
-darts==0.24.0 #for the sake of compatibility with neural prophet
+neuralprophet @git+https://github.com/ourownstory/neural_prophet.git@9f4be62d99ccbddd2c164d1cbc35c6869c9de83e # relevant version not merged yet in np
+darts==0.24.0 #for the sake of compatibility with neural prophet (pytorch-lightning version)
 arrow>=1.2.3
 dataclasses>=0.6;python_version<'3.7'
 numpy>=1.22.0,<1.24.0
