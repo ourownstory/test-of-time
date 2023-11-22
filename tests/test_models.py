@@ -329,6 +329,7 @@ def test_darts_model():
     log.info("#### test_darts_model")
     print(results_test)
 
+
 def test_darts_local_model():
     air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
     ercot_df_aux = pd.read_csv(ERCOT_FILE)
