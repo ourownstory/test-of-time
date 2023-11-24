@@ -330,46 +330,80 @@ def test_darts_model():
     print(results_test)
 
 
-# def test_darts_local_model():
-#     air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
-#     ercot_df_aux = pd.read_csv(ERCOT_FILE)
-#     ercot_df = pd.DataFrame()
-#     for region in ERCOT_REGIONS:
-#         ercot_df = pd.concat(
-#             (
-#                 ercot_df,
-#                 ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
-#             ),
-#             ignore_index=True,
-#         )
-#
-#     dataset_list = [
-#         Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
-#         Dataset(df=ercot_df, name="ercot_df", freq="H"),
-#     ]
-#     model_classes_and_params = [
-#         (
-#             DartsLocalForecastingModel,
-#             {"model": StatsForecastAutoARIMA, "lags": 2, "n_forecasts": 1},
-#         ),
-#         (
-#             DartsLocalForecastingModel,
-#             {"model": StatsForecastAutoETS, "lags": 2, "n_forecasts": 1, "ETS_model": "ZZZ"},
-#         ),
-#     ]
-#     log.debug("{}".format(model_classes_and_params))
-#
-#     benchmark = SimpleBenchmark(
-#         model_classes_and_params=model_classes_and_params,
-#         datasets=dataset_list,
-#         metrics=list(ERROR_FUNCTIONS.keys()),
-#         test_percentage=0.25,
-#         save_dir=SAVE_DIR,
-#         num_processes=1,
-#     )
-#     results_train, results_test = benchmark.run()
-#     log.info("#### test_darts_local_model")
-#     print(results_test)
+def test_darts_StatsForecastAutoETS_model():
+    air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
+    ercot_df_aux = pd.read_csv(ERCOT_FILE)
+    ercot_df = pd.DataFrame()
+    for region in ERCOT_REGIONS:
+        ercot_df = pd.concat(
+            (
+                ercot_df,
+                ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
+            ),
+            ignore_index=True,
+        )
+
+    dataset_list = [
+        Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
+        Dataset(df=ercot_df, name="ercot_df", freq="H"),
+    ]
+    model_classes_and_params = [
+        (
+            DartsLocalForecastingModel,
+            {"model": StatsForecastAutoETS, "lags": 12, "n_forecasts": 1, "ETS_model": "ZZZ"},
+        ),
+    ]
+    log.debug("{}".format(model_classes_and_params))
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=0.25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    results_train, results_test = benchmark.run()
+    log.info("#### test_darts_local_model")
+    print(results_test)
+
+
+def test_darts_StatsForecastAutoARIMA_model():
+    air_passengers_df = pd.read_csv(AIR_FILE, nrows=NROWS)
+    ercot_df_aux = pd.read_csv(ERCOT_FILE)
+    ercot_df = pd.DataFrame()
+    for region in ERCOT_REGIONS:
+        ercot_df = pd.concat(
+            (
+                ercot_df,
+                ercot_df_aux[ercot_df_aux["ID"] == region].iloc[:NROWS].copy(deep=True),
+            ),
+            ignore_index=True,
+        )
+
+    dataset_list = [
+        Dataset(df=air_passengers_df, name="air_passengers", freq="MS"),
+        Dataset(df=ercot_df, name="ercot_df", freq="H"),
+    ]
+    model_classes_and_params = [
+        (
+            DartsLocalForecastingModel,
+            {"model": StatsForecastAutoARIMA, "lags": 12, "n_forecasts": 1},
+        ),
+    ]
+    log.debug("{}".format(model_classes_and_params))
+
+    benchmark = SimpleBenchmark(
+        model_classes_and_params=model_classes_and_params,
+        datasets=dataset_list,
+        metrics=list(ERROR_FUNCTIONS.keys()),
+        test_percentage=0.25,
+        save_dir=SAVE_DIR,
+        num_processes=1,
+    )
+    results_train, results_test = benchmark.run()
+    log.info("#### test_darts_local_model")
+    print(results_test)
 
 
 def test_torch_prophet_model():

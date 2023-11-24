@@ -1,6 +1,8 @@
+import gc
 import logging
 from copy import deepcopy
 from dataclasses import dataclass
+from multiprocessing import get_context
 from typing import Type
 
 import pandas as pd
@@ -28,7 +30,7 @@ except ImportError:
     )
 
 try:
-    from darts.models import RegressionModel
+    from darts.models import LightGBMModel, RegressionModel
 
     _darts_installed = True
 except ImportError:
@@ -163,6 +165,11 @@ class DartsForecastingModel(Model):
         return predicted
 
 
+def _fit(args):
+    model, series = args
+    model.fit(series)
+
+
 @dataclass
 class DartsLocalForecastingModel(DartsForecastingModel):
     """
@@ -240,11 +247,20 @@ class DartsLocalForecastingModel(DartsForecastingModel):
         self.freq = freq
         self.model_params["season_length"] = FREQ_TO_SEASON_LENGTH[freq]
 
-        for df_name, df in df.groupby("ID"):
-            model = self.model(**self.model_params)
-            series = convert_df_to_TimeSeries(df, freq=self.freq)
-            model.fit(series)
-            self.models_list.append(model)
+        self.models_list = [self.model(**self.model_params) for _ in range(len(df.groupby("ID")))]
+
+        with get_context("spawn").Pool() as pool:
+            args = [
+                (model, convert_df_to_TimeSeries(df_i, freq=self.freq))
+                for model, (_, df_i) in zip(self.models_list, df.groupby("ID"))
+            ]
+            pool.map(
+                _fit,
+                args,
+            )
+            pool.close()
+            pool.join()
+        gc.collect()
 
     def predict(
         self, df: pd.DataFrame, received_single_time_series: bool, df_historic: pd.DataFrame = None
