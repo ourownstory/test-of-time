@@ -30,7 +30,7 @@ except ImportError:
     )
 
 try:
-    from darts.models import LightGBMModel, RegressionModel
+    from darts.models import RegressionModel
 
     _darts_installed = True
 except ImportError:
