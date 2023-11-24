@@ -4,7 +4,7 @@ import os
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from multiprocessing.pool import Pool
+from multiprocessing import get_context
 from typing import List, Optional
 
 import pandas as pd
@@ -442,7 +442,7 @@ class CrossValidationExperiment(Experiment):
         self.fcst_test = []
         time_start = time.time()
         if self.num_processes > 1 and self.num_folds > 1:
-            with Pool(self.num_processes) as pool:
+            with get_context("spawn").Pool(self.num_processes) as pool:
                 args = [
                     (df_train, df_test, current_fold, received_ID_column, received_single_time_series)
                     for current_fold, (df_train, df_test) in enumerate(folds)

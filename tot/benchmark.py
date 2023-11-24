@@ -4,7 +4,7 @@ import logging
 import os
 from abc import ABC
 from dataclasses import dataclass
-from multiprocessing.pool import Pool
+from multiprocessing import get_context
 from typing import List, Optional, Tuple
 
 import numpy as np
@@ -103,7 +103,7 @@ class Benchmark(ABC):
                 not all([exp.num_processes == 1 for exp in self.experiments]),
                 "Cannot set multiprocessing in " "Experiments and Benchmark.",
             )
-            with Pool(self.num_processes) as pool:
+            with get_context("spawn").Pool(self.num_processes) as pool:
                 args_list = [(exp, verbose, i + 1) for i, exp in enumerate(self.experiments)]
                 pool.map_async(
                     self._run_exp,
