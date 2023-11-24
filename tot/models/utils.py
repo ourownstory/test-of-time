@@ -261,6 +261,7 @@ def _predict_darts_model(
     future_observations_per_prediction,
     retrain,
     received_single_time_series,
+    freq=None,
 ):
     """Computes forecast-target-wise predictions for the passed darts model.
 
@@ -296,6 +297,7 @@ def _predict_darts_model(
         future_observations_per_prediction=future_observations_per_prediction,
         retrain=retrain,
         received_single_time_series=received_single_time_series,
+        freq=freq,
     )
     fcst_df = (
         df.groupby("ID")
@@ -320,6 +322,7 @@ def _predict_raw_darts_model(
     future_observations_per_prediction,
     retrain,
     received_single_time_series,
+    freq=None,
 ):
     """Computes forecast-origin-wise predictions for the passed darts model for single time series.
     Predictions are returned in vector format. Predictions are given on a forecast origin basis,
@@ -344,8 +347,10 @@ def _predict_raw_darts_model(
         np.array
             array containing the predictions
     """
-    series = convert_df_to_TimeSeries(df, freq=model.freq)
-    predicted_list = model.model.historical_forecasts(
+    if freq is None:
+        freq = model.freq
+    series = convert_df_to_TimeSeries(df, freq)
+    predicted_list = model.historical_forecasts(
         series,
         start=past_observations_per_prediction,
         forecast_horizon=future_observations_per_prediction,
@@ -355,7 +360,7 @@ def _predict_raw_darts_model(
     )
     # Convert (list of) TimeSeries to np.array
     predicted = np.array([prediction_series.values() for prediction_series in predicted_list])
-    prediction_ids = ["__df__"] if received_single_time_series else predicted_list[0].components
+    prediction_ids = [df["ID"][0]] if received_single_time_series else predicted_list[0].components
     predicted = np.transpose(predicted, (2, 0, 1))
     predicted_dict = {prediction_ids[id]: predicted[id, :, :] for id in range(predicted.shape[0])}
     # Return dict with array per ID
