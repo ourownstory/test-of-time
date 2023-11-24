@@ -129,10 +129,6 @@ def test_2_benchmark_CV():
     results_summary_ol, results_train_ol, results_test_ol = benchmark_cv_overlap.run()
     log.debug("{}".format(results_summary_ol))
     log.info("#### test_2_benchmark_CV")
-    if PLOT:
-        air_passengers = results_summary[results_summary["split"] == "test"]
-        # air_passengers.plot(x="data", y="MASE", kind="barh")
-        plt.show()
 
 
 def test_2_benchmark_manual():

@@ -8,7 +8,7 @@ import pandas as pd
 from tot.df_utils import _check_min_df_len, add_first_inputs_to_df, drop_first_inputs_from_df
 from tot.error_utils import raise_if
 from tot.models.models import Model
-from tot.models.utils import _predict_darts_model, convert_df_to_TimeSeries
+from tot.models.utils import FREQ_TO_SEASON_LENGTH, _predict_darts_model, convert_df_to_TimeSeries
 
 log = logging.getLogger("tot.model")
 
@@ -135,11 +135,12 @@ class DartsForecastingModel(Model):
         _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
         fcst = _predict_darts_model(
             df=df,
-            model=self,
+            model=self.model,
             past_observations_per_prediction=self.n_lags,
             future_observations_per_prediction=self.n_forecasts,
             retrain=self.retrain,
             received_single_time_series=received_single_time_series,
+            freq=self.freq,
         )
         if df_historic is not None:
             fcst = self.maybe_drop_added_values_from_df(fcst, df)
@@ -160,6 +161,136 @@ class DartsForecastingModel(Model):
         """
         predicted = drop_first_inputs_from_df(samples=self.n_lags, predicted=predicted, df=df)
         return predicted
+
+
+@dataclass
+class DartsLocalForecastingModel(DartsForecastingModel):
+    """
+    A forecasting model using a local model from the darts library. Specifically for StatsForecastAutoARIMA and
+    StatsForecastAutoETS.
+
+    Examples
+    --------
+    >>> model_classes_and_params = [
+    >>>     (
+    >>>         DartsLocalForecastingModel,
+    >>>         {"model": StatsForecastAutoARIMA, "lags": 12, "n_forecasts": 4},
+    >>>     ),
+    >>>     (
+    >>>         DartsLocalForecastingModel,
+    >>>         {"model": StatsForecastAutoETS, "lags": 12, "n_forecasts": 4, "ETS_model": "ZZZ"},
+    >>>     ),
+    >>> ]
+    >>>
+    >>> benchmark = SimpleBenchmark(
+    >>>     model_classes_and_params=model_classes_and_params,
+    >>>     datasets=dataset_list,
+    >>>     metrics=list(ERROR_FUNCTIONS.keys()),
+    >>>     test_percentage=25,
+    >>>     save_dir=SAVE_DIR,
+    >>>     num_processes=1,
+    >>> )
+    """
+
+    models_list: list = None
+
+    def __post_init__(self):
+        # check if installed
+        if not _darts_installed:
+            raise RuntimeError(
+                "Requires darts to be installed:" "https://github.com/unit8co/darts/blob/master/INSTALL.md"
+            )
+        self.n_forecasts = self.params["n_forecasts"]
+        self.n_lags = self.params["lags"]
+        self.retrain = self.params.get("retrain", True)
+        model_params = deepcopy(self.params)
+        model_params.pop("_data_params")
+        model_params.pop("n_forecasts")
+        model_params.pop("lags")
+        model_params.pop("retrain", None)
+
+        norm_mode = model_params.pop("norm_mode", None)
+        norm_type = model_params.pop("norm_type", None)
+        model_params.pop("norm_affine", None)
+        raise_if(
+            norm_mode is not None or norm_type is not None,
+            "Normalization layer not supported in darts models.",
+        )
+
+        self.model = model_params.pop("model")
+
+        ETS_model = model_params.pop("ETS_model", None)
+        if ETS_model is not None:
+            model_params["model"] = ETS_model
+
+        self.model_params = model_params
+        self.models_list = []
+
+    def fit(self, df: pd.DataFrame, freq: str, ids_weights: dict) -> None:
+        """Fits the regression model.
+
+        Parameters
+        ----------
+            df : pd.DataFrame
+                dataframe containing column ``ds``, ``y``, and optionally ``ID`` with all data
+            freq : str
+                frequency of the input data
+        """
+        _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
+        self.freq = freq
+        self.model_params["season_length"] = FREQ_TO_SEASON_LENGTH[freq]
+
+        for df_name, df in df.groupby("ID"):
+            model = self.model(**self.model_params)
+            series = convert_df_to_TimeSeries(df, freq=self.freq)
+            model.fit(series)
+            self.models_list.append(model)
+
+    def predict(
+        self, df: pd.DataFrame, received_single_time_series: bool, df_historic: pd.DataFrame = None
+    ) -> pd.DataFrame:
+        """Runs the model to make predictions.
+
+        Expects all data to be present in dataframe.
+
+        Parameters
+        ----------
+            df : pd.DataFrame
+                dataframe containing column ``ds``, ``y``, and optionally ``ID`` with data
+            df_historic : pd.DataFrame
+                dataframe containing column ``ds``, ``y``, and optionally ``ID`` with historic data
+            received_single_time_series : bool
+                whether it is a single time series
+
+        Returns
+        -------
+            pd.DataFrame
+                columns ``ds``, ``y``, optionally [``ID``], and [``yhat<i>``] where yhat<i> refers to the
+                i-step-ahead prediction for this row's datetime, e.g. yhat3 is the prediction for this datetime,
+                predicted 3 steps ago, "3 steps old".
+        """
+        if df_historic is not None:
+            df = self.maybe_extend_df(df_train=df_historic, df_test=df)
+        _check_min_df_len(df=df, min_len=self.n_forecasts + self.n_lags)
+
+        forecast = pd.DataFrame()
+
+        for i, (df_name, df) in enumerate(df.groupby("ID")):
+            df.reset_index(inplace=True)
+            fcst_i = _predict_darts_model(
+                df=df,
+                model=self.models_list[i],
+                past_observations_per_prediction=self.n_lags,
+                future_observations_per_prediction=self.n_forecasts,
+                retrain=True,
+                received_single_time_series=True,
+                freq=self.freq,
+            )
+            forecast = pd.concat((forecast, fcst_i), ignore_index=True)
+
+        if df_historic is not None:
+            forecast = self.maybe_drop_added_values_from_df(forecast, df)
+        return forecast
 
 
 class DartsRegressionModel(DartsForecastingModel):
