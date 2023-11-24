@@ -113,7 +113,7 @@ def test_2_benchmark_CV():
         test_percentage=0.1,
         num_folds=3,
         fold_overlap_pct=0,
-        num_processes=1,
+        num_processes=3,
     )
     results_summary, results_train, results_test = benchmark_cv.run()
     log.debug("{}".format(results_summary))
