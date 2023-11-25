@@ -30,7 +30,7 @@ except ImportError:
     )
 
 try:
-    from darts.models import RegressionModel
+    from darts.models import LightGBMModel, RegressionModel
 
     _darts_installed = True
 except ImportError:
@@ -395,3 +395,51 @@ class RandomForestModel(DartsRegressionModel):
     """
 
     regression_class: Type = RandomForestRegressor
+
+
+@dataclass
+class LGBMModel(DartsRegressionModel):
+    """
+    A forecasting model using a LightGBMModel to obtain a forecast.
+
+    Examples
+    --------
+    >>> model_classes_and_params = [
+    >>>     (
+    >>>         LGBMModel,
+    >>>         {"lags": 12, "n_forecasts": 4},
+    >>>     ),
+    >>> ]
+    >>>
+    >>> benchmark = SimpleBenchmark(
+    >>>     model_classes_and_params=model_classes_and_params,
+    >>>     datasets=dataset_list,
+    >>>     metrics=list(ERROR_FUNCTIONS.keys()),
+    >>>     test_percentage=25,
+    >>>     save_dir=SAVE_DIR,
+    >>>     num_processes=1,
+    >>> )
+    """
+
+    def __post_init__(self):
+        # check if installed
+        if not (_darts_installed or _sklearn_installed):
+            raise RuntimeError(
+                "Requires darts and sklearn to be installed:"
+                "https://scikit-learn.org/stable/install.html"
+                "https://github.com/unit8co/darts/blob/master/INSTALL.md"
+            )
+        params = deepcopy(self.params)
+        params.pop("_data_params")
+        # n_forecasts is not a parameter of the model
+        params.pop("n_forecasts")
+        params.pop("retrain", None)
+        params.pop("norm_mode", None)
+        params.pop("norm_type", None)
+        params.pop("norm_affine", None)
+        # overwrite output_chunk_length with n_forecasts
+        params.update({"output_chunk_length": self.params["n_forecasts"]})
+        self.model = LightGBMModel(**params)
+        self.n_forecasts = self.params["n_forecasts"]
+        self.n_lags = params["lags"]
+        # input checks are provided by model itself
